@@ -115,7 +115,7 @@ struct SetupRequest
     ushort authorization_protocol_data_len;
     byte[2] _pad1;
     char[] authorization_protocol_name;
-    ubyte[] authorization_protocol_data;
+    char[] authorization_protocol_data;
 
     iovec[5] toIOVector()
     {
@@ -227,11 +227,375 @@ struct Setup
     }
 }
 
+struct CreateWindow
+{
+    ubyte depth;
+    Window wid;
+    Window parent;
+    short x;
+    short y;
+    ushort width;
+    ushort height;
+    ushort border_width;
+    ushort klass;
+    VisualID visual;
+    CARD32 value_mask;
+}
+
+struct ChangeWindowAttributes
+{
+    byte[1] _pad0;
+    Window window;
+    CARD32 value_mask;
+}
+
+struct GetWindowAttributes
+{
+    byte[1] _pad0;
+    Window window;
+    struct Reply {};
+}
+
+struct DestroyWindow
+{
+    byte[1] _pad0;
+    Window window;
+}
+
+struct DestroySubwindows
+{
+    byte[1] _pad0;
+    Window window;
+}
+
+struct ChangeSaveSet
+{
+    ubyte mode;
+    Window window;
+}
+
+struct ReparentWindow
+{
+    byte[1] _pad0;
+    Window window;
+    Window parent;
+    short x;
+    short y;
+}
+
+struct MapWindow
+{
+    byte[1] _pad0;
+    Window window;
+}
+
+struct MapSubwindows
+{
+    byte[1] _pad0;
+    Window window;
+}
+
+struct UnmapWindow
+{
+    byte[1] _pad0;
+    Window window;
+}
+
+struct UnmapSubwindows
+{
+    byte[1] _pad0;
+    Window window;
+}
+
+struct ConfigureWindow
+{
+    byte[1] _pad0;
+    Window window;
+    CARD16 value_mask;
+}
+
+struct CirculateWindow
+{
+    ubyte direction;
+    Window window;
+}
+
+struct GetGeometry
+{
+    byte[1] _pad0;
+    Drawable drawable;
+    struct Reply {};
+}
+
+struct QueryTree
+{
+    byte[1] _pad0;
+    Window window;
+    struct Reply {};
+}
+
+struct InternAtom
+{
+    ubyte only_if_exists;
+    ushort name_len;
+    byte[2] _pad0;
+    char[] name;
+    struct Reply {};
+}
+
+struct GetAtomName
+{
+    byte[1] _pad0;
+    Atom atom;
+    struct Reply {};
+}
+
+struct ChangeProperty
+{
+    ubyte mode;
+    Window window;
+    Atom property;
+    Atom type;
+    ubyte format;
+    byte[3] _pad0;
+    uint data_len;
+    void[] data;
+}
+
+struct DeleteProperty
+{
+    byte[1] _pad0;
+    Window window;
+    Atom property;
+}
+
+struct GetProperty
+{
+    ubyte delete;
+    Window window;
+    Atom property;
+    Atom type;
+    uint long_offset;
+    uint long_length;
+    struct Reply {};
+}
+
+struct ListProperties
+{
+    byte[1] _pad0;
+    Window window;
+    struct Reply {};
+}
+
+struct SetSelectionOwner
+{
+    byte[1] _pad0;
+    Window owner;
+    Atom selection;
+    Timestamp time;
+}
+
+struct GetSelectionOwner
+{
+    byte[1] _pad0;
+    Atom selection;
+    struct Reply {};
+}
+
+struct ConvertSelection
+{
+    byte[1] _pad0;
+    Window requestor;
+    Atom selection;
+    Atom target;
+    Atom property;
+    Timestamp time;
+}
+
+struct SendEvent
+{
+    ubyte propagate;
+    Window destination;
+    uint event_mask;
+    char[32] event;
+}
+
+struct GrabPointer
+{
+    ubyte owner_events;
+    Window grab_window;
+    ushort event_mask;
+    ubyte pointer_mode;
+    ubyte keyboard_mode;
+    Window confine_to;
+    Cursor cursor;
+    Timestamp time;
+    struct Reply {};
+}
+
+struct UngrabPointer
+{
+    byte[1] _pad0;
+    Timestamp time;
+}
+
+struct GrabButton
+{
+    ubyte owner_events;
+    Window grab_window;
+    ushort event_mask;
+    ubyte pointer_mode;
+    ubyte keyboard_mode;
+    Window confine_to;
+    Cursor cursor;
+    ubyte button;
+    byte[1] _pad0;
+    ushort modifiers;
+}
+
+struct UngrabButton
+{
+    ubyte button;
+    Window grab_window;
+    ushort modifiers;
+    byte[2] _pad0;
+}
+
+struct ChangeActivePointerGrab
+{
+    byte[1] _pad0;
+    Cursor cursor;
+    Timestamp time;
+    ushort event_mask;
+    byte[2] _pad1;
+}
+
+struct GrabKeyboard
+{
+    ubyte owner_events;
+    Window grab_window;
+    Timestamp time;
+    ubyte pointer_mode;
+    ubyte keyboard_mode;
+    byte[2] _pad0;
+    struct Reply {};
+}
+
+struct UngrabKeyboard
+{
+    byte[1] _pad0;
+    Timestamp time;
+}
+
+struct GrabKey
+{
+    ubyte owner_events;
+    Window grab_window;
+    ushort modifiers;
+    KeyCode key;
+    ubyte pointer_mode;
+    ubyte keyboard_mode;
+    byte[3] _pad0;
+}
+
+struct UngrabKey
+{
+    KeyCode key;
+    Window grab_window;
+    ushort modifiers;
+    byte[2] _pad0;
+}
+
+struct AllowEvents
+{
+    ubyte mode;
+    Timestamp time;
+}
+
+struct GrabServer
+{
+}
+
+struct UngrabServer
+{
+}
+
+struct QueryPointer
+{
+    byte[1] _pad0;
+    Window window;
+    struct Reply {};
+}
+
 struct TimeCoord
 {
     Timestamp time;
     short x;
     short y;
+}
+
+struct GetMotionEvents
+{
+    byte[1] _pad0;
+    Window window;
+    Timestamp start;
+    Timestamp stop;
+    struct Reply {};
+}
+
+struct TranslateCoordinates
+{
+    byte[1] _pad0;
+    Window src_window;
+    Window dst_window;
+    short src_x;
+    short src_y;
+    struct Reply {};
+}
+
+struct WarpPointer
+{
+    byte[1] _pad0;
+    Window src_window;
+    Window dst_window;
+    short src_x;
+    short src_y;
+    ushort src_width;
+    ushort src_height;
+    short dst_x;
+    short dst_y;
+}
+
+struct SetInputFocus
+{
+    ubyte revert_to;
+    Window focus;
+    Timestamp time;
+}
+
+struct GetInputFocus
+{
+    struct Reply {};
+}
+
+struct QueryKeymap
+{
+    struct Reply {};
+}
+
+struct OpenFont
+{
+    byte[1] _pad0;
+    Font fid;
+    ushort name_len;
+    byte[2] _pad1;
+    char[] name;
+}
+
+struct CloseFont
+{
+    byte[1] _pad0;
+    Font font;
 }
 
 struct FontProp
@@ -250,10 +614,172 @@ struct CharInfo
     ushort attributes;
 }
 
+struct QueryFont
+{
+    byte[1] _pad0;
+    Fontable font;
+    struct Reply {};
+}
+
+struct QueryTextExtents
+{
+    BOOL odd_length;
+    Fontable font;
+    wchar[] string;
+    struct Reply {};
+}
+
 struct Str
 {
     ubyte name_len;
     char[] name;
+}
+
+struct ListFonts
+{
+    byte[1] _pad0;
+    ushort max_names;
+    ushort pattern_len;
+    char[] pattern;
+    struct Reply {};
+}
+
+struct ListFontsWithInfo
+{
+    byte[1] _pad0;
+    ushort max_names;
+    ushort pattern_len;
+    char[] pattern;
+    struct Reply {};
+}
+
+struct SetFontPath
+{
+    byte[1] _pad0;
+    ushort font_qty;
+    char[] path;
+}
+
+struct GetFontPath
+{
+    struct Reply {};
+}
+
+struct CreatePixmap
+{
+    ubyte depth;
+    PixMap pid;
+    Drawable drawable;
+    ushort width;
+    ushort height;
+}
+
+struct FreePixmap
+{
+    byte[1] _pad0;
+    PixMap pixmap;
+}
+
+struct CreateGC
+{
+    byte[1] _pad0;
+    GContext cid;
+    Drawable drawable;
+    CARD32 value_mask;
+}
+
+struct ChangeGC
+{
+    byte[1] _pad0;
+    GContext gc;
+    CARD32 value_mask;
+}
+
+struct CopyGC
+{
+    byte[1] _pad0;
+    GContext src_gc;
+    GContext dst_gc;
+    uint value_mask;
+}
+
+struct SetDashes
+{
+    byte[1] _pad0;
+    GContext gc;
+    ushort dash_offset;
+    ushort dashes_len;
+    ubyte[] dashes;
+}
+
+struct SetClipRectangles
+{
+    ubyte ordering;
+    GContext gc;
+    short clip_x_origin;
+    short clip_y_origin;
+    Rectangle[] rectangles;
+}
+
+struct FreeGC
+{
+    byte[1] _pad0;
+    GContext gc;
+}
+
+struct ClearArea
+{
+    ubyte exposures;
+    Window window;
+    short x;
+    short y;
+    ushort width;
+    ushort height;
+}
+
+struct CopyArea
+{
+    byte[1] _pad0;
+    Drawable src_drawable;
+    Drawable dst_drawable;
+    GContext gc;
+    short src_x;
+    short src_y;
+    short dst_x;
+    short dst_y;
+    ushort width;
+    ushort height;
+}
+
+struct CopyPlane
+{
+    byte[1] _pad0;
+    Drawable src_drawable;
+    Drawable dst_drawable;
+    GContext gc;
+    short src_x;
+    short src_y;
+    short dst_x;
+    short dst_y;
+    ushort width;
+    ushort height;
+    uint bit_plane;
+}
+
+struct PolyPoint
+{
+    ubyte coordinate_mode;
+    Drawable drawable;
+    GContext gc;
+    Point[] points;
+}
+
+struct PolyLine
+{
+    ubyte coordinate_mode;
+    Drawable drawable;
+    GContext gc;
+    Point[] points;
 }
 
 struct Segment
@@ -262,6 +788,213 @@ struct Segment
     short y1;
     short x2;
     short y2;
+}
+
+struct PolySegment
+{
+    byte[1] _pad0;
+    Drawable drawable;
+    GContext gc;
+    Segment[] segments;
+}
+
+struct PolyRectangle
+{
+    byte[1] _pad0;
+    Drawable drawable;
+    GContext gc;
+    Rectangle[] rectangles;
+}
+
+struct PolyArc
+{
+    byte[1] _pad0;
+    Drawable drawable;
+    GContext gc;
+    Arc[] arcs;
+}
+
+struct FillPoly
+{
+    byte[1] _pad0;
+    Drawable drawable;
+    GContext gc;
+    ubyte shape;
+    ubyte coordinate_mode;
+    byte[2] _pad1;
+    Point[] points;
+}
+
+struct PolyFillRectangle
+{
+    byte[1] _pad0;
+    Drawable drawable;
+    GContext gc;
+    Rectangle[] rectangles;
+}
+
+struct PolyFillArc
+{
+    byte[1] _pad0;
+    Drawable drawable;
+    GContext gc;
+    Arc[] arcs;
+}
+
+struct PutImage
+{
+    ubyte format;
+    Drawable drawable;
+    GContext gc;
+    ushort width;
+    ushort height;
+    short dst_x;
+    short dst_y;
+    ubyte left_pad;
+    ubyte depth;
+    byte[2] _pad0;
+    ubyte[] data;
+}
+
+struct GetImage
+{
+    ubyte format;
+    Drawable drawable;
+    short x;
+    short y;
+    ushort width;
+    ushort height;
+    uint plane_mask;
+    struct Reply {};
+}
+
+struct PolyText8
+{
+    byte[1] _pad0;
+    Drawable drawable;
+    GContext gc;
+    short x;
+    short y;
+    ubyte[] items;
+}
+
+struct PolyText16
+{
+    byte[1] _pad0;
+    Drawable drawable;
+    GContext gc;
+    short x;
+    short y;
+    ubyte[] items;
+}
+
+struct ImageText8
+{
+    ubyte string_len;
+    Drawable drawable;
+    GContext gc;
+    short x;
+    short y;
+    char[] string;
+}
+
+struct ImageText16
+{
+    ubyte string_len;
+    Drawable drawable;
+    GContext gc;
+    short x;
+    short y;
+    wchar[] string;
+}
+
+struct CreateColormap
+{
+    ubyte alloc;
+    ColorMap mid;
+    Window window;
+    VisualID visual;
+}
+
+struct FreeColormap
+{
+    byte[1] _pad0;
+    ColorMap cmap;
+}
+
+struct CopyColormapAndFree
+{
+    byte[1] _pad0;
+    ColorMap mid;
+    ColorMap src_cmap;
+}
+
+struct InstallColormap
+{
+    byte[1] _pad0;
+    ColorMap cmap;
+}
+
+struct UninstallColormap
+{
+    byte[1] _pad0;
+    ColorMap cmap;
+}
+
+struct ListInstalledColormaps
+{
+    byte[1] _pad0;
+    Window window;
+    struct Reply {};
+}
+
+struct AllocColor
+{
+    byte[1] _pad0;
+    ColorMap cmap;
+    ushort red;
+    ushort green;
+    ushort blue;
+    byte[2] _pad1;
+    struct Reply {};
+}
+
+struct AllocNamedColor
+{
+    byte[1] _pad0;
+    ColorMap cmap;
+    ushort name_len;
+    byte[2] _pad1;
+    char[] name;
+    struct Reply {};
+}
+
+struct AllocColorCells
+{
+    ubyte contiguous;
+    ColorMap cmap;
+    ushort colors;
+    ushort planes;
+    struct Reply {};
+}
+
+struct AllocColorPlanes
+{
+    ubyte contiguous;
+    ColorMap cmap;
+    ushort colors;
+    ushort reds;
+    ushort greens;
+    ushort blues;
+    struct Reply {};
+}
+
+struct FreeColors
+{
+    byte[1] _pad0;
+    ColorMap cmap;
+    uint plane_mask;
+    uint[] pixels;
 }
 
 struct ColorItem
@@ -274,6 +1007,23 @@ struct ColorItem
     byte[1] _pad0;
 }
 
+struct StoreColors
+{
+    byte[1] _pad0;
+    ColorMap cmap;
+    ColorItem[] items;
+}
+
+struct StoreNamedColor
+{
+    ubyte flags;
+    ColorMap cmap;
+    uint pixel;
+    ushort name_len;
+    byte[2] _pad0;
+    char[] name;
+}
+
 struct RGB
 {
     ushort red;
@@ -282,12 +1032,236 @@ struct RGB
     byte[2] _pad0;
 }
 
+struct QueryColors
+{
+    byte[1] _pad0;
+    ColorMap cmap;
+    uint[] pixels;
+    struct Reply {};
+}
+
+struct LookupColor
+{
+    byte[1] _pad0;
+    ColorMap cmap;
+    ushort name_len;
+    byte[2] _pad1;
+    char[] name;
+    struct Reply {};
+}
+
+struct CreateCursor
+{
+    byte[1] _pad0;
+    Cursor cid;
+    PixMap source;
+    PixMap mask;
+    ushort fore_red;
+    ushort fore_green;
+    ushort fore_blue;
+    ushort back_red;
+    ushort back_green;
+    ushort back_blue;
+    ushort x;
+    ushort y;
+}
+
+struct CreateGlyphCursor
+{
+    byte[1] _pad0;
+    Cursor cid;
+    Font source_font;
+    Font mask_font;
+    ushort source_char;
+    ushort mask_char;
+    ushort fore_red;
+    ushort fore_green;
+    ushort fore_blue;
+    ushort back_red;
+    ushort back_green;
+    ushort back_blue;
+}
+
+struct FreeCursor
+{
+    byte[1] _pad0;
+    Cursor cursor;
+}
+
+struct RecolorCursor
+{
+    byte[1] _pad0;
+    Cursor cursor;
+    ushort fore_red;
+    ushort fore_green;
+    ushort fore_blue;
+    ushort back_red;
+    ushort back_green;
+    ushort back_blue;
+}
+
+struct QueryBestSize
+{
+    ubyte klass;
+    Drawable drawable;
+    ushort width;
+    ushort height;
+    struct Reply {};
+}
+
+struct QueryExtension
+{
+    byte[1] _pad0;
+    ushort name_len;
+    byte[2] _pad1;
+    char[] name;
+    struct Reply {};
+}
+
+struct ListExtensions
+{
+    struct Reply {};
+}
+
+struct ChangeKeyboardMapping
+{
+    ubyte keycode_count;
+    KeyCode first_keycode;
+    ubyte keysyms_per_keycode;
+    KeySym[] keysyms;
+}
+
+struct GetKeyboardMapping
+{
+    byte[1] _pad0;
+    KeyCode first_keycode;
+    ubyte count;
+    struct Reply {};
+}
+
+struct ChangeKeyboardControl
+{
+    byte[1] _pad0;
+    CARD32 value_mask;
+}
+
+struct GetKeyboardControl
+{
+    struct Reply {};
+}
+
+struct Bell
+{
+    byte percent;
+}
+
+struct ChangePointerControl
+{
+    byte[1] _pad0;
+    short acceleration_numerator;
+    short acceleration_denominator;
+    short threshold;
+    ubyte do_acceleration;
+    ubyte do_threshold;
+}
+
+struct GetPointerControl
+{
+    struct Reply {};
+}
+
+struct SetScreenSaver
+{
+    byte[1] _pad0;
+    short timeout;
+    short interval;
+    ubyte prefer_blanking;
+    ubyte allow_exposures;
+}
+
+struct GetScreenSaver
+{
+    struct Reply {};
+}
+
+struct ChangeHosts
+{
+    ubyte mode;
+    ubyte family;
+    byte[1] _pad0;
+    ushort address_len;
+    char[] address;
+}
+
 struct Host
 {
     ubyte family;
     byte[1] _pad0;
     ushort address_len;
     ubyte[] address;
+}
+
+struct ListHosts
+{
+    struct Reply {};
+}
+
+struct SetAccessControl
+{
+    ubyte mode;
+}
+
+struct SetCloseDownMode
+{
+    ubyte mode;
+}
+
+struct KillClient
+{
+    byte[1] _pad0;
+    uint resource;
+}
+
+struct RotateProperties
+{
+    byte[1] _pad0;
+    Window window;
+    ushort atoms_len;
+    short delta;
+    Atom[] atoms;
+}
+
+struct ForceScreenSaver
+{
+    ubyte mode;
+}
+
+struct SetPointerMapping
+{
+    ubyte map_len;
+    ubyte[] map;
+    struct Reply {};
+}
+
+struct GetPointerMapping
+{
+    struct Reply {};
+}
+
+struct SetModifierMapping
+{
+    ubyte keycodes_per_modifier;
+    KeyCode[] keycodes;
+    struct Reply {};
+}
+
+struct GetModifierMapping
+{
+    struct Reply {};
+}
+
+struct NoOperation
+{
 }
 
 
@@ -383,10 +1357,10 @@ enum KeyButMask
     Button5 = 12,
 }
 
-//enum Window
-//{
-//    None = 0,
-//}
+enum Window
+{
+    None = 0,
+}
 
 enum ButtonMask
 {
@@ -448,10 +1422,10 @@ enum Time
     CurrentTime = 0,
 }
 
-//enum Atom
-//{
-//    None = 0,
-//}
+enum Atom
+{
+    None = 0,
+}
 
 enum ColormapState
 {
@@ -591,10 +1565,10 @@ enum GrabStatus
     Frozen = 4,
 }
 
-//enum Cursor
-//{
-//    None = 0,
-//}
+enum Cursor
+{
+    None = 0,
+}
 
 enum ButtonIndex
 {
@@ -778,10 +1752,10 @@ enum Pixmap
     None = 0,
 }
 
-//enum Font
-//{
-//    None = 0,
-//}
+enum Font
+{
+    None = 0,
+}
 
 enum QueryShapeOf
 {
