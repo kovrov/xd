@@ -2,6 +2,9 @@ from xml.etree.ElementTree import ElementTree, tostring
 
 indent = 1
 
+
+# "typeinfo" objects are initialized with an xml subtree, to produce code by calling `src()` method.
+
 class PrimitiveInfo:
 	def __init__(self, name):
 		self.name = name
@@ -109,13 +112,6 @@ foreach (key; opt.keys.sort)
 }
 '''
 
-class ReplyMember:
-	def __init__(self, element, ctx):
-		# TODO: complete!
-		self.name = "Reply {}"
-		self.type = "struct"
-
-
 class ExprFieldMember:
 	def __init__(self, element, ctx):
 		# TODO: complete!
@@ -124,13 +120,14 @@ class ExprFieldMember:
 
 
 class StructInfo:
-	def __init__(self, element):
-		self.name = tr(element.attrib['name'])
+	def __init__(self, element, ctx=None):
+		self.type = 'struct'
+		self.name = 'Reply' if element.tag == 'reply' else tr(element.attrib['name'])
 		self.members = []
 		self.xml = tostring(element).strip()
 		ctx = {'structinfo': self} # just in case...
 		for i in element:
-			member = {'field':FieldMember, 'pad':PadMember, 'list':ListMember, 'valueparam':ValueParamMember, 'reply':ReplyMember, 'exprfield':ExprFieldMember}[i.tag](i, ctx)
+			member = {'field':FieldMember, 'pad':PadMember, 'list':ListMember, 'valueparam':ValueParamMember, 'reply':StructInfo, 'exprfield':ExprFieldMember}[i.tag](i, ctx)
 			self.members.append(member)
 
 	def fixed(self):
@@ -146,12 +143,15 @@ class StructInfo:
 		#print "#"+' '*indent+"... True"
 		return True
 
-	def src(self, options):
-		idt = 1
-		print "struct", self.name
-		print "{"
+	def src(self, options={}, idt=0):
+		print "    " * idt + "struct", self.name
+		print "    " * idt + "{"
+		idt += 1
 		for member in self.members:
-			print "   ", member.type, member.name + ";"
+			if member.type == 'struct':
+				member.src(idt=idt)
+			else:
+				print "    " * idt + member.type, member.name + ";"
 
 		if 'from_bytes' in options:
 			def nested_from_bytes(name, members, idt):
@@ -225,7 +225,8 @@ class StructInfo:
 			idt -= 1
 			print "    " * idt + "}"
 
-		print "}"
+		idt -= 1
+		print "    " * idt + "}"
 
 
 def tr_name(original):

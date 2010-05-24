@@ -253,7 +253,25 @@ struct GetWindowAttributes
 {
     byte[1] _pad0;
     Window window;
-    struct Reply {};
+    struct Reply
+    {
+        ubyte backing_store;
+        VisualID visual;
+        ushort klass;
+        ubyte bit_gravity;
+        ubyte win_gravity;
+        uint backing_planes;
+        uint backing_pixel;
+        ubyte save_under;
+        ubyte map_is_installed;
+        ubyte map_state;
+        ubyte override_redirect;
+        ColorMap colormap;
+        uint all_event_masks;
+        uint your_event_mask;
+        ushort do_not_propagate_mask;
+        byte[2] _pad0;
+    }
 }
 
 struct DestroyWindow
@@ -324,14 +342,32 @@ struct GetGeometry
 {
     byte[1] _pad0;
     Drawable drawable;
-    struct Reply {};
+    struct Reply
+    {
+        ubyte depth;
+        Window root;
+        short x;
+        short y;
+        ushort width;
+        ushort height;
+        ushort border_width;
+        byte[2] _pad0;
+    }
 }
 
 struct QueryTree
 {
     byte[1] _pad0;
     Window window;
-    struct Reply {};
+    struct Reply
+    {
+        byte[1] _pad0;
+        Window root;
+        Window parent;
+        ushort children_len;
+        byte[14] _pad1;
+        Window[] children;
+    }
 }
 
 struct InternAtom
@@ -340,14 +376,24 @@ struct InternAtom
     ushort name_len;
     byte[2] _pad0;
     char[] name;
-    struct Reply {};
+    struct Reply
+    {
+        byte[1] _pad0;
+        Atom atom;
+    }
 }
 
 struct GetAtomName
 {
     byte[1] _pad0;
     Atom atom;
-    struct Reply {};
+    struct Reply
+    {
+        byte[1] _pad0;
+        ushort name_len;
+        byte[22] _pad1;
+        char[] name;
+    }
 }
 
 struct ChangeProperty
@@ -377,14 +423,28 @@ struct GetProperty
     Atom type;
     uint long_offset;
     uint long_length;
-    struct Reply {};
+    struct Reply
+    {
+        ubyte format;
+        Atom type;
+        uint bytes_after;
+        uint value_len;
+        byte[12] _pad0;
+        void[] value;
+    }
 }
 
 struct ListProperties
 {
     byte[1] _pad0;
     Window window;
-    struct Reply {};
+    struct Reply
+    {
+        byte[1] _pad0;
+        ushort atoms_len;
+        byte[22] _pad1;
+        Atom[] atoms;
+    }
 }
 
 struct SetSelectionOwner
@@ -399,7 +459,11 @@ struct GetSelectionOwner
 {
     byte[1] _pad0;
     Atom selection;
-    struct Reply {};
+    struct Reply
+    {
+        byte[1] _pad0;
+        Window owner;
+    }
 }
 
 struct ConvertSelection
@@ -430,7 +494,10 @@ struct GrabPointer
     Window confine_to;
     Cursor cursor;
     Timestamp time;
-    struct Reply {};
+    struct Reply
+    {
+        ubyte status;
+    }
 }
 
 struct UngrabPointer
@@ -478,7 +545,10 @@ struct GrabKeyboard
     ubyte pointer_mode;
     ubyte keyboard_mode;
     byte[2] _pad0;
-    struct Reply {};
+    struct Reply
+    {
+        ubyte status;
+    }
 }
 
 struct UngrabKeyboard
@@ -524,7 +594,18 @@ struct QueryPointer
 {
     byte[1] _pad0;
     Window window;
-    struct Reply {};
+    struct Reply
+    {
+        ubyte same_screen;
+        Window root;
+        Window child;
+        short root_x;
+        short root_y;
+        short win_x;
+        short win_y;
+        ushort mask;
+        byte[2] _pad0;
+    }
 }
 
 struct TimeCoord
@@ -540,7 +621,13 @@ struct GetMotionEvents
     Window window;
     Timestamp start;
     Timestamp stop;
-    struct Reply {};
+    struct Reply
+    {
+        byte[1] _pad0;
+        uint events_len;
+        byte[20] _pad1;
+        TimeCoord[] events;
+    }
 }
 
 struct TranslateCoordinates
@@ -550,7 +637,13 @@ struct TranslateCoordinates
     Window dst_window;
     short src_x;
     short src_y;
-    struct Reply {};
+    struct Reply
+    {
+        ubyte same_screen;
+        Window child;
+        ushort dst_x;
+        ushort dst_y;
+    }
 }
 
 struct WarpPointer
@@ -575,12 +668,20 @@ struct SetInputFocus
 
 struct GetInputFocus
 {
-    struct Reply {};
+    struct Reply
+    {
+        ubyte revert_to;
+        Window focus;
+    }
 }
 
 struct QueryKeymap
 {
-    struct Reply {};
+    struct Reply
+    {
+        byte[1] _pad0;
+        ubyte[32] keys;
+    }
 }
 
 struct OpenFont
@@ -618,7 +719,27 @@ struct QueryFont
 {
     byte[1] _pad0;
     Fontable font;
-    struct Reply {};
+    struct Reply
+    {
+        byte[1] _pad0;
+        CharInfo min_bounds;
+        byte[4] _pad1;
+        CharInfo max_bounds;
+        byte[4] _pad2;
+        ushort min_char_or_byte2;
+        ushort max_char_or_byte2;
+        ushort default_char;
+        ushort properties_len;
+        ubyte draw_direction;
+        ubyte min_byte1;
+        ubyte max_byte1;
+        ubyte all_chars_exist;
+        short font_ascent;
+        short font_descent;
+        uint char_infos_len;
+        FontProp[] properties;
+        CharInfo[] char_infos;
+    }
 }
 
 struct QueryTextExtents
@@ -626,7 +747,17 @@ struct QueryTextExtents
     BOOL odd_length;
     Fontable font;
     wchar[] string;
-    struct Reply {};
+    struct Reply
+    {
+        ubyte draw_direction;
+        short font_ascent;
+        short font_descent;
+        short overall_ascent;
+        short overall_descent;
+        int overall_width;
+        int overall_left;
+        int overall_right;
+    }
 }
 
 struct Str
@@ -641,7 +772,13 @@ struct ListFonts
     ushort max_names;
     ushort pattern_len;
     char[] pattern;
-    struct Reply {};
+    struct Reply
+    {
+        byte[1] _pad0;
+        ushort names_len;
+        byte[22] _pad1;
+        Str[] names;
+    }
 }
 
 struct ListFontsWithInfo
@@ -650,7 +787,27 @@ struct ListFontsWithInfo
     ushort max_names;
     ushort pattern_len;
     char[] pattern;
-    struct Reply {};
+    struct Reply
+    {
+        ubyte name_len;
+        CharInfo min_bounds;
+        byte[4] _pad0;
+        CharInfo max_bounds;
+        byte[4] _pad1;
+        ushort min_char_or_byte2;
+        ushort max_char_or_byte2;
+        ushort default_char;
+        ushort properties_len;
+        ubyte draw_direction;
+        ubyte min_byte1;
+        ubyte max_byte1;
+        ubyte all_chars_exist;
+        short font_ascent;
+        short font_descent;
+        uint replies_hint;
+        FontProp[] properties;
+        char[] name;
+    }
 }
 
 struct SetFontPath
@@ -662,7 +819,13 @@ struct SetFontPath
 
 struct GetFontPath
 {
-    struct Reply {};
+    struct Reply
+    {
+        byte[1] _pad0;
+        ushort path_len;
+        byte[22] _pad1;
+        Str[] path;
+    }
 }
 
 struct CreatePixmap
@@ -865,7 +1028,13 @@ struct GetImage
     ushort width;
     ushort height;
     uint plane_mask;
-    struct Reply {};
+    struct Reply
+    {
+        ubyte depth;
+        VisualID visual;
+        byte[20] _pad0;
+        ubyte[] data;
+    }
 }
 
 struct PolyText8
@@ -945,7 +1114,13 @@ struct ListInstalledColormaps
 {
     byte[1] _pad0;
     Window window;
-    struct Reply {};
+    struct Reply
+    {
+        byte[1] _pad0;
+        ushort cmaps_len;
+        byte[22] _pad1;
+        ColorMap[] cmaps;
+    }
 }
 
 struct AllocColor
@@ -956,7 +1131,15 @@ struct AllocColor
     ushort green;
     ushort blue;
     byte[2] _pad1;
-    struct Reply {};
+    struct Reply
+    {
+        byte[1] _pad0;
+        ushort red;
+        ushort green;
+        ushort blue;
+        byte[2] _pad1;
+        uint pixel;
+    }
 }
 
 struct AllocNamedColor
@@ -966,7 +1149,17 @@ struct AllocNamedColor
     ushort name_len;
     byte[2] _pad1;
     char[] name;
-    struct Reply {};
+    struct Reply
+    {
+        byte[1] _pad0;
+        uint pixel;
+        ushort exact_red;
+        ushort exact_green;
+        ushort exact_blue;
+        ushort visual_red;
+        ushort visual_green;
+        ushort visual_blue;
+    }
 }
 
 struct AllocColorCells
@@ -975,7 +1168,15 @@ struct AllocColorCells
     ColorMap cmap;
     ushort colors;
     ushort planes;
-    struct Reply {};
+    struct Reply
+    {
+        byte[1] _pad0;
+        ushort pixels_len;
+        ushort masks_len;
+        byte[20] _pad1;
+        uint[] pixels;
+        uint[] masks;
+    }
 }
 
 struct AllocColorPlanes
@@ -986,7 +1187,17 @@ struct AllocColorPlanes
     ushort reds;
     ushort greens;
     ushort blues;
-    struct Reply {};
+    struct Reply
+    {
+        byte[1] _pad0;
+        ushort pixels_len;
+        byte[2] _pad1;
+        uint red_mask;
+        uint green_mask;
+        uint blue_mask;
+        byte[8] _pad2;
+        uint[] pixels;
+    }
 }
 
 struct FreeColors
@@ -1037,7 +1248,13 @@ struct QueryColors
     byte[1] _pad0;
     ColorMap cmap;
     uint[] pixels;
-    struct Reply {};
+    struct Reply
+    {
+        byte[1] _pad0;
+        ushort colors_len;
+        byte[22] _pad1;
+        RGB[] colors;
+    }
 }
 
 struct LookupColor
@@ -1047,7 +1264,16 @@ struct LookupColor
     ushort name_len;
     byte[2] _pad1;
     char[] name;
-    struct Reply {};
+    struct Reply
+    {
+        byte[1] _pad0;
+        ushort exact_red;
+        ushort exact_green;
+        ushort exact_blue;
+        ushort visual_red;
+        ushort visual_green;
+        ushort visual_blue;
+    }
 }
 
 struct CreateCursor
@@ -1106,7 +1332,12 @@ struct QueryBestSize
     Drawable drawable;
     ushort width;
     ushort height;
-    struct Reply {};
+    struct Reply
+    {
+        byte[1] _pad0;
+        ushort width;
+        ushort height;
+    }
 }
 
 struct QueryExtension
@@ -1115,12 +1346,24 @@ struct QueryExtension
     ushort name_len;
     byte[2] _pad1;
     char[] name;
-    struct Reply {};
+    struct Reply
+    {
+        byte[1] _pad0;
+        ubyte present;
+        ubyte major_opcode;
+        ubyte first_event;
+        ubyte first_error;
+    }
 }
 
 struct ListExtensions
 {
-    struct Reply {};
+    struct Reply
+    {
+        ubyte names_len;
+        byte[24] _pad0;
+        Str[] names;
+    }
 }
 
 struct ChangeKeyboardMapping
@@ -1136,7 +1379,12 @@ struct GetKeyboardMapping
     byte[1] _pad0;
     KeyCode first_keycode;
     ubyte count;
-    struct Reply {};
+    struct Reply
+    {
+        ubyte keysyms_per_keycode;
+        byte[24] _pad0;
+        KeySym[] keysyms;
+    }
 }
 
 struct ChangeKeyboardControl
@@ -1147,7 +1395,17 @@ struct ChangeKeyboardControl
 
 struct GetKeyboardControl
 {
-    struct Reply {};
+    struct Reply
+    {
+        ubyte global_auto_repeat;
+        uint led_mask;
+        ubyte key_click_percent;
+        ubyte bell_percent;
+        ushort bell_pitch;
+        ushort bell_duration;
+        byte[2] _pad0;
+        ubyte[32] auto_repeats;
+    }
 }
 
 struct Bell
@@ -1167,7 +1425,14 @@ struct ChangePointerControl
 
 struct GetPointerControl
 {
-    struct Reply {};
+    struct Reply
+    {
+        byte[1] _pad0;
+        ushort acceleration_numerator;
+        ushort acceleration_denominator;
+        ushort threshold;
+        byte[18] _pad1;
+    }
 }
 
 struct SetScreenSaver
@@ -1181,7 +1446,15 @@ struct SetScreenSaver
 
 struct GetScreenSaver
 {
-    struct Reply {};
+    struct Reply
+    {
+        byte[1] _pad0;
+        ushort timeout;
+        ushort interval;
+        ubyte prefer_blanking;
+        ubyte allow_exposures;
+        byte[18] _pad1;
+    }
 }
 
 struct ChangeHosts
@@ -1203,7 +1476,13 @@ struct Host
 
 struct ListHosts
 {
-    struct Reply {};
+    struct Reply
+    {
+        ubyte mode;
+        ushort hosts_len;
+        byte[22] _pad0;
+        Host[] hosts;
+    }
 }
 
 struct SetAccessControl
@@ -1240,24 +1519,40 @@ struct SetPointerMapping
 {
     ubyte map_len;
     ubyte[] map;
-    struct Reply {};
+    struct Reply
+    {
+        ubyte status;
+    }
 }
 
 struct GetPointerMapping
 {
-    struct Reply {};
+    struct Reply
+    {
+        ubyte map_len;
+        byte[24] _pad0;
+        ubyte[] map;
+    }
 }
 
 struct SetModifierMapping
 {
     ubyte keycodes_per_modifier;
     KeyCode[] keycodes;
-    struct Reply {};
+    struct Reply
+    {
+        ubyte status;
+    }
 }
 
 struct GetModifierMapping
 {
-    struct Reply {};
+    struct Reply
+    {
+        ubyte keycodes_per_modifier;
+        byte[24] _pad0;
+        KeyCode[] keycodes;
+    }
 }
 
 struct NoOperation
