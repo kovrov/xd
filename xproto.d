@@ -31,11 +31,13 @@ typedef ubyte Button;
  * structs
  */
 
+
 struct Point
 {
     short x;
     short y;
 }
+
 
 struct Rectangle
 {
@@ -44,6 +46,7 @@ struct Rectangle
     ushort width;
     ushort height;
 }
+
 
 struct Arc
 {
@@ -55,6 +58,7 @@ struct Arc
     short angle2;
 }
 
+
 struct Format
 {
     ubyte depth;
@@ -62,6 +66,7 @@ struct Format
     ubyte scanline_pad;
     byte[5] _pad0;
 }
+
 
 struct VisualType
 {
@@ -75,6 +80,7 @@ struct VisualType
     byte[4] _pad0;
 }
 
+
 struct Depth
 {
     ubyte depth;
@@ -83,6 +89,7 @@ struct Depth
     byte[4] _pad1;
     VisualType[] visuals;
 }
+
 
 struct Screen
 {
@@ -104,6 +111,7 @@ struct Screen
     ubyte allowed_depths_len;
     Depth[] allowed_depths;
 }
+
 
 struct SetupRequest
 {
@@ -143,6 +151,7 @@ struct SetupRequest
     }
 }
 
+
 struct SetupFailed
 {
     ubyte status;
@@ -153,6 +162,7 @@ struct SetupFailed
     char[] reason;
 }
 
+
 struct SetupAuthenticate
 {
     ubyte status;
@@ -160,6 +170,7 @@ struct SetupAuthenticate
     ushort length;
     char[] reason;
 }
+
 
 struct Setup
 {
@@ -227,386 +238,6 @@ struct Setup
     }
 }
 
-struct CreateWindow
-{
-    ubyte depth;
-    Window wid;
-    Window parent;
-    short x;
-    short y;
-    ushort width;
-    ushort height;
-    ushort border_width;
-    ushort klass;
-    VisualID visual;
-    CARD32 value_mask;
-}
-
-struct ChangeWindowAttributes
-{
-    byte[1] _pad0;
-    Window window;
-    CARD32 value_mask;
-}
-
-struct GetWindowAttributes
-{
-    byte[1] _pad0;
-    Window window;
-    struct Reply
-    {
-        ubyte backing_store;
-        VisualID visual;
-        ushort klass;
-        ubyte bit_gravity;
-        ubyte win_gravity;
-        uint backing_planes;
-        uint backing_pixel;
-        ubyte save_under;
-        ubyte map_is_installed;
-        ubyte map_state;
-        ubyte override_redirect;
-        ColorMap colormap;
-        uint all_event_masks;
-        uint your_event_mask;
-        ushort do_not_propagate_mask;
-        byte[2] _pad0;
-    }
-}
-
-struct DestroyWindow
-{
-    byte[1] _pad0;
-    Window window;
-}
-
-struct DestroySubwindows
-{
-    byte[1] _pad0;
-    Window window;
-}
-
-struct ChangeSaveSet
-{
-    ubyte mode;
-    Window window;
-}
-
-struct ReparentWindow
-{
-    byte[1] _pad0;
-    Window window;
-    Window parent;
-    short x;
-    short y;
-}
-
-struct MapWindow
-{
-    byte[1] _pad0;
-    Window window;
-}
-
-struct MapSubwindows
-{
-    byte[1] _pad0;
-    Window window;
-}
-
-struct UnmapWindow
-{
-    byte[1] _pad0;
-    Window window;
-}
-
-struct UnmapSubwindows
-{
-    byte[1] _pad0;
-    Window window;
-}
-
-struct ConfigureWindow
-{
-    byte[1] _pad0;
-    Window window;
-    CARD16 value_mask;
-}
-
-struct CirculateWindow
-{
-    ubyte direction;
-    Window window;
-}
-
-struct GetGeometry
-{
-    byte[1] _pad0;
-    Drawable drawable;
-    struct Reply
-    {
-        ubyte depth;
-        Window root;
-        short x;
-        short y;
-        ushort width;
-        ushort height;
-        ushort border_width;
-        byte[2] _pad0;
-    }
-}
-
-struct QueryTree
-{
-    byte[1] _pad0;
-    Window window;
-    struct Reply
-    {
-        byte[1] _pad0;
-        Window root;
-        Window parent;
-        ushort children_len;
-        byte[14] _pad1;
-        Window[] children;
-    }
-}
-
-struct InternAtom
-{
-    ubyte only_if_exists;
-    ushort name_len;
-    byte[2] _pad0;
-    char[] name;
-    struct Reply
-    {
-        byte[1] _pad0;
-        Atom atom;
-    }
-}
-
-struct GetAtomName
-{
-    byte[1] _pad0;
-    Atom atom;
-    struct Reply
-    {
-        byte[1] _pad0;
-        ushort name_len;
-        byte[22] _pad1;
-        char[] name;
-    }
-}
-
-struct ChangeProperty
-{
-    ubyte mode;
-    Window window;
-    Atom property;
-    Atom type;
-    ubyte format;
-    byte[3] _pad0;
-    uint data_len;
-    void[] data;
-}
-
-struct DeleteProperty
-{
-    byte[1] _pad0;
-    Window window;
-    Atom property;
-}
-
-struct GetProperty
-{
-    ubyte delete;
-    Window window;
-    Atom property;
-    Atom type;
-    uint long_offset;
-    uint long_length;
-    struct Reply
-    {
-        ubyte format;
-        Atom type;
-        uint bytes_after;
-        uint value_len;
-        byte[12] _pad0;
-        void[] value;
-    }
-}
-
-struct ListProperties
-{
-    byte[1] _pad0;
-    Window window;
-    struct Reply
-    {
-        byte[1] _pad0;
-        ushort atoms_len;
-        byte[22] _pad1;
-        Atom[] atoms;
-    }
-}
-
-struct SetSelectionOwner
-{
-    byte[1] _pad0;
-    Window owner;
-    Atom selection;
-    Timestamp time;
-}
-
-struct GetSelectionOwner
-{
-    byte[1] _pad0;
-    Atom selection;
-    struct Reply
-    {
-        byte[1] _pad0;
-        Window owner;
-    }
-}
-
-struct ConvertSelection
-{
-    byte[1] _pad0;
-    Window requestor;
-    Atom selection;
-    Atom target;
-    Atom property;
-    Timestamp time;
-}
-
-struct SendEvent
-{
-    ubyte propagate;
-    Window destination;
-    uint event_mask;
-    char[32] event;
-}
-
-struct GrabPointer
-{
-    ubyte owner_events;
-    Window grab_window;
-    ushort event_mask;
-    ubyte pointer_mode;
-    ubyte keyboard_mode;
-    Window confine_to;
-    Cursor cursor;
-    Timestamp time;
-    struct Reply
-    {
-        ubyte status;
-    }
-}
-
-struct UngrabPointer
-{
-    byte[1] _pad0;
-    Timestamp time;
-}
-
-struct GrabButton
-{
-    ubyte owner_events;
-    Window grab_window;
-    ushort event_mask;
-    ubyte pointer_mode;
-    ubyte keyboard_mode;
-    Window confine_to;
-    Cursor cursor;
-    ubyte button;
-    byte[1] _pad0;
-    ushort modifiers;
-}
-
-struct UngrabButton
-{
-    ubyte button;
-    Window grab_window;
-    ushort modifiers;
-    byte[2] _pad0;
-}
-
-struct ChangeActivePointerGrab
-{
-    byte[1] _pad0;
-    Cursor cursor;
-    Timestamp time;
-    ushort event_mask;
-    byte[2] _pad1;
-}
-
-struct GrabKeyboard
-{
-    ubyte owner_events;
-    Window grab_window;
-    Timestamp time;
-    ubyte pointer_mode;
-    ubyte keyboard_mode;
-    byte[2] _pad0;
-    struct Reply
-    {
-        ubyte status;
-    }
-}
-
-struct UngrabKeyboard
-{
-    byte[1] _pad0;
-    Timestamp time;
-}
-
-struct GrabKey
-{
-    ubyte owner_events;
-    Window grab_window;
-    ushort modifiers;
-    KeyCode key;
-    ubyte pointer_mode;
-    ubyte keyboard_mode;
-    byte[3] _pad0;
-}
-
-struct UngrabKey
-{
-    KeyCode key;
-    Window grab_window;
-    ushort modifiers;
-    byte[2] _pad0;
-}
-
-struct AllowEvents
-{
-    ubyte mode;
-    Timestamp time;
-}
-
-struct GrabServer
-{
-}
-
-struct UngrabServer
-{
-}
-
-struct QueryPointer
-{
-    byte[1] _pad0;
-    Window window;
-    struct Reply
-    {
-        ubyte same_screen;
-        Window root;
-        Window child;
-        short root_x;
-        short root_y;
-        short win_x;
-        short win_y;
-        ushort mask;
-        byte[2] _pad0;
-    }
-}
 
 struct TimeCoord
 {
@@ -615,95 +246,13 @@ struct TimeCoord
     short y;
 }
 
-struct GetMotionEvents
-{
-    byte[1] _pad0;
-    Window window;
-    Timestamp start;
-    Timestamp stop;
-    struct Reply
-    {
-        byte[1] _pad0;
-        uint events_len;
-        byte[20] _pad1;
-        TimeCoord[] events;
-    }
-}
-
-struct TranslateCoordinates
-{
-    byte[1] _pad0;
-    Window src_window;
-    Window dst_window;
-    short src_x;
-    short src_y;
-    struct Reply
-    {
-        ubyte same_screen;
-        Window child;
-        ushort dst_x;
-        ushort dst_y;
-    }
-}
-
-struct WarpPointer
-{
-    byte[1] _pad0;
-    Window src_window;
-    Window dst_window;
-    short src_x;
-    short src_y;
-    ushort src_width;
-    ushort src_height;
-    short dst_x;
-    short dst_y;
-}
-
-struct SetInputFocus
-{
-    ubyte revert_to;
-    Window focus;
-    Timestamp time;
-}
-
-struct GetInputFocus
-{
-    struct Reply
-    {
-        ubyte revert_to;
-        Window focus;
-    }
-}
-
-struct QueryKeymap
-{
-    struct Reply
-    {
-        byte[1] _pad0;
-        ubyte[32] keys;
-    }
-}
-
-struct OpenFont
-{
-    byte[1] _pad0;
-    Font fid;
-    ushort name_len;
-    byte[2] _pad1;
-    char[] name;
-}
-
-struct CloseFont
-{
-    byte[1] _pad0;
-    Font font;
-}
 
 struct FontProp
 {
     Atom name;
     uint value;
 }
+
 
 struct CharInfo
 {
@@ -715,50 +264,6 @@ struct CharInfo
     ushort attributes;
 }
 
-struct QueryFont
-{
-    byte[1] _pad0;
-    Fontable font;
-    struct Reply
-    {
-        byte[1] _pad0;
-        CharInfo min_bounds;
-        byte[4] _pad1;
-        CharInfo max_bounds;
-        byte[4] _pad2;
-        ushort min_char_or_byte2;
-        ushort max_char_or_byte2;
-        ushort default_char;
-        ushort properties_len;
-        ubyte draw_direction;
-        ubyte min_byte1;
-        ubyte max_byte1;
-        ubyte all_chars_exist;
-        short font_ascent;
-        short font_descent;
-        uint char_infos_len;
-        FontProp[] properties;
-        CharInfo[] char_infos;
-    }
-}
-
-struct QueryTextExtents
-{
-    BOOL odd_length;
-    Fontable font;
-    wchar[] string;
-    struct Reply
-    {
-        ubyte draw_direction;
-        short font_ascent;
-        short font_descent;
-        short overall_ascent;
-        short overall_descent;
-        int overall_width;
-        int overall_left;
-        int overall_right;
-    }
-}
 
 struct Str
 {
@@ -766,184 +271,6 @@ struct Str
     char[] name;
 }
 
-struct ListFonts
-{
-    byte[1] _pad0;
-    ushort max_names;
-    ushort pattern_len;
-    char[] pattern;
-    struct Reply
-    {
-        byte[1] _pad0;
-        ushort names_len;
-        byte[22] _pad1;
-        Str[] names;
-    }
-}
-
-struct ListFontsWithInfo
-{
-    byte[1] _pad0;
-    ushort max_names;
-    ushort pattern_len;
-    char[] pattern;
-    struct Reply
-    {
-        ubyte name_len;
-        CharInfo min_bounds;
-        byte[4] _pad0;
-        CharInfo max_bounds;
-        byte[4] _pad1;
-        ushort min_char_or_byte2;
-        ushort max_char_or_byte2;
-        ushort default_char;
-        ushort properties_len;
-        ubyte draw_direction;
-        ubyte min_byte1;
-        ubyte max_byte1;
-        ubyte all_chars_exist;
-        short font_ascent;
-        short font_descent;
-        uint replies_hint;
-        FontProp[] properties;
-        char[] name;
-    }
-}
-
-struct SetFontPath
-{
-    byte[1] _pad0;
-    ushort font_qty;
-    char[] path;
-}
-
-struct GetFontPath
-{
-    struct Reply
-    {
-        byte[1] _pad0;
-        ushort path_len;
-        byte[22] _pad1;
-        Str[] path;
-    }
-}
-
-struct CreatePixmap
-{
-    ubyte depth;
-    PixMap pid;
-    Drawable drawable;
-    ushort width;
-    ushort height;
-}
-
-struct FreePixmap
-{
-    byte[1] _pad0;
-    PixMap pixmap;
-}
-
-struct CreateGC
-{
-    byte[1] _pad0;
-    GContext cid;
-    Drawable drawable;
-    CARD32 value_mask;
-}
-
-struct ChangeGC
-{
-    byte[1] _pad0;
-    GContext gc;
-    CARD32 value_mask;
-}
-
-struct CopyGC
-{
-    byte[1] _pad0;
-    GContext src_gc;
-    GContext dst_gc;
-    uint value_mask;
-}
-
-struct SetDashes
-{
-    byte[1] _pad0;
-    GContext gc;
-    ushort dash_offset;
-    ushort dashes_len;
-    ubyte[] dashes;
-}
-
-struct SetClipRectangles
-{
-    ubyte ordering;
-    GContext gc;
-    short clip_x_origin;
-    short clip_y_origin;
-    Rectangle[] rectangles;
-}
-
-struct FreeGC
-{
-    byte[1] _pad0;
-    GContext gc;
-}
-
-struct ClearArea
-{
-    ubyte exposures;
-    Window window;
-    short x;
-    short y;
-    ushort width;
-    ushort height;
-}
-
-struct CopyArea
-{
-    byte[1] _pad0;
-    Drawable src_drawable;
-    Drawable dst_drawable;
-    GContext gc;
-    short src_x;
-    short src_y;
-    short dst_x;
-    short dst_y;
-    ushort width;
-    ushort height;
-}
-
-struct CopyPlane
-{
-    byte[1] _pad0;
-    Drawable src_drawable;
-    Drawable dst_drawable;
-    GContext gc;
-    short src_x;
-    short src_y;
-    short dst_x;
-    short dst_y;
-    ushort width;
-    ushort height;
-    uint bit_plane;
-}
-
-struct PolyPoint
-{
-    ubyte coordinate_mode;
-    Drawable drawable;
-    GContext gc;
-    Point[] points;
-}
-
-struct PolyLine
-{
-    ubyte coordinate_mode;
-    Drawable drawable;
-    GContext gc;
-    Point[] points;
-}
 
 struct Segment
 {
@@ -953,260 +280,6 @@ struct Segment
     short y2;
 }
 
-struct PolySegment
-{
-    byte[1] _pad0;
-    Drawable drawable;
-    GContext gc;
-    Segment[] segments;
-}
-
-struct PolyRectangle
-{
-    byte[1] _pad0;
-    Drawable drawable;
-    GContext gc;
-    Rectangle[] rectangles;
-}
-
-struct PolyArc
-{
-    byte[1] _pad0;
-    Drawable drawable;
-    GContext gc;
-    Arc[] arcs;
-}
-
-struct FillPoly
-{
-    byte[1] _pad0;
-    Drawable drawable;
-    GContext gc;
-    ubyte shape;
-    ubyte coordinate_mode;
-    byte[2] _pad1;
-    Point[] points;
-}
-
-struct PolyFillRectangle
-{
-    byte[1] _pad0;
-    Drawable drawable;
-    GContext gc;
-    Rectangle[] rectangles;
-}
-
-struct PolyFillArc
-{
-    byte[1] _pad0;
-    Drawable drawable;
-    GContext gc;
-    Arc[] arcs;
-}
-
-struct PutImage
-{
-    ubyte format;
-    Drawable drawable;
-    GContext gc;
-    ushort width;
-    ushort height;
-    short dst_x;
-    short dst_y;
-    ubyte left_pad;
-    ubyte depth;
-    byte[2] _pad0;
-    ubyte[] data;
-}
-
-struct GetImage
-{
-    ubyte format;
-    Drawable drawable;
-    short x;
-    short y;
-    ushort width;
-    ushort height;
-    uint plane_mask;
-    struct Reply
-    {
-        ubyte depth;
-        VisualID visual;
-        byte[20] _pad0;
-        ubyte[] data;
-    }
-}
-
-struct PolyText8
-{
-    byte[1] _pad0;
-    Drawable drawable;
-    GContext gc;
-    short x;
-    short y;
-    ubyte[] items;
-}
-
-struct PolyText16
-{
-    byte[1] _pad0;
-    Drawable drawable;
-    GContext gc;
-    short x;
-    short y;
-    ubyte[] items;
-}
-
-struct ImageText8
-{
-    ubyte string_len;
-    Drawable drawable;
-    GContext gc;
-    short x;
-    short y;
-    char[] string;
-}
-
-struct ImageText16
-{
-    ubyte string_len;
-    Drawable drawable;
-    GContext gc;
-    short x;
-    short y;
-    wchar[] string;
-}
-
-struct CreateColormap
-{
-    ubyte alloc;
-    ColorMap mid;
-    Window window;
-    VisualID visual;
-}
-
-struct FreeColormap
-{
-    byte[1] _pad0;
-    ColorMap cmap;
-}
-
-struct CopyColormapAndFree
-{
-    byte[1] _pad0;
-    ColorMap mid;
-    ColorMap src_cmap;
-}
-
-struct InstallColormap
-{
-    byte[1] _pad0;
-    ColorMap cmap;
-}
-
-struct UninstallColormap
-{
-    byte[1] _pad0;
-    ColorMap cmap;
-}
-
-struct ListInstalledColormaps
-{
-    byte[1] _pad0;
-    Window window;
-    struct Reply
-    {
-        byte[1] _pad0;
-        ushort cmaps_len;
-        byte[22] _pad1;
-        ColorMap[] cmaps;
-    }
-}
-
-struct AllocColor
-{
-    byte[1] _pad0;
-    ColorMap cmap;
-    ushort red;
-    ushort green;
-    ushort blue;
-    byte[2] _pad1;
-    struct Reply
-    {
-        byte[1] _pad0;
-        ushort red;
-        ushort green;
-        ushort blue;
-        byte[2] _pad1;
-        uint pixel;
-    }
-}
-
-struct AllocNamedColor
-{
-    byte[1] _pad0;
-    ColorMap cmap;
-    ushort name_len;
-    byte[2] _pad1;
-    char[] name;
-    struct Reply
-    {
-        byte[1] _pad0;
-        uint pixel;
-        ushort exact_red;
-        ushort exact_green;
-        ushort exact_blue;
-        ushort visual_red;
-        ushort visual_green;
-        ushort visual_blue;
-    }
-}
-
-struct AllocColorCells
-{
-    ubyte contiguous;
-    ColorMap cmap;
-    ushort colors;
-    ushort planes;
-    struct Reply
-    {
-        byte[1] _pad0;
-        ushort pixels_len;
-        ushort masks_len;
-        byte[20] _pad1;
-        uint[] pixels;
-        uint[] masks;
-    }
-}
-
-struct AllocColorPlanes
-{
-    ubyte contiguous;
-    ColorMap cmap;
-    ushort colors;
-    ushort reds;
-    ushort greens;
-    ushort blues;
-    struct Reply
-    {
-        byte[1] _pad0;
-        ushort pixels_len;
-        byte[2] _pad1;
-        uint red_mask;
-        uint green_mask;
-        uint blue_mask;
-        byte[8] _pad2;
-        uint[] pixels;
-    }
-}
-
-struct FreeColors
-{
-    byte[1] _pad0;
-    ColorMap cmap;
-    uint plane_mask;
-    uint[] pixels;
-}
 
 struct ColorItem
 {
@@ -1218,22 +291,6 @@ struct ColorItem
     byte[1] _pad0;
 }
 
-struct StoreColors
-{
-    byte[1] _pad0;
-    ColorMap cmap;
-    ColorItem[] items;
-}
-
-struct StoreNamedColor
-{
-    ubyte flags;
-    ColorMap cmap;
-    uint pixel;
-    ushort name_len;
-    byte[2] _pad0;
-    char[] name;
-}
 
 struct RGB
 {
@@ -1243,228 +300,6 @@ struct RGB
     byte[2] _pad0;
 }
 
-struct QueryColors
-{
-    byte[1] _pad0;
-    ColorMap cmap;
-    uint[] pixels;
-    struct Reply
-    {
-        byte[1] _pad0;
-        ushort colors_len;
-        byte[22] _pad1;
-        RGB[] colors;
-    }
-}
-
-struct LookupColor
-{
-    byte[1] _pad0;
-    ColorMap cmap;
-    ushort name_len;
-    byte[2] _pad1;
-    char[] name;
-    struct Reply
-    {
-        byte[1] _pad0;
-        ushort exact_red;
-        ushort exact_green;
-        ushort exact_blue;
-        ushort visual_red;
-        ushort visual_green;
-        ushort visual_blue;
-    }
-}
-
-struct CreateCursor
-{
-    byte[1] _pad0;
-    Cursor cid;
-    PixMap source;
-    PixMap mask;
-    ushort fore_red;
-    ushort fore_green;
-    ushort fore_blue;
-    ushort back_red;
-    ushort back_green;
-    ushort back_blue;
-    ushort x;
-    ushort y;
-}
-
-struct CreateGlyphCursor
-{
-    byte[1] _pad0;
-    Cursor cid;
-    Font source_font;
-    Font mask_font;
-    ushort source_char;
-    ushort mask_char;
-    ushort fore_red;
-    ushort fore_green;
-    ushort fore_blue;
-    ushort back_red;
-    ushort back_green;
-    ushort back_blue;
-}
-
-struct FreeCursor
-{
-    byte[1] _pad0;
-    Cursor cursor;
-}
-
-struct RecolorCursor
-{
-    byte[1] _pad0;
-    Cursor cursor;
-    ushort fore_red;
-    ushort fore_green;
-    ushort fore_blue;
-    ushort back_red;
-    ushort back_green;
-    ushort back_blue;
-}
-
-struct QueryBestSize
-{
-    ubyte klass;
-    Drawable drawable;
-    ushort width;
-    ushort height;
-    struct Reply
-    {
-        byte[1] _pad0;
-        ushort width;
-        ushort height;
-    }
-}
-
-struct QueryExtension
-{
-    byte[1] _pad0;
-    ushort name_len;
-    byte[2] _pad1;
-    char[] name;
-    struct Reply
-    {
-        byte[1] _pad0;
-        ubyte present;
-        ubyte major_opcode;
-        ubyte first_event;
-        ubyte first_error;
-    }
-}
-
-struct ListExtensions
-{
-    struct Reply
-    {
-        ubyte names_len;
-        byte[24] _pad0;
-        Str[] names;
-    }
-}
-
-struct ChangeKeyboardMapping
-{
-    ubyte keycode_count;
-    KeyCode first_keycode;
-    ubyte keysyms_per_keycode;
-    KeySym[] keysyms;
-}
-
-struct GetKeyboardMapping
-{
-    byte[1] _pad0;
-    KeyCode first_keycode;
-    ubyte count;
-    struct Reply
-    {
-        ubyte keysyms_per_keycode;
-        byte[24] _pad0;
-        KeySym[] keysyms;
-    }
-}
-
-struct ChangeKeyboardControl
-{
-    byte[1] _pad0;
-    CARD32 value_mask;
-}
-
-struct GetKeyboardControl
-{
-    struct Reply
-    {
-        ubyte global_auto_repeat;
-        uint led_mask;
-        ubyte key_click_percent;
-        ubyte bell_percent;
-        ushort bell_pitch;
-        ushort bell_duration;
-        byte[2] _pad0;
-        ubyte[32] auto_repeats;
-    }
-}
-
-struct Bell
-{
-    byte percent;
-}
-
-struct ChangePointerControl
-{
-    byte[1] _pad0;
-    short acceleration_numerator;
-    short acceleration_denominator;
-    short threshold;
-    ubyte do_acceleration;
-    ubyte do_threshold;
-}
-
-struct GetPointerControl
-{
-    struct Reply
-    {
-        byte[1] _pad0;
-        ushort acceleration_numerator;
-        ushort acceleration_denominator;
-        ushort threshold;
-        byte[18] _pad1;
-    }
-}
-
-struct SetScreenSaver
-{
-    byte[1] _pad0;
-    short timeout;
-    short interval;
-    ubyte prefer_blanking;
-    ubyte allow_exposures;
-}
-
-struct GetScreenSaver
-{
-    struct Reply
-    {
-        byte[1] _pad0;
-        ushort timeout;
-        ushort interval;
-        ubyte prefer_blanking;
-        ubyte allow_exposures;
-        byte[18] _pad1;
-    }
-}
-
-struct ChangeHosts
-{
-    ubyte mode;
-    ubyte family;
-    byte[1] _pad0;
-    ushort address_len;
-    char[] address;
-}
 
 struct Host
 {
@@ -1472,91 +307,6 @@ struct Host
     byte[1] _pad0;
     ushort address_len;
     ubyte[] address;
-}
-
-struct ListHosts
-{
-    struct Reply
-    {
-        ubyte mode;
-        ushort hosts_len;
-        byte[22] _pad0;
-        Host[] hosts;
-    }
-}
-
-struct SetAccessControl
-{
-    ubyte mode;
-}
-
-struct SetCloseDownMode
-{
-    ubyte mode;
-}
-
-struct KillClient
-{
-    byte[1] _pad0;
-    uint resource;
-}
-
-struct RotateProperties
-{
-    byte[1] _pad0;
-    Window window;
-    ushort atoms_len;
-    short delta;
-    Atom[] atoms;
-}
-
-struct ForceScreenSaver
-{
-    ubyte mode;
-}
-
-struct SetPointerMapping
-{
-    ubyte map_len;
-    ubyte[] map;
-    struct Reply
-    {
-        ubyte status;
-    }
-}
-
-struct GetPointerMapping
-{
-    struct Reply
-    {
-        ubyte map_len;
-        byte[24] _pad0;
-        ubyte[] map;
-    }
-}
-
-struct SetModifierMapping
-{
-    ubyte keycodes_per_modifier;
-    KeyCode[] keycodes;
-    struct Reply
-    {
-        ubyte status;
-    }
-}
-
-struct GetModifierMapping
-{
-    struct Reply
-    {
-        ubyte keycodes_per_modifier;
-        byte[24] _pad0;
-        KeyCode[] keycodes;
-    }
-}
-
-struct NoOperation
-{
 }
 
 
@@ -2160,6 +910,3454 @@ enum MapIndex
 /**
  * requests
  */
+
+
+struct CreateWindow
+{
+    ubyte depth;
+    Window wid;
+    Window parent;
+    short x;
+    short y;
+    ushort width;
+    ushort height;
+    ushort border_width;
+    ushort klass;
+    VisualID visual;
+    CARD32 value_mask;
+
+    iovec[1] toIOVector()
+    {
+        byte[3] pad;
+        iovec[1] parts;
+
+        parts[0].iov_base = &this;
+        parts[0].iov_len = this.sizeof;
+
+        return parts;
+    }
+}
+
+
+struct ChangeWindowAttributes
+{
+    byte[1] _pad0;
+    Window window;
+    CARD32 value_mask;
+
+    iovec[1] toIOVector()
+    {
+        byte[3] pad;
+        iovec[1] parts;
+
+        parts[0].iov_base = &this;
+        parts[0].iov_len = this.sizeof;
+
+        return parts;
+    }
+}
+
+
+struct GetWindowAttributes
+{
+    byte[1] _pad0;
+    Window window;
+
+    struct Reply
+    {
+        ubyte backing_store;
+        VisualID visual;
+        ushort klass;
+        ubyte bit_gravity;
+        ubyte win_gravity;
+        uint backing_planes;
+        uint backing_pixel;
+        ubyte save_under;
+        ubyte map_is_installed;
+        ubyte map_state;
+        ubyte override_redirect;
+        ColorMap colormap;
+        uint all_event_masks;
+        uint your_event_mask;
+        ushort do_not_propagate_mask;
+        byte[2] _pad0;
+
+        this(const ubyte[] buf)
+        {
+            int offset_idx = 0;
+            auto this_buf = cast(ubyte*)&this;
+            this_buf[0..this.sizeof] = buf[offset_idx..offset_idx+this.sizeof];
+        }
+    }
+
+    iovec[1] toIOVector()
+    {
+        byte[3] pad;
+        iovec[1] parts;
+
+        parts[0].iov_base = &this;
+        parts[0].iov_len = this.sizeof;
+
+        return parts;
+    }
+}
+
+
+struct DestroyWindow
+{
+    byte[1] _pad0;
+    Window window;
+
+    iovec[1] toIOVector()
+    {
+        byte[3] pad;
+        iovec[1] parts;
+
+        parts[0].iov_base = &this;
+        parts[0].iov_len = this.sizeof;
+
+        return parts;
+    }
+}
+
+
+struct DestroySubwindows
+{
+    byte[1] _pad0;
+    Window window;
+
+    iovec[1] toIOVector()
+    {
+        byte[3] pad;
+        iovec[1] parts;
+
+        parts[0].iov_base = &this;
+        parts[0].iov_len = this.sizeof;
+
+        return parts;
+    }
+}
+
+
+struct ChangeSaveSet
+{
+    ubyte mode;
+    Window window;
+
+    iovec[1] toIOVector()
+    {
+        byte[3] pad;
+        iovec[1] parts;
+
+        parts[0].iov_base = &this;
+        parts[0].iov_len = this.sizeof;
+
+        return parts;
+    }
+}
+
+
+struct ReparentWindow
+{
+    byte[1] _pad0;
+    Window window;
+    Window parent;
+    short x;
+    short y;
+
+    iovec[1] toIOVector()
+    {
+        byte[3] pad;
+        iovec[1] parts;
+
+        parts[0].iov_base = &this;
+        parts[0].iov_len = this.sizeof;
+
+        return parts;
+    }
+}
+
+
+struct MapWindow
+{
+    byte[1] _pad0;
+    Window window;
+
+    iovec[1] toIOVector()
+    {
+        byte[3] pad;
+        iovec[1] parts;
+
+        parts[0].iov_base = &this;
+        parts[0].iov_len = this.sizeof;
+
+        return parts;
+    }
+}
+
+
+struct MapSubwindows
+{
+    byte[1] _pad0;
+    Window window;
+
+    iovec[1] toIOVector()
+    {
+        byte[3] pad;
+        iovec[1] parts;
+
+        parts[0].iov_base = &this;
+        parts[0].iov_len = this.sizeof;
+
+        return parts;
+    }
+}
+
+
+struct UnmapWindow
+{
+    byte[1] _pad0;
+    Window window;
+
+    iovec[1] toIOVector()
+    {
+        byte[3] pad;
+        iovec[1] parts;
+
+        parts[0].iov_base = &this;
+        parts[0].iov_len = this.sizeof;
+
+        return parts;
+    }
+}
+
+
+struct UnmapSubwindows
+{
+    byte[1] _pad0;
+    Window window;
+
+    iovec[1] toIOVector()
+    {
+        byte[3] pad;
+        iovec[1] parts;
+
+        parts[0].iov_base = &this;
+        parts[0].iov_len = this.sizeof;
+
+        return parts;
+    }
+}
+
+
+struct ConfigureWindow
+{
+    byte[1] _pad0;
+    Window window;
+    CARD16 value_mask;
+
+    iovec[1] toIOVector()
+    {
+        byte[3] pad;
+        iovec[1] parts;
+
+        parts[0].iov_base = &this;
+        parts[0].iov_len = this.sizeof;
+
+        return parts;
+    }
+}
+
+
+struct CirculateWindow
+{
+    ubyte direction;
+    Window window;
+
+    iovec[1] toIOVector()
+    {
+        byte[3] pad;
+        iovec[1] parts;
+
+        parts[0].iov_base = &this;
+        parts[0].iov_len = this.sizeof;
+
+        return parts;
+    }
+}
+
+
+struct GetGeometry
+{
+    byte[1] _pad0;
+    Drawable drawable;
+
+    struct Reply
+    {
+        ubyte depth;
+        Window root;
+        short x;
+        short y;
+        ushort width;
+        ushort height;
+        ushort border_width;
+        byte[2] _pad0;
+
+        this(const ubyte[] buf)
+        {
+            int offset_idx = 0;
+            auto this_buf = cast(ubyte*)&this;
+            this_buf[0..this.sizeof] = buf[offset_idx..offset_idx+this.sizeof];
+        }
+    }
+
+    iovec[1] toIOVector()
+    {
+        byte[3] pad;
+        iovec[1] parts;
+
+        parts[0].iov_base = &this;
+        parts[0].iov_len = this.sizeof;
+
+        return parts;
+    }
+}
+
+
+struct QueryTree
+{
+    byte[1] _pad0;
+    Window window;
+
+    struct Reply
+    {
+        byte[1] _pad0;
+        Window root;
+        Window parent;
+        ushort children_len;
+        byte[14] _pad1;
+        Window[] children;
+
+        this(const ubyte[] buf)
+        {
+            int offset_idx = 0;
+            auto this_buf = cast(ubyte*)&this;
+            this_buf[0..this.children.offsetof] =
+                        buf[offset_idx..offset_idx+this.children.offsetof];
+            offset_idx += this.children.offsetof;
+
+            this.children = (cast(Window*)&buf[offset_idx])[0..this.children_len].dup;
+            offset_idx += this.children_len * Window.sizeof;
+            offset_idx += pad4(this.children_len * Window.sizeof);
+        }
+    }
+
+    iovec[1] toIOVector()
+    {
+        byte[3] pad;
+        iovec[1] parts;
+
+        parts[0].iov_base = &this;
+        parts[0].iov_len = this.sizeof;
+
+        return parts;
+    }
+}
+
+
+struct InternAtom
+{
+    ubyte only_if_exists;
+    ushort name_len;
+    byte[2] _pad0;
+    char[] name;
+
+    struct Reply
+    {
+        byte[1] _pad0;
+        Atom atom;
+
+        this(const ubyte[] buf)
+        {
+            int offset_idx = 0;
+            auto this_buf = cast(ubyte*)&this;
+            this_buf[0..this.sizeof] = buf[offset_idx..offset_idx+this.sizeof];
+        }
+    }
+
+    iovec[3] toIOVector()
+    {
+        byte[3] pad;
+        iovec[3] parts;
+
+        parts[0].iov_base = &this;
+        parts[0].iov_len = this.name.offsetof;
+
+        this.name_len = cast(typeof(this.name_len))this.name.length;
+        parts[1].iov_base = this.name.ptr;
+        parts[1].iov_len = this.name.length;
+
+        parts[2].iov_base = pad.ptr;
+        parts[2].iov_len = pad4(this.name.length);
+
+        return parts;
+    }
+}
+
+
+struct GetAtomName
+{
+    byte[1] _pad0;
+    Atom atom;
+
+    struct Reply
+    {
+        byte[1] _pad0;
+        ushort name_len;
+        byte[22] _pad1;
+        char[] name;
+
+        this(const ubyte[] buf)
+        {
+            int offset_idx = 0;
+            auto this_buf = cast(ubyte*)&this;
+            this_buf[0..this.name.offsetof] =
+                        buf[offset_idx..offset_idx+this.name.offsetof];
+            offset_idx += this.name.offsetof;
+
+            this.name = (cast(char*)&buf[offset_idx])[0..this.name_len].dup;
+            offset_idx += this.name_len * char.sizeof;
+            offset_idx += pad4(this.name_len * char.sizeof);
+        }
+    }
+
+    iovec[1] toIOVector()
+    {
+        byte[3] pad;
+        iovec[1] parts;
+
+        parts[0].iov_base = &this;
+        parts[0].iov_len = this.sizeof;
+
+        return parts;
+    }
+}
+
+
+struct ChangeProperty
+{
+    ubyte mode;
+    Window window;
+    Atom property;
+    Atom type;
+    ubyte format;
+    byte[3] _pad0;
+    uint data_len;
+    void[] data;
+
+    iovec[3] toIOVector()
+    {
+        byte[3] pad;
+        iovec[3] parts;
+
+        parts[0].iov_base = &this;
+        parts[0].iov_len = this.data.offsetof;
+
+        this.((data_len*format)/8) = cast(typeof(this.((data_len*format)/8)))this.data.length;
+        parts[1].iov_base = this.data.ptr;
+        parts[1].iov_len = this.data.length;
+
+        parts[2].iov_base = pad.ptr;
+        parts[2].iov_len = pad4(this.data.length);
+
+        return parts;
+    }
+}
+
+
+struct DeleteProperty
+{
+    byte[1] _pad0;
+    Window window;
+    Atom property;
+
+    iovec[1] toIOVector()
+    {
+        byte[3] pad;
+        iovec[1] parts;
+
+        parts[0].iov_base = &this;
+        parts[0].iov_len = this.sizeof;
+
+        return parts;
+    }
+}
+
+
+struct GetProperty
+{
+    ubyte delete;
+    Window window;
+    Atom property;
+    Atom type;
+    uint long_offset;
+    uint long_length;
+
+    struct Reply
+    {
+        ubyte format;
+        Atom type;
+        uint bytes_after;
+        uint value_len;
+        byte[12] _pad0;
+        void[] value;
+
+        this(const ubyte[] buf)
+        {
+            int offset_idx = 0;
+            auto this_buf = cast(ubyte*)&this;
+            this_buf[0..this.value.offsetof] =
+                        buf[offset_idx..offset_idx+this.value.offsetof];
+            offset_idx += this.value.offsetof;
+
+            this.value = (cast(void*)&buf[offset_idx])[0..this.(value_len*(format/8))].dup;
+            offset_idx += this.(value_len*(format/8)) * void.sizeof;
+            offset_idx += pad4(this.(value_len*(format/8)) * void.sizeof);
+        }
+    }
+
+    iovec[1] toIOVector()
+    {
+        byte[3] pad;
+        iovec[1] parts;
+
+        parts[0].iov_base = &this;
+        parts[0].iov_len = this.sizeof;
+
+        return parts;
+    }
+}
+
+
+struct ListProperties
+{
+    byte[1] _pad0;
+    Window window;
+
+    struct Reply
+    {
+        byte[1] _pad0;
+        ushort atoms_len;
+        byte[22] _pad1;
+        Atom[] atoms;
+
+        this(const ubyte[] buf)
+        {
+            int offset_idx = 0;
+            auto this_buf = cast(ubyte*)&this;
+            this_buf[0..this.atoms.offsetof] =
+                        buf[offset_idx..offset_idx+this.atoms.offsetof];
+            offset_idx += this.atoms.offsetof;
+
+            this.atoms = (cast(Atom*)&buf[offset_idx])[0..this.atoms_len].dup;
+            offset_idx += this.atoms_len * Atom.sizeof;
+            offset_idx += pad4(this.atoms_len * Atom.sizeof);
+        }
+    }
+
+    iovec[1] toIOVector()
+    {
+        byte[3] pad;
+        iovec[1] parts;
+
+        parts[0].iov_base = &this;
+        parts[0].iov_len = this.sizeof;
+
+        return parts;
+    }
+}
+
+
+struct SetSelectionOwner
+{
+    byte[1] _pad0;
+    Window owner;
+    Atom selection;
+    Timestamp time;
+
+    iovec[1] toIOVector()
+    {
+        byte[3] pad;
+        iovec[1] parts;
+
+        parts[0].iov_base = &this;
+        parts[0].iov_len = this.sizeof;
+
+        return parts;
+    }
+}
+
+
+struct GetSelectionOwner
+{
+    byte[1] _pad0;
+    Atom selection;
+
+    struct Reply
+    {
+        byte[1] _pad0;
+        Window owner;
+
+        this(const ubyte[] buf)
+        {
+            int offset_idx = 0;
+            auto this_buf = cast(ubyte*)&this;
+            this_buf[0..this.sizeof] = buf[offset_idx..offset_idx+this.sizeof];
+        }
+    }
+
+    iovec[1] toIOVector()
+    {
+        byte[3] pad;
+        iovec[1] parts;
+
+        parts[0].iov_base = &this;
+        parts[0].iov_len = this.sizeof;
+
+        return parts;
+    }
+}
+
+
+struct ConvertSelection
+{
+    byte[1] _pad0;
+    Window requestor;
+    Atom selection;
+    Atom target;
+    Atom property;
+    Timestamp time;
+
+    iovec[1] toIOVector()
+    {
+        byte[3] pad;
+        iovec[1] parts;
+
+        parts[0].iov_base = &this;
+        parts[0].iov_len = this.sizeof;
+
+        return parts;
+    }
+}
+
+
+struct SendEvent
+{
+    ubyte propagate;
+    Window destination;
+    uint event_mask;
+    char[32] event;
+
+    iovec[3] toIOVector()
+    {
+        byte[3] pad;
+        iovec[3] parts;
+
+        parts[0].iov_base = &this;
+        parts[0].iov_len = this.event.offsetof;
+
+        this.32 = cast(typeof(this.32))this.event.length;
+        parts[1].iov_base = this.event.ptr;
+        parts[1].iov_len = this.event.length;
+
+        parts[2].iov_base = pad.ptr;
+        parts[2].iov_len = pad4(this.event.length);
+
+        return parts;
+    }
+}
+
+
+struct GrabPointer
+{
+    ubyte owner_events;
+    Window grab_window;
+    ushort event_mask;
+    ubyte pointer_mode;
+    ubyte keyboard_mode;
+    Window confine_to;
+    Cursor cursor;
+    Timestamp time;
+
+    struct Reply
+    {
+        ubyte status;
+
+        this(const ubyte[] buf)
+        {
+            int offset_idx = 0;
+            auto this_buf = cast(ubyte*)&this;
+            this_buf[0..this.sizeof] = buf[offset_idx..offset_idx+this.sizeof];
+        }
+    }
+
+    iovec[1] toIOVector()
+    {
+        byte[3] pad;
+        iovec[1] parts;
+
+        parts[0].iov_base = &this;
+        parts[0].iov_len = this.sizeof;
+
+        return parts;
+    }
+}
+
+
+struct UngrabPointer
+{
+    byte[1] _pad0;
+    Timestamp time;
+
+    iovec[1] toIOVector()
+    {
+        byte[3] pad;
+        iovec[1] parts;
+
+        parts[0].iov_base = &this;
+        parts[0].iov_len = this.sizeof;
+
+        return parts;
+    }
+}
+
+
+struct GrabButton
+{
+    ubyte owner_events;
+    Window grab_window;
+    ushort event_mask;
+    ubyte pointer_mode;
+    ubyte keyboard_mode;
+    Window confine_to;
+    Cursor cursor;
+    ubyte button;
+    byte[1] _pad0;
+    ushort modifiers;
+
+    iovec[1] toIOVector()
+    {
+        byte[3] pad;
+        iovec[1] parts;
+
+        parts[0].iov_base = &this;
+        parts[0].iov_len = this.sizeof;
+
+        return parts;
+    }
+}
+
+
+struct UngrabButton
+{
+    ubyte button;
+    Window grab_window;
+    ushort modifiers;
+    byte[2] _pad0;
+
+    iovec[1] toIOVector()
+    {
+        byte[3] pad;
+        iovec[1] parts;
+
+        parts[0].iov_base = &this;
+        parts[0].iov_len = this.sizeof;
+
+        return parts;
+    }
+}
+
+
+struct ChangeActivePointerGrab
+{
+    byte[1] _pad0;
+    Cursor cursor;
+    Timestamp time;
+    ushort event_mask;
+    byte[2] _pad1;
+
+    iovec[1] toIOVector()
+    {
+        byte[3] pad;
+        iovec[1] parts;
+
+        parts[0].iov_base = &this;
+        parts[0].iov_len = this.sizeof;
+
+        return parts;
+    }
+}
+
+
+struct GrabKeyboard
+{
+    ubyte owner_events;
+    Window grab_window;
+    Timestamp time;
+    ubyte pointer_mode;
+    ubyte keyboard_mode;
+    byte[2] _pad0;
+
+    struct Reply
+    {
+        ubyte status;
+
+        this(const ubyte[] buf)
+        {
+            int offset_idx = 0;
+            auto this_buf = cast(ubyte*)&this;
+            this_buf[0..this.sizeof] = buf[offset_idx..offset_idx+this.sizeof];
+        }
+    }
+
+    iovec[1] toIOVector()
+    {
+        byte[3] pad;
+        iovec[1] parts;
+
+        parts[0].iov_base = &this;
+        parts[0].iov_len = this.sizeof;
+
+        return parts;
+    }
+}
+
+
+struct UngrabKeyboard
+{
+    byte[1] _pad0;
+    Timestamp time;
+
+    iovec[1] toIOVector()
+    {
+        byte[3] pad;
+        iovec[1] parts;
+
+        parts[0].iov_base = &this;
+        parts[0].iov_len = this.sizeof;
+
+        return parts;
+    }
+}
+
+
+struct GrabKey
+{
+    ubyte owner_events;
+    Window grab_window;
+    ushort modifiers;
+    KeyCode key;
+    ubyte pointer_mode;
+    ubyte keyboard_mode;
+    byte[3] _pad0;
+
+    iovec[1] toIOVector()
+    {
+        byte[3] pad;
+        iovec[1] parts;
+
+        parts[0].iov_base = &this;
+        parts[0].iov_len = this.sizeof;
+
+        return parts;
+    }
+}
+
+
+struct UngrabKey
+{
+    KeyCode key;
+    Window grab_window;
+    ushort modifiers;
+    byte[2] _pad0;
+
+    iovec[1] toIOVector()
+    {
+        byte[3] pad;
+        iovec[1] parts;
+
+        parts[0].iov_base = &this;
+        parts[0].iov_len = this.sizeof;
+
+        return parts;
+    }
+}
+
+
+struct AllowEvents
+{
+    ubyte mode;
+    Timestamp time;
+
+    iovec[1] toIOVector()
+    {
+        byte[3] pad;
+        iovec[1] parts;
+
+        parts[0].iov_base = &this;
+        parts[0].iov_len = this.sizeof;
+
+        return parts;
+    }
+}
+
+
+struct GrabServer
+{
+
+    iovec[1] toIOVector()
+    {
+        byte[3] pad;
+        iovec[1] parts;
+
+        parts[0].iov_base = &this;
+        parts[0].iov_len = this.sizeof;
+
+        return parts;
+    }
+}
+
+
+struct UngrabServer
+{
+
+    iovec[1] toIOVector()
+    {
+        byte[3] pad;
+        iovec[1] parts;
+
+        parts[0].iov_base = &this;
+        parts[0].iov_len = this.sizeof;
+
+        return parts;
+    }
+}
+
+
+struct QueryPointer
+{
+    byte[1] _pad0;
+    Window window;
+
+    struct Reply
+    {
+        ubyte same_screen;
+        Window root;
+        Window child;
+        short root_x;
+        short root_y;
+        short win_x;
+        short win_y;
+        ushort mask;
+        byte[2] _pad0;
+
+        this(const ubyte[] buf)
+        {
+            int offset_idx = 0;
+            auto this_buf = cast(ubyte*)&this;
+            this_buf[0..this.sizeof] = buf[offset_idx..offset_idx+this.sizeof];
+        }
+    }
+
+    iovec[1] toIOVector()
+    {
+        byte[3] pad;
+        iovec[1] parts;
+
+        parts[0].iov_base = &this;
+        parts[0].iov_len = this.sizeof;
+
+        return parts;
+    }
+}
+
+
+struct GetMotionEvents
+{
+    byte[1] _pad0;
+    Window window;
+    Timestamp start;
+    Timestamp stop;
+
+    struct Reply
+    {
+        byte[1] _pad0;
+        uint events_len;
+        byte[20] _pad1;
+        TimeCoord[] events;
+
+        this(const ubyte[] buf)
+        {
+            int offset_idx = 0;
+            auto this_buf = cast(ubyte*)&this;
+            this_buf[0..this.events.offsetof] =
+                        buf[offset_idx..offset_idx+this.events.offsetof];
+            offset_idx += this.events.offsetof;
+
+            this.events = (cast(TimeCoord*)&buf[offset_idx])[0..this.events_len].dup;
+            offset_idx += this.events_len * TimeCoord.sizeof;
+            offset_idx += pad4(this.events_len * TimeCoord.sizeof);
+        }
+    }
+
+    iovec[1] toIOVector()
+    {
+        byte[3] pad;
+        iovec[1] parts;
+
+        parts[0].iov_base = &this;
+        parts[0].iov_len = this.sizeof;
+
+        return parts;
+    }
+}
+
+
+struct TranslateCoordinates
+{
+    byte[1] _pad0;
+    Window src_window;
+    Window dst_window;
+    short src_x;
+    short src_y;
+
+    struct Reply
+    {
+        ubyte same_screen;
+        Window child;
+        ushort dst_x;
+        ushort dst_y;
+
+        this(const ubyte[] buf)
+        {
+            int offset_idx = 0;
+            auto this_buf = cast(ubyte*)&this;
+            this_buf[0..this.sizeof] = buf[offset_idx..offset_idx+this.sizeof];
+        }
+    }
+
+    iovec[1] toIOVector()
+    {
+        byte[3] pad;
+        iovec[1] parts;
+
+        parts[0].iov_base = &this;
+        parts[0].iov_len = this.sizeof;
+
+        return parts;
+    }
+}
+
+
+struct WarpPointer
+{
+    byte[1] _pad0;
+    Window src_window;
+    Window dst_window;
+    short src_x;
+    short src_y;
+    ushort src_width;
+    ushort src_height;
+    short dst_x;
+    short dst_y;
+
+    iovec[1] toIOVector()
+    {
+        byte[3] pad;
+        iovec[1] parts;
+
+        parts[0].iov_base = &this;
+        parts[0].iov_len = this.sizeof;
+
+        return parts;
+    }
+}
+
+
+struct SetInputFocus
+{
+    ubyte revert_to;
+    Window focus;
+    Timestamp time;
+
+    iovec[1] toIOVector()
+    {
+        byte[3] pad;
+        iovec[1] parts;
+
+        parts[0].iov_base = &this;
+        parts[0].iov_len = this.sizeof;
+
+        return parts;
+    }
+}
+
+
+struct GetInputFocus
+{
+
+    struct Reply
+    {
+        ubyte revert_to;
+        Window focus;
+
+        this(const ubyte[] buf)
+        {
+            int offset_idx = 0;
+            auto this_buf = cast(ubyte*)&this;
+            this_buf[0..this.sizeof] = buf[offset_idx..offset_idx+this.sizeof];
+        }
+    }
+
+    iovec[1] toIOVector()
+    {
+        byte[3] pad;
+        iovec[1] parts;
+
+        parts[0].iov_base = &this;
+        parts[0].iov_len = this.sizeof;
+
+        return parts;
+    }
+}
+
+
+struct QueryKeymap
+{
+
+    struct Reply
+    {
+        byte[1] _pad0;
+        ubyte[32] keys;
+
+        this(const ubyte[] buf)
+        {
+            int offset_idx = 0;
+            auto this_buf = cast(ubyte*)&this;
+            this_buf[0..this.keys.offsetof] =
+                        buf[offset_idx..offset_idx+this.keys.offsetof];
+            offset_idx += this.keys.offsetof;
+
+            this.keys = (cast(ubyte*)&buf[offset_idx])[0..this.32].dup;
+            offset_idx += this.32 * ubyte.sizeof;
+            offset_idx += pad4(this.32 * ubyte.sizeof);
+        }
+    }
+
+    iovec[1] toIOVector()
+    {
+        byte[3] pad;
+        iovec[1] parts;
+
+        parts[0].iov_base = &this;
+        parts[0].iov_len = this.sizeof;
+
+        return parts;
+    }
+}
+
+
+struct OpenFont
+{
+    byte[1] _pad0;
+    Font fid;
+    ushort name_len;
+    byte[2] _pad1;
+    char[] name;
+
+    iovec[3] toIOVector()
+    {
+        byte[3] pad;
+        iovec[3] parts;
+
+        parts[0].iov_base = &this;
+        parts[0].iov_len = this.name.offsetof;
+
+        this.name_len = cast(typeof(this.name_len))this.name.length;
+        parts[1].iov_base = this.name.ptr;
+        parts[1].iov_len = this.name.length;
+
+        parts[2].iov_base = pad.ptr;
+        parts[2].iov_len = pad4(this.name.length);
+
+        return parts;
+    }
+}
+
+
+struct CloseFont
+{
+    byte[1] _pad0;
+    Font font;
+
+    iovec[1] toIOVector()
+    {
+        byte[3] pad;
+        iovec[1] parts;
+
+        parts[0].iov_base = &this;
+        parts[0].iov_len = this.sizeof;
+
+        return parts;
+    }
+}
+
+
+struct QueryFont
+{
+    byte[1] _pad0;
+    Fontable font;
+
+    struct Reply
+    {
+        byte[1] _pad0;
+        CharInfo min_bounds;
+        byte[4] _pad1;
+        CharInfo max_bounds;
+        byte[4] _pad2;
+        ushort min_char_or_byte2;
+        ushort max_char_or_byte2;
+        ushort default_char;
+        ushort properties_len;
+        ubyte draw_direction;
+        ubyte min_byte1;
+        ubyte max_byte1;
+        ubyte all_chars_exist;
+        short font_ascent;
+        short font_descent;
+        uint char_infos_len;
+        FontProp[] properties;
+        CharInfo[] char_infos;
+
+        this(const ubyte[] buf)
+        {
+            int offset_idx = 0;
+            auto this_buf = cast(ubyte*)&this;
+            this_buf[0..this.properties.offsetof] =
+                        buf[offset_idx..offset_idx+this.properties.offsetof];
+            offset_idx += this.properties.offsetof;
+
+            this.properties = (cast(FontProp*)&buf[offset_idx])[0..this.properties_len].dup;
+            offset_idx += this.properties_len * FontProp.sizeof;
+            offset_idx += pad4(this.properties_len * FontProp.sizeof);
+
+            this.char_infos = (cast(CharInfo*)&buf[offset_idx])[0..this.char_infos_len].dup;
+            offset_idx += this.char_infos_len * CharInfo.sizeof;
+            offset_idx += pad4(this.char_infos_len * CharInfo.sizeof);
+        }
+    }
+
+    iovec[1] toIOVector()
+    {
+        byte[3] pad;
+        iovec[1] parts;
+
+        parts[0].iov_base = &this;
+        parts[0].iov_len = this.sizeof;
+
+        return parts;
+    }
+}
+
+
+struct QueryTextExtents
+{
+    BOOL odd_length;
+    Fontable font;
+    wchar[] string;
+
+    struct Reply
+    {
+        ubyte draw_direction;
+        short font_ascent;
+        short font_descent;
+        short overall_ascent;
+        short overall_descent;
+        int overall_width;
+        int overall_left;
+        int overall_right;
+
+        this(const ubyte[] buf)
+        {
+            int offset_idx = 0;
+            auto this_buf = cast(ubyte*)&this;
+            this_buf[0..this.sizeof] = buf[offset_idx..offset_idx+this.sizeof];
+        }
+    }
+
+    iovec[3] toIOVector()
+    {
+        byte[3] pad;
+        iovec[3] parts;
+
+        parts[0].iov_base = &this;
+        parts[0].iov_len = this.string.offsetof;
+
+        this. = cast(typeof(this.))this.string.length;
+        parts[1].iov_base = this.string.ptr;
+        parts[1].iov_len = this.string.length;
+
+        parts[2].iov_base = pad.ptr;
+        parts[2].iov_len = pad4(this.string.length);
+
+        return parts;
+    }
+}
+
+
+struct ListFonts
+{
+    byte[1] _pad0;
+    ushort max_names;
+    ushort pattern_len;
+    char[] pattern;
+
+    struct Reply
+    {
+        byte[1] _pad0;
+        ushort names_len;
+        byte[22] _pad1;
+        Str[] names;
+
+        this(const ubyte[] buf)
+        {
+            int offset_idx = 0;
+            auto this_buf = cast(ubyte*)&this;
+            this_buf[0..this.names.offsetof] =
+                        buf[offset_idx..offset_idx+this.names.offsetof];
+            offset_idx += this.names.offsetof;
+
+            this.names.length = this.names_len;
+            foreach (ref str; this.names)
+            {
+                auto str_buf = cast(ubyte*)&str;
+                str_buf[0..str.name.offsetof] =
+                            buf[offset_idx..offset_idx+str.name.offsetof];
+                offset_idx += str.name.offsetof;
+
+                str.name = (cast(char*)&buf[offset_idx])[0..str.name_len].dup;
+                offset_idx += str.name_len * char.sizeof;
+                offset_idx += pad4(str.name_len * char.sizeof);
+            }
+        }
+    }
+
+    iovec[3] toIOVector()
+    {
+        byte[3] pad;
+        iovec[3] parts;
+
+        parts[0].iov_base = &this;
+        parts[0].iov_len = this.pattern.offsetof;
+
+        this.pattern_len = cast(typeof(this.pattern_len))this.pattern.length;
+        parts[1].iov_base = this.pattern.ptr;
+        parts[1].iov_len = this.pattern.length;
+
+        parts[2].iov_base = pad.ptr;
+        parts[2].iov_len = pad4(this.pattern.length);
+
+        return parts;
+    }
+}
+
+
+struct ListFontsWithInfo
+{
+    byte[1] _pad0;
+    ushort max_names;
+    ushort pattern_len;
+    char[] pattern;
+
+    struct Reply
+    {
+        ubyte name_len;
+        CharInfo min_bounds;
+        byte[4] _pad0;
+        CharInfo max_bounds;
+        byte[4] _pad1;
+        ushort min_char_or_byte2;
+        ushort max_char_or_byte2;
+        ushort default_char;
+        ushort properties_len;
+        ubyte draw_direction;
+        ubyte min_byte1;
+        ubyte max_byte1;
+        ubyte all_chars_exist;
+        short font_ascent;
+        short font_descent;
+        uint replies_hint;
+        FontProp[] properties;
+        char[] name;
+
+        this(const ubyte[] buf)
+        {
+            int offset_idx = 0;
+            auto this_buf = cast(ubyte*)&this;
+            this_buf[0..this.properties.offsetof] =
+                        buf[offset_idx..offset_idx+this.properties.offsetof];
+            offset_idx += this.properties.offsetof;
+
+            this.properties = (cast(FontProp*)&buf[offset_idx])[0..this.properties_len].dup;
+            offset_idx += this.properties_len * FontProp.sizeof;
+            offset_idx += pad4(this.properties_len * FontProp.sizeof);
+
+            this.name = (cast(char*)&buf[offset_idx])[0..this.name_len].dup;
+            offset_idx += this.name_len * char.sizeof;
+            offset_idx += pad4(this.name_len * char.sizeof);
+        }
+    }
+
+    iovec[3] toIOVector()
+    {
+        byte[3] pad;
+        iovec[3] parts;
+
+        parts[0].iov_base = &this;
+        parts[0].iov_len = this.pattern.offsetof;
+
+        this.pattern_len = cast(typeof(this.pattern_len))this.pattern.length;
+        parts[1].iov_base = this.pattern.ptr;
+        parts[1].iov_len = this.pattern.length;
+
+        parts[2].iov_base = pad.ptr;
+        parts[2].iov_len = pad4(this.pattern.length);
+
+        return parts;
+    }
+}
+
+
+struct SetFontPath
+{
+    byte[1] _pad0;
+    ushort font_qty;
+    char[] path;
+
+    iovec[3] toIOVector()
+    {
+        byte[3] pad;
+        iovec[3] parts;
+
+        parts[0].iov_base = &this;
+        parts[0].iov_len = this.path.offsetof;
+
+        this. = cast(typeof(this.))this.path.length;
+        parts[1].iov_base = this.path.ptr;
+        parts[1].iov_len = this.path.length;
+
+        parts[2].iov_base = pad.ptr;
+        parts[2].iov_len = pad4(this.path.length);
+
+        return parts;
+    }
+}
+
+
+struct GetFontPath
+{
+
+    struct Reply
+    {
+        byte[1] _pad0;
+        ushort path_len;
+        byte[22] _pad1;
+        Str[] path;
+
+        this(const ubyte[] buf)
+        {
+            int offset_idx = 0;
+            auto this_buf = cast(ubyte*)&this;
+            this_buf[0..this.path.offsetof] =
+                        buf[offset_idx..offset_idx+this.path.offsetof];
+            offset_idx += this.path.offsetof;
+
+            this.path.length = this.path_len;
+            foreach (ref str; this.path)
+            {
+                auto str_buf = cast(ubyte*)&str;
+                str_buf[0..str.name.offsetof] =
+                            buf[offset_idx..offset_idx+str.name.offsetof];
+                offset_idx += str.name.offsetof;
+
+                str.name = (cast(char*)&buf[offset_idx])[0..str.name_len].dup;
+                offset_idx += str.name_len * char.sizeof;
+                offset_idx += pad4(str.name_len * char.sizeof);
+            }
+        }
+    }
+
+    iovec[1] toIOVector()
+    {
+        byte[3] pad;
+        iovec[1] parts;
+
+        parts[0].iov_base = &this;
+        parts[0].iov_len = this.sizeof;
+
+        return parts;
+    }
+}
+
+
+struct CreatePixmap
+{
+    ubyte depth;
+    PixMap pid;
+    Drawable drawable;
+    ushort width;
+    ushort height;
+
+    iovec[1] toIOVector()
+    {
+        byte[3] pad;
+        iovec[1] parts;
+
+        parts[0].iov_base = &this;
+        parts[0].iov_len = this.sizeof;
+
+        return parts;
+    }
+}
+
+
+struct FreePixmap
+{
+    byte[1] _pad0;
+    PixMap pixmap;
+
+    iovec[1] toIOVector()
+    {
+        byte[3] pad;
+        iovec[1] parts;
+
+        parts[0].iov_base = &this;
+        parts[0].iov_len = this.sizeof;
+
+        return parts;
+    }
+}
+
+
+struct CreateGC
+{
+    byte[1] _pad0;
+    GContext cid;
+    Drawable drawable;
+    CARD32 value_mask;
+
+    iovec[1] toIOVector()
+    {
+        byte[3] pad;
+        iovec[1] parts;
+
+        parts[0].iov_base = &this;
+        parts[0].iov_len = this.sizeof;
+
+        return parts;
+    }
+}
+
+
+struct ChangeGC
+{
+    byte[1] _pad0;
+    GContext gc;
+    CARD32 value_mask;
+
+    iovec[1] toIOVector()
+    {
+        byte[3] pad;
+        iovec[1] parts;
+
+        parts[0].iov_base = &this;
+        parts[0].iov_len = this.sizeof;
+
+        return parts;
+    }
+}
+
+
+struct CopyGC
+{
+    byte[1] _pad0;
+    GContext src_gc;
+    GContext dst_gc;
+    uint value_mask;
+
+    iovec[1] toIOVector()
+    {
+        byte[3] pad;
+        iovec[1] parts;
+
+        parts[0].iov_base = &this;
+        parts[0].iov_len = this.sizeof;
+
+        return parts;
+    }
+}
+
+
+struct SetDashes
+{
+    byte[1] _pad0;
+    GContext gc;
+    ushort dash_offset;
+    ushort dashes_len;
+    ubyte[] dashes;
+
+    iovec[3] toIOVector()
+    {
+        byte[3] pad;
+        iovec[3] parts;
+
+        parts[0].iov_base = &this;
+        parts[0].iov_len = this.dashes.offsetof;
+
+        this.dashes_len = cast(typeof(this.dashes_len))this.dashes.length;
+        parts[1].iov_base = this.dashes.ptr;
+        parts[1].iov_len = this.dashes.length;
+
+        parts[2].iov_base = pad.ptr;
+        parts[2].iov_len = pad4(this.dashes.length);
+
+        return parts;
+    }
+}
+
+
+struct SetClipRectangles
+{
+    ubyte ordering;
+    GContext gc;
+    short clip_x_origin;
+    short clip_y_origin;
+    Rectangle[] rectangles;
+
+    iovec[3] toIOVector()
+    {
+        byte[3] pad;
+        iovec[3] parts;
+
+        parts[0].iov_base = &this;
+        parts[0].iov_len = this.rectangles.offsetof;
+
+        this. = cast(typeof(this.))this.rectangles.length;
+        parts[1].iov_base = this.rectangles.ptr;
+        parts[1].iov_len = this.rectangles.length;
+
+        parts[2].iov_base = pad.ptr;
+        parts[2].iov_len = pad4(this.rectangles.length);
+
+        return parts;
+    }
+}
+
+
+struct FreeGC
+{
+    byte[1] _pad0;
+    GContext gc;
+
+    iovec[1] toIOVector()
+    {
+        byte[3] pad;
+        iovec[1] parts;
+
+        parts[0].iov_base = &this;
+        parts[0].iov_len = this.sizeof;
+
+        return parts;
+    }
+}
+
+
+struct ClearArea
+{
+    ubyte exposures;
+    Window window;
+    short x;
+    short y;
+    ushort width;
+    ushort height;
+
+    iovec[1] toIOVector()
+    {
+        byte[3] pad;
+        iovec[1] parts;
+
+        parts[0].iov_base = &this;
+        parts[0].iov_len = this.sizeof;
+
+        return parts;
+    }
+}
+
+
+struct CopyArea
+{
+    byte[1] _pad0;
+    Drawable src_drawable;
+    Drawable dst_drawable;
+    GContext gc;
+    short src_x;
+    short src_y;
+    short dst_x;
+    short dst_y;
+    ushort width;
+    ushort height;
+
+    iovec[1] toIOVector()
+    {
+        byte[3] pad;
+        iovec[1] parts;
+
+        parts[0].iov_base = &this;
+        parts[0].iov_len = this.sizeof;
+
+        return parts;
+    }
+}
+
+
+struct CopyPlane
+{
+    byte[1] _pad0;
+    Drawable src_drawable;
+    Drawable dst_drawable;
+    GContext gc;
+    short src_x;
+    short src_y;
+    short dst_x;
+    short dst_y;
+    ushort width;
+    ushort height;
+    uint bit_plane;
+
+    iovec[1] toIOVector()
+    {
+        byte[3] pad;
+        iovec[1] parts;
+
+        parts[0].iov_base = &this;
+        parts[0].iov_len = this.sizeof;
+
+        return parts;
+    }
+}
+
+
+struct PolyPoint
+{
+    ubyte coordinate_mode;
+    Drawable drawable;
+    GContext gc;
+    Point[] points;
+
+    iovec[3] toIOVector()
+    {
+        byte[3] pad;
+        iovec[3] parts;
+
+        parts[0].iov_base = &this;
+        parts[0].iov_len = this.points.offsetof;
+
+        this. = cast(typeof(this.))this.points.length;
+        parts[1].iov_base = this.points.ptr;
+        parts[1].iov_len = this.points.length;
+
+        parts[2].iov_base = pad.ptr;
+        parts[2].iov_len = pad4(this.points.length);
+
+        return parts;
+    }
+}
+
+
+struct PolyLine
+{
+    ubyte coordinate_mode;
+    Drawable drawable;
+    GContext gc;
+    Point[] points;
+
+    iovec[3] toIOVector()
+    {
+        byte[3] pad;
+        iovec[3] parts;
+
+        parts[0].iov_base = &this;
+        parts[0].iov_len = this.points.offsetof;
+
+        this. = cast(typeof(this.))this.points.length;
+        parts[1].iov_base = this.points.ptr;
+        parts[1].iov_len = this.points.length;
+
+        parts[2].iov_base = pad.ptr;
+        parts[2].iov_len = pad4(this.points.length);
+
+        return parts;
+    }
+}
+
+
+struct PolySegment
+{
+    byte[1] _pad0;
+    Drawable drawable;
+    GContext gc;
+    Segment[] segments;
+
+    iovec[3] toIOVector()
+    {
+        byte[3] pad;
+        iovec[3] parts;
+
+        parts[0].iov_base = &this;
+        parts[0].iov_len = this.segments.offsetof;
+
+        this. = cast(typeof(this.))this.segments.length;
+        parts[1].iov_base = this.segments.ptr;
+        parts[1].iov_len = this.segments.length;
+
+        parts[2].iov_base = pad.ptr;
+        parts[2].iov_len = pad4(this.segments.length);
+
+        return parts;
+    }
+}
+
+
+struct PolyRectangle
+{
+    byte[1] _pad0;
+    Drawable drawable;
+    GContext gc;
+    Rectangle[] rectangles;
+
+    iovec[3] toIOVector()
+    {
+        byte[3] pad;
+        iovec[3] parts;
+
+        parts[0].iov_base = &this;
+        parts[0].iov_len = this.rectangles.offsetof;
+
+        this. = cast(typeof(this.))this.rectangles.length;
+        parts[1].iov_base = this.rectangles.ptr;
+        parts[1].iov_len = this.rectangles.length;
+
+        parts[2].iov_base = pad.ptr;
+        parts[2].iov_len = pad4(this.rectangles.length);
+
+        return parts;
+    }
+}
+
+
+struct PolyArc
+{
+    byte[1] _pad0;
+    Drawable drawable;
+    GContext gc;
+    Arc[] arcs;
+
+    iovec[3] toIOVector()
+    {
+        byte[3] pad;
+        iovec[3] parts;
+
+        parts[0].iov_base = &this;
+        parts[0].iov_len = this.arcs.offsetof;
+
+        this. = cast(typeof(this.))this.arcs.length;
+        parts[1].iov_base = this.arcs.ptr;
+        parts[1].iov_len = this.arcs.length;
+
+        parts[2].iov_base = pad.ptr;
+        parts[2].iov_len = pad4(this.arcs.length);
+
+        return parts;
+    }
+}
+
+
+struct FillPoly
+{
+    byte[1] _pad0;
+    Drawable drawable;
+    GContext gc;
+    ubyte shape;
+    ubyte coordinate_mode;
+    byte[2] _pad1;
+    Point[] points;
+
+    iovec[3] toIOVector()
+    {
+        byte[3] pad;
+        iovec[3] parts;
+
+        parts[0].iov_base = &this;
+        parts[0].iov_len = this.points.offsetof;
+
+        this. = cast(typeof(this.))this.points.length;
+        parts[1].iov_base = this.points.ptr;
+        parts[1].iov_len = this.points.length;
+
+        parts[2].iov_base = pad.ptr;
+        parts[2].iov_len = pad4(this.points.length);
+
+        return parts;
+    }
+}
+
+
+struct PolyFillRectangle
+{
+    byte[1] _pad0;
+    Drawable drawable;
+    GContext gc;
+    Rectangle[] rectangles;
+
+    iovec[3] toIOVector()
+    {
+        byte[3] pad;
+        iovec[3] parts;
+
+        parts[0].iov_base = &this;
+        parts[0].iov_len = this.rectangles.offsetof;
+
+        this. = cast(typeof(this.))this.rectangles.length;
+        parts[1].iov_base = this.rectangles.ptr;
+        parts[1].iov_len = this.rectangles.length;
+
+        parts[2].iov_base = pad.ptr;
+        parts[2].iov_len = pad4(this.rectangles.length);
+
+        return parts;
+    }
+}
+
+
+struct PolyFillArc
+{
+    byte[1] _pad0;
+    Drawable drawable;
+    GContext gc;
+    Arc[] arcs;
+
+    iovec[3] toIOVector()
+    {
+        byte[3] pad;
+        iovec[3] parts;
+
+        parts[0].iov_base = &this;
+        parts[0].iov_len = this.arcs.offsetof;
+
+        this. = cast(typeof(this.))this.arcs.length;
+        parts[1].iov_base = this.arcs.ptr;
+        parts[1].iov_len = this.arcs.length;
+
+        parts[2].iov_base = pad.ptr;
+        parts[2].iov_len = pad4(this.arcs.length);
+
+        return parts;
+    }
+}
+
+
+struct PutImage
+{
+    ubyte format;
+    Drawable drawable;
+    GContext gc;
+    ushort width;
+    ushort height;
+    short dst_x;
+    short dst_y;
+    ubyte left_pad;
+    ubyte depth;
+    byte[2] _pad0;
+    ubyte[] data;
+
+    iovec[3] toIOVector()
+    {
+        byte[3] pad;
+        iovec[3] parts;
+
+        parts[0].iov_base = &this;
+        parts[0].iov_len = this.data.offsetof;
+
+        this. = cast(typeof(this.))this.data.length;
+        parts[1].iov_base = this.data.ptr;
+        parts[1].iov_len = this.data.length;
+
+        parts[2].iov_base = pad.ptr;
+        parts[2].iov_len = pad4(this.data.length);
+
+        return parts;
+    }
+}
+
+
+struct GetImage
+{
+    ubyte format;
+    Drawable drawable;
+    short x;
+    short y;
+    ushort width;
+    ushort height;
+    uint plane_mask;
+
+    struct Reply
+    {
+        ubyte depth;
+        VisualID visual;
+        byte[20] _pad0;
+        ubyte[] data;
+
+        this(const ubyte[] buf)
+        {
+            int offset_idx = 0;
+            auto this_buf = cast(ubyte*)&this;
+            this_buf[0..this.data.offsetof] =
+                        buf[offset_idx..offset_idx+this.data.offsetof];
+            offset_idx += this.data.offsetof;
+
+            this.data = (cast(ubyte*)&buf[offset_idx])[0..this.(length*4)].dup;
+            offset_idx += this.(length*4) * ubyte.sizeof;
+            offset_idx += pad4(this.(length*4) * ubyte.sizeof);
+        }
+    }
+
+    iovec[1] toIOVector()
+    {
+        byte[3] pad;
+        iovec[1] parts;
+
+        parts[0].iov_base = &this;
+        parts[0].iov_len = this.sizeof;
+
+        return parts;
+    }
+}
+
+
+struct PolyText8
+{
+    byte[1] _pad0;
+    Drawable drawable;
+    GContext gc;
+    short x;
+    short y;
+    ubyte[] items;
+
+    iovec[3] toIOVector()
+    {
+        byte[3] pad;
+        iovec[3] parts;
+
+        parts[0].iov_base = &this;
+        parts[0].iov_len = this.items.offsetof;
+
+        this. = cast(typeof(this.))this.items.length;
+        parts[1].iov_base = this.items.ptr;
+        parts[1].iov_len = this.items.length;
+
+        parts[2].iov_base = pad.ptr;
+        parts[2].iov_len = pad4(this.items.length);
+
+        return parts;
+    }
+}
+
+
+struct PolyText16
+{
+    byte[1] _pad0;
+    Drawable drawable;
+    GContext gc;
+    short x;
+    short y;
+    ubyte[] items;
+
+    iovec[3] toIOVector()
+    {
+        byte[3] pad;
+        iovec[3] parts;
+
+        parts[0].iov_base = &this;
+        parts[0].iov_len = this.items.offsetof;
+
+        this. = cast(typeof(this.))this.items.length;
+        parts[1].iov_base = this.items.ptr;
+        parts[1].iov_len = this.items.length;
+
+        parts[2].iov_base = pad.ptr;
+        parts[2].iov_len = pad4(this.items.length);
+
+        return parts;
+    }
+}
+
+
+struct ImageText8
+{
+    ubyte string_len;
+    Drawable drawable;
+    GContext gc;
+    short x;
+    short y;
+    char[] string;
+
+    iovec[3] toIOVector()
+    {
+        byte[3] pad;
+        iovec[3] parts;
+
+        parts[0].iov_base = &this;
+        parts[0].iov_len = this.string.offsetof;
+
+        this.string_len = cast(typeof(this.string_len))this.string.length;
+        parts[1].iov_base = this.string.ptr;
+        parts[1].iov_len = this.string.length;
+
+        parts[2].iov_base = pad.ptr;
+        parts[2].iov_len = pad4(this.string.length);
+
+        return parts;
+    }
+}
+
+
+struct ImageText16
+{
+    ubyte string_len;
+    Drawable drawable;
+    GContext gc;
+    short x;
+    short y;
+    wchar[] string;
+
+    iovec[3] toIOVector()
+    {
+        byte[3] pad;
+        iovec[3] parts;
+
+        parts[0].iov_base = &this;
+        parts[0].iov_len = this.string.offsetof;
+
+        this.string_len = cast(typeof(this.string_len))this.string.length;
+        parts[1].iov_base = this.string.ptr;
+        parts[1].iov_len = this.string.length;
+
+        parts[2].iov_base = pad.ptr;
+        parts[2].iov_len = pad4(this.string.length);
+
+        return parts;
+    }
+}
+
+
+struct CreateColormap
+{
+    ubyte alloc;
+    ColorMap mid;
+    Window window;
+    VisualID visual;
+
+    iovec[1] toIOVector()
+    {
+        byte[3] pad;
+        iovec[1] parts;
+
+        parts[0].iov_base = &this;
+        parts[0].iov_len = this.sizeof;
+
+        return parts;
+    }
+}
+
+
+struct FreeColormap
+{
+    byte[1] _pad0;
+    ColorMap cmap;
+
+    iovec[1] toIOVector()
+    {
+        byte[3] pad;
+        iovec[1] parts;
+
+        parts[0].iov_base = &this;
+        parts[0].iov_len = this.sizeof;
+
+        return parts;
+    }
+}
+
+
+struct CopyColormapAndFree
+{
+    byte[1] _pad0;
+    ColorMap mid;
+    ColorMap src_cmap;
+
+    iovec[1] toIOVector()
+    {
+        byte[3] pad;
+        iovec[1] parts;
+
+        parts[0].iov_base = &this;
+        parts[0].iov_len = this.sizeof;
+
+        return parts;
+    }
+}
+
+
+struct InstallColormap
+{
+    byte[1] _pad0;
+    ColorMap cmap;
+
+    iovec[1] toIOVector()
+    {
+        byte[3] pad;
+        iovec[1] parts;
+
+        parts[0].iov_base = &this;
+        parts[0].iov_len = this.sizeof;
+
+        return parts;
+    }
+}
+
+
+struct UninstallColormap
+{
+    byte[1] _pad0;
+    ColorMap cmap;
+
+    iovec[1] toIOVector()
+    {
+        byte[3] pad;
+        iovec[1] parts;
+
+        parts[0].iov_base = &this;
+        parts[0].iov_len = this.sizeof;
+
+        return parts;
+    }
+}
+
+
+struct ListInstalledColormaps
+{
+    byte[1] _pad0;
+    Window window;
+
+    struct Reply
+    {
+        byte[1] _pad0;
+        ushort cmaps_len;
+        byte[22] _pad1;
+        ColorMap[] cmaps;
+
+        this(const ubyte[] buf)
+        {
+            int offset_idx = 0;
+            auto this_buf = cast(ubyte*)&this;
+            this_buf[0..this.cmaps.offsetof] =
+                        buf[offset_idx..offset_idx+this.cmaps.offsetof];
+            offset_idx += this.cmaps.offsetof;
+
+            this.cmaps = (cast(ColorMap*)&buf[offset_idx])[0..this.cmaps_len].dup;
+            offset_idx += this.cmaps_len * ColorMap.sizeof;
+            offset_idx += pad4(this.cmaps_len * ColorMap.sizeof);
+        }
+    }
+
+    iovec[1] toIOVector()
+    {
+        byte[3] pad;
+        iovec[1] parts;
+
+        parts[0].iov_base = &this;
+        parts[0].iov_len = this.sizeof;
+
+        return parts;
+    }
+}
+
+
+struct AllocColor
+{
+    byte[1] _pad0;
+    ColorMap cmap;
+    ushort red;
+    ushort green;
+    ushort blue;
+    byte[2] _pad1;
+
+    struct Reply
+    {
+        byte[1] _pad0;
+        ushort red;
+        ushort green;
+        ushort blue;
+        byte[2] _pad1;
+        uint pixel;
+
+        this(const ubyte[] buf)
+        {
+            int offset_idx = 0;
+            auto this_buf = cast(ubyte*)&this;
+            this_buf[0..this.sizeof] = buf[offset_idx..offset_idx+this.sizeof];
+        }
+    }
+
+    iovec[1] toIOVector()
+    {
+        byte[3] pad;
+        iovec[1] parts;
+
+        parts[0].iov_base = &this;
+        parts[0].iov_len = this.sizeof;
+
+        return parts;
+    }
+}
+
+
+struct AllocNamedColor
+{
+    byte[1] _pad0;
+    ColorMap cmap;
+    ushort name_len;
+    byte[2] _pad1;
+    char[] name;
+
+    struct Reply
+    {
+        byte[1] _pad0;
+        uint pixel;
+        ushort exact_red;
+        ushort exact_green;
+        ushort exact_blue;
+        ushort visual_red;
+        ushort visual_green;
+        ushort visual_blue;
+
+        this(const ubyte[] buf)
+        {
+            int offset_idx = 0;
+            auto this_buf = cast(ubyte*)&this;
+            this_buf[0..this.sizeof] = buf[offset_idx..offset_idx+this.sizeof];
+        }
+    }
+
+    iovec[3] toIOVector()
+    {
+        byte[3] pad;
+        iovec[3] parts;
+
+        parts[0].iov_base = &this;
+        parts[0].iov_len = this.name.offsetof;
+
+        this.name_len = cast(typeof(this.name_len))this.name.length;
+        parts[1].iov_base = this.name.ptr;
+        parts[1].iov_len = this.name.length;
+
+        parts[2].iov_base = pad.ptr;
+        parts[2].iov_len = pad4(this.name.length);
+
+        return parts;
+    }
+}
+
+
+struct AllocColorCells
+{
+    ubyte contiguous;
+    ColorMap cmap;
+    ushort colors;
+    ushort planes;
+
+    struct Reply
+    {
+        byte[1] _pad0;
+        ushort pixels_len;
+        ushort masks_len;
+        byte[20] _pad1;
+        uint[] pixels;
+        uint[] masks;
+
+        this(const ubyte[] buf)
+        {
+            int offset_idx = 0;
+            auto this_buf = cast(ubyte*)&this;
+            this_buf[0..this.pixels.offsetof] =
+                        buf[offset_idx..offset_idx+this.pixels.offsetof];
+            offset_idx += this.pixels.offsetof;
+
+            this.pixels = (cast(uint*)&buf[offset_idx])[0..this.pixels_len].dup;
+            offset_idx += this.pixels_len * uint.sizeof;
+            offset_idx += pad4(this.pixels_len * uint.sizeof);
+
+            this.masks = (cast(uint*)&buf[offset_idx])[0..this.masks_len].dup;
+            offset_idx += this.masks_len * uint.sizeof;
+            offset_idx += pad4(this.masks_len * uint.sizeof);
+        }
+    }
+
+    iovec[1] toIOVector()
+    {
+        byte[3] pad;
+        iovec[1] parts;
+
+        parts[0].iov_base = &this;
+        parts[0].iov_len = this.sizeof;
+
+        return parts;
+    }
+}
+
+
+struct AllocColorPlanes
+{
+    ubyte contiguous;
+    ColorMap cmap;
+    ushort colors;
+    ushort reds;
+    ushort greens;
+    ushort blues;
+
+    struct Reply
+    {
+        byte[1] _pad0;
+        ushort pixels_len;
+        byte[2] _pad1;
+        uint red_mask;
+        uint green_mask;
+        uint blue_mask;
+        byte[8] _pad2;
+        uint[] pixels;
+
+        this(const ubyte[] buf)
+        {
+            int offset_idx = 0;
+            auto this_buf = cast(ubyte*)&this;
+            this_buf[0..this.pixels.offsetof] =
+                        buf[offset_idx..offset_idx+this.pixels.offsetof];
+            offset_idx += this.pixels.offsetof;
+
+            this.pixels = (cast(uint*)&buf[offset_idx])[0..this.pixels_len].dup;
+            offset_idx += this.pixels_len * uint.sizeof;
+            offset_idx += pad4(this.pixels_len * uint.sizeof);
+        }
+    }
+
+    iovec[1] toIOVector()
+    {
+        byte[3] pad;
+        iovec[1] parts;
+
+        parts[0].iov_base = &this;
+        parts[0].iov_len = this.sizeof;
+
+        return parts;
+    }
+}
+
+
+struct FreeColors
+{
+    byte[1] _pad0;
+    ColorMap cmap;
+    uint plane_mask;
+    uint[] pixels;
+
+    iovec[3] toIOVector()
+    {
+        byte[3] pad;
+        iovec[3] parts;
+
+        parts[0].iov_base = &this;
+        parts[0].iov_len = this.pixels.offsetof;
+
+        this. = cast(typeof(this.))this.pixels.length;
+        parts[1].iov_base = this.pixels.ptr;
+        parts[1].iov_len = this.pixels.length;
+
+        parts[2].iov_base = pad.ptr;
+        parts[2].iov_len = pad4(this.pixels.length);
+
+        return parts;
+    }
+}
+
+
+struct StoreColors
+{
+    byte[1] _pad0;
+    ColorMap cmap;
+    ColorItem[] items;
+
+    iovec[3] toIOVector()
+    {
+        byte[3] pad;
+        iovec[3] parts;
+
+        parts[0].iov_base = &this;
+        parts[0].iov_len = this.items.offsetof;
+
+        this. = cast(typeof(this.))this.items.length;
+        parts[1].iov_base = this.items.ptr;
+        parts[1].iov_len = this.items.length;
+
+        parts[2].iov_base = pad.ptr;
+        parts[2].iov_len = pad4(this.items.length);
+
+        return parts;
+    }
+}
+
+
+struct StoreNamedColor
+{
+    ubyte flags;
+    ColorMap cmap;
+    uint pixel;
+    ushort name_len;
+    byte[2] _pad0;
+    char[] name;
+
+    iovec[3] toIOVector()
+    {
+        byte[3] pad;
+        iovec[3] parts;
+
+        parts[0].iov_base = &this;
+        parts[0].iov_len = this.name.offsetof;
+
+        this.name_len = cast(typeof(this.name_len))this.name.length;
+        parts[1].iov_base = this.name.ptr;
+        parts[1].iov_len = this.name.length;
+
+        parts[2].iov_base = pad.ptr;
+        parts[2].iov_len = pad4(this.name.length);
+
+        return parts;
+    }
+}
+
+
+struct QueryColors
+{
+    byte[1] _pad0;
+    ColorMap cmap;
+    uint[] pixels;
+
+    struct Reply
+    {
+        byte[1] _pad0;
+        ushort colors_len;
+        byte[22] _pad1;
+        RGB[] colors;
+
+        this(const ubyte[] buf)
+        {
+            int offset_idx = 0;
+            auto this_buf = cast(ubyte*)&this;
+            this_buf[0..this.colors.offsetof] =
+                        buf[offset_idx..offset_idx+this.colors.offsetof];
+            offset_idx += this.colors.offsetof;
+
+            this.colors = (cast(RGB*)&buf[offset_idx])[0..this.colors_len].dup;
+            offset_idx += this.colors_len * RGB.sizeof;
+            offset_idx += pad4(this.colors_len * RGB.sizeof);
+        }
+    }
+
+    iovec[3] toIOVector()
+    {
+        byte[3] pad;
+        iovec[3] parts;
+
+        parts[0].iov_base = &this;
+        parts[0].iov_len = this.pixels.offsetof;
+
+        this. = cast(typeof(this.))this.pixels.length;
+        parts[1].iov_base = this.pixels.ptr;
+        parts[1].iov_len = this.pixels.length;
+
+        parts[2].iov_base = pad.ptr;
+        parts[2].iov_len = pad4(this.pixels.length);
+
+        return parts;
+    }
+}
+
+
+struct LookupColor
+{
+    byte[1] _pad0;
+    ColorMap cmap;
+    ushort name_len;
+    byte[2] _pad1;
+    char[] name;
+
+    struct Reply
+    {
+        byte[1] _pad0;
+        ushort exact_red;
+        ushort exact_green;
+        ushort exact_blue;
+        ushort visual_red;
+        ushort visual_green;
+        ushort visual_blue;
+
+        this(const ubyte[] buf)
+        {
+            int offset_idx = 0;
+            auto this_buf = cast(ubyte*)&this;
+            this_buf[0..this.sizeof] = buf[offset_idx..offset_idx+this.sizeof];
+        }
+    }
+
+    iovec[3] toIOVector()
+    {
+        byte[3] pad;
+        iovec[3] parts;
+
+        parts[0].iov_base = &this;
+        parts[0].iov_len = this.name.offsetof;
+
+        this.name_len = cast(typeof(this.name_len))this.name.length;
+        parts[1].iov_base = this.name.ptr;
+        parts[1].iov_len = this.name.length;
+
+        parts[2].iov_base = pad.ptr;
+        parts[2].iov_len = pad4(this.name.length);
+
+        return parts;
+    }
+}
+
+
+struct CreateCursor
+{
+    byte[1] _pad0;
+    Cursor cid;
+    PixMap source;
+    PixMap mask;
+    ushort fore_red;
+    ushort fore_green;
+    ushort fore_blue;
+    ushort back_red;
+    ushort back_green;
+    ushort back_blue;
+    ushort x;
+    ushort y;
+
+    iovec[1] toIOVector()
+    {
+        byte[3] pad;
+        iovec[1] parts;
+
+        parts[0].iov_base = &this;
+        parts[0].iov_len = this.sizeof;
+
+        return parts;
+    }
+}
+
+
+struct CreateGlyphCursor
+{
+    byte[1] _pad0;
+    Cursor cid;
+    Font source_font;
+    Font mask_font;
+    ushort source_char;
+    ushort mask_char;
+    ushort fore_red;
+    ushort fore_green;
+    ushort fore_blue;
+    ushort back_red;
+    ushort back_green;
+    ushort back_blue;
+
+    iovec[1] toIOVector()
+    {
+        byte[3] pad;
+        iovec[1] parts;
+
+        parts[0].iov_base = &this;
+        parts[0].iov_len = this.sizeof;
+
+        return parts;
+    }
+}
+
+
+struct FreeCursor
+{
+    byte[1] _pad0;
+    Cursor cursor;
+
+    iovec[1] toIOVector()
+    {
+        byte[3] pad;
+        iovec[1] parts;
+
+        parts[0].iov_base = &this;
+        parts[0].iov_len = this.sizeof;
+
+        return parts;
+    }
+}
+
+
+struct RecolorCursor
+{
+    byte[1] _pad0;
+    Cursor cursor;
+    ushort fore_red;
+    ushort fore_green;
+    ushort fore_blue;
+    ushort back_red;
+    ushort back_green;
+    ushort back_blue;
+
+    iovec[1] toIOVector()
+    {
+        byte[3] pad;
+        iovec[1] parts;
+
+        parts[0].iov_base = &this;
+        parts[0].iov_len = this.sizeof;
+
+        return parts;
+    }
+}
+
+
+struct QueryBestSize
+{
+    ubyte klass;
+    Drawable drawable;
+    ushort width;
+    ushort height;
+
+    struct Reply
+    {
+        byte[1] _pad0;
+        ushort width;
+        ushort height;
+
+        this(const ubyte[] buf)
+        {
+            int offset_idx = 0;
+            auto this_buf = cast(ubyte*)&this;
+            this_buf[0..this.sizeof] = buf[offset_idx..offset_idx+this.sizeof];
+        }
+    }
+
+    iovec[1] toIOVector()
+    {
+        byte[3] pad;
+        iovec[1] parts;
+
+        parts[0].iov_base = &this;
+        parts[0].iov_len = this.sizeof;
+
+        return parts;
+    }
+}
+
+
+struct QueryExtension
+{
+    byte[1] _pad0;
+    ushort name_len;
+    byte[2] _pad1;
+    char[] name;
+
+    struct Reply
+    {
+        byte[1] _pad0;
+        ubyte present;
+        ubyte major_opcode;
+        ubyte first_event;
+        ubyte first_error;
+
+        this(const ubyte[] buf)
+        {
+            int offset_idx = 0;
+            auto this_buf = cast(ubyte*)&this;
+            this_buf[0..this.sizeof] = buf[offset_idx..offset_idx+this.sizeof];
+        }
+    }
+
+    iovec[3] toIOVector()
+    {
+        byte[3] pad;
+        iovec[3] parts;
+
+        parts[0].iov_base = &this;
+        parts[0].iov_len = this.name.offsetof;
+
+        this.name_len = cast(typeof(this.name_len))this.name.length;
+        parts[1].iov_base = this.name.ptr;
+        parts[1].iov_len = this.name.length;
+
+        parts[2].iov_base = pad.ptr;
+        parts[2].iov_len = pad4(this.name.length);
+
+        return parts;
+    }
+}
+
+
+struct ListExtensions
+{
+
+    struct Reply
+    {
+        ubyte names_len;
+        byte[24] _pad0;
+        Str[] names;
+
+        this(const ubyte[] buf)
+        {
+            int offset_idx = 0;
+            auto this_buf = cast(ubyte*)&this;
+            this_buf[0..this.names.offsetof] =
+                        buf[offset_idx..offset_idx+this.names.offsetof];
+            offset_idx += this.names.offsetof;
+
+            this.names.length = this.names_len;
+            foreach (ref str; this.names)
+            {
+                auto str_buf = cast(ubyte*)&str;
+                str_buf[0..str.name.offsetof] =
+                            buf[offset_idx..offset_idx+str.name.offsetof];
+                offset_idx += str.name.offsetof;
+
+                str.name = (cast(char*)&buf[offset_idx])[0..str.name_len].dup;
+                offset_idx += str.name_len * char.sizeof;
+                offset_idx += pad4(str.name_len * char.sizeof);
+            }
+        }
+    }
+
+    iovec[1] toIOVector()
+    {
+        byte[3] pad;
+        iovec[1] parts;
+
+        parts[0].iov_base = &this;
+        parts[0].iov_len = this.sizeof;
+
+        return parts;
+    }
+}
+
+
+struct ChangeKeyboardMapping
+{
+    ubyte keycode_count;
+    KeyCode first_keycode;
+    ubyte keysyms_per_keycode;
+    KeySym[] keysyms;
+
+    iovec[3] toIOVector()
+    {
+        byte[3] pad;
+        iovec[3] parts;
+
+        parts[0].iov_base = &this;
+        parts[0].iov_len = this.keysyms.offsetof;
+
+        this.(keycode_count*keysyms_per_keycode) = cast(typeof(this.(keycode_count*keysyms_per_keycode)))this.keysyms.length;
+        parts[1].iov_base = this.keysyms.ptr;
+        parts[1].iov_len = this.keysyms.length;
+
+        parts[2].iov_base = pad.ptr;
+        parts[2].iov_len = pad4(this.keysyms.length);
+
+        return parts;
+    }
+}
+
+
+struct GetKeyboardMapping
+{
+    byte[1] _pad0;
+    KeyCode first_keycode;
+    ubyte count;
+
+    struct Reply
+    {
+        ubyte keysyms_per_keycode;
+        byte[24] _pad0;
+        KeySym[] keysyms;
+
+        this(const ubyte[] buf)
+        {
+            int offset_idx = 0;
+            auto this_buf = cast(ubyte*)&this;
+            this_buf[0..this.keysyms.offsetof] =
+                        buf[offset_idx..offset_idx+this.keysyms.offsetof];
+            offset_idx += this.keysyms.offsetof;
+
+            this.keysyms = (cast(KeySym*)&buf[offset_idx])[0..this.length].dup;
+            offset_idx += this.length * KeySym.sizeof;
+            offset_idx += pad4(this.length * KeySym.sizeof);
+        }
+    }
+
+    iovec[1] toIOVector()
+    {
+        byte[3] pad;
+        iovec[1] parts;
+
+        parts[0].iov_base = &this;
+        parts[0].iov_len = this.sizeof;
+
+        return parts;
+    }
+}
+
+
+struct ChangeKeyboardControl
+{
+    byte[1] _pad0;
+    CARD32 value_mask;
+
+    iovec[1] toIOVector()
+    {
+        byte[3] pad;
+        iovec[1] parts;
+
+        parts[0].iov_base = &this;
+        parts[0].iov_len = this.sizeof;
+
+        return parts;
+    }
+}
+
+
+struct GetKeyboardControl
+{
+
+    struct Reply
+    {
+        ubyte global_auto_repeat;
+        uint led_mask;
+        ubyte key_click_percent;
+        ubyte bell_percent;
+        ushort bell_pitch;
+        ushort bell_duration;
+        byte[2] _pad0;
+        ubyte[32] auto_repeats;
+
+        this(const ubyte[] buf)
+        {
+            int offset_idx = 0;
+            auto this_buf = cast(ubyte*)&this;
+            this_buf[0..this.auto_repeats.offsetof] =
+                        buf[offset_idx..offset_idx+this.auto_repeats.offsetof];
+            offset_idx += this.auto_repeats.offsetof;
+
+            this.auto_repeats = (cast(ubyte*)&buf[offset_idx])[0..this.32].dup;
+            offset_idx += this.32 * ubyte.sizeof;
+            offset_idx += pad4(this.32 * ubyte.sizeof);
+        }
+    }
+
+    iovec[1] toIOVector()
+    {
+        byte[3] pad;
+        iovec[1] parts;
+
+        parts[0].iov_base = &this;
+        parts[0].iov_len = this.sizeof;
+
+        return parts;
+    }
+}
+
+
+struct Bell
+{
+    byte percent;
+
+    iovec[1] toIOVector()
+    {
+        byte[3] pad;
+        iovec[1] parts;
+
+        parts[0].iov_base = &this;
+        parts[0].iov_len = this.sizeof;
+
+        return parts;
+    }
+}
+
+
+struct ChangePointerControl
+{
+    byte[1] _pad0;
+    short acceleration_numerator;
+    short acceleration_denominator;
+    short threshold;
+    ubyte do_acceleration;
+    ubyte do_threshold;
+
+    iovec[1] toIOVector()
+    {
+        byte[3] pad;
+        iovec[1] parts;
+
+        parts[0].iov_base = &this;
+        parts[0].iov_len = this.sizeof;
+
+        return parts;
+    }
+}
+
+
+struct GetPointerControl
+{
+
+    struct Reply
+    {
+        byte[1] _pad0;
+        ushort acceleration_numerator;
+        ushort acceleration_denominator;
+        ushort threshold;
+        byte[18] _pad1;
+
+        this(const ubyte[] buf)
+        {
+            int offset_idx = 0;
+            auto this_buf = cast(ubyte*)&this;
+            this_buf[0..this.sizeof] = buf[offset_idx..offset_idx+this.sizeof];
+        }
+    }
+
+    iovec[1] toIOVector()
+    {
+        byte[3] pad;
+        iovec[1] parts;
+
+        parts[0].iov_base = &this;
+        parts[0].iov_len = this.sizeof;
+
+        return parts;
+    }
+}
+
+
+struct SetScreenSaver
+{
+    byte[1] _pad0;
+    short timeout;
+    short interval;
+    ubyte prefer_blanking;
+    ubyte allow_exposures;
+
+    iovec[1] toIOVector()
+    {
+        byte[3] pad;
+        iovec[1] parts;
+
+        parts[0].iov_base = &this;
+        parts[0].iov_len = this.sizeof;
+
+        return parts;
+    }
+}
+
+
+struct GetScreenSaver
+{
+
+    struct Reply
+    {
+        byte[1] _pad0;
+        ushort timeout;
+        ushort interval;
+        ubyte prefer_blanking;
+        ubyte allow_exposures;
+        byte[18] _pad1;
+
+        this(const ubyte[] buf)
+        {
+            int offset_idx = 0;
+            auto this_buf = cast(ubyte*)&this;
+            this_buf[0..this.sizeof] = buf[offset_idx..offset_idx+this.sizeof];
+        }
+    }
+
+    iovec[1] toIOVector()
+    {
+        byte[3] pad;
+        iovec[1] parts;
+
+        parts[0].iov_base = &this;
+        parts[0].iov_len = this.sizeof;
+
+        return parts;
+    }
+}
+
+
+struct ChangeHosts
+{
+    ubyte mode;
+    ubyte family;
+    byte[1] _pad0;
+    ushort address_len;
+    char[] address;
+
+    iovec[3] toIOVector()
+    {
+        byte[3] pad;
+        iovec[3] parts;
+
+        parts[0].iov_base = &this;
+        parts[0].iov_len = this.address.offsetof;
+
+        this.address_len = cast(typeof(this.address_len))this.address.length;
+        parts[1].iov_base = this.address.ptr;
+        parts[1].iov_len = this.address.length;
+
+        parts[2].iov_base = pad.ptr;
+        parts[2].iov_len = pad4(this.address.length);
+
+        return parts;
+    }
+}
+
+
+struct ListHosts
+{
+
+    struct Reply
+    {
+        ubyte mode;
+        ushort hosts_len;
+        byte[22] _pad0;
+        Host[] hosts;
+
+        this(const ubyte[] buf)
+        {
+            int offset_idx = 0;
+            auto this_buf = cast(ubyte*)&this;
+            this_buf[0..this.hosts.offsetof] =
+                        buf[offset_idx..offset_idx+this.hosts.offsetof];
+            offset_idx += this.hosts.offsetof;
+
+            this.hosts.length = this.hosts_len;
+            foreach (ref host; this.hosts)
+            {
+                auto host_buf = cast(ubyte*)&host;
+                host_buf[0..host.address.offsetof] =
+                            buf[offset_idx..offset_idx+host.address.offsetof];
+                offset_idx += host.address.offsetof;
+
+                host.address = (cast(ubyte*)&buf[offset_idx])[0..host.address_len].dup;
+                offset_idx += host.address_len * ubyte.sizeof;
+                offset_idx += pad4(host.address_len * ubyte.sizeof);
+            }
+        }
+    }
+
+    iovec[1] toIOVector()
+    {
+        byte[3] pad;
+        iovec[1] parts;
+
+        parts[0].iov_base = &this;
+        parts[0].iov_len = this.sizeof;
+
+        return parts;
+    }
+}
+
+
+struct SetAccessControl
+{
+    ubyte mode;
+
+    iovec[1] toIOVector()
+    {
+        byte[3] pad;
+        iovec[1] parts;
+
+        parts[0].iov_base = &this;
+        parts[0].iov_len = this.sizeof;
+
+        return parts;
+    }
+}
+
+
+struct SetCloseDownMode
+{
+    ubyte mode;
+
+    iovec[1] toIOVector()
+    {
+        byte[3] pad;
+        iovec[1] parts;
+
+        parts[0].iov_base = &this;
+        parts[0].iov_len = this.sizeof;
+
+        return parts;
+    }
+}
+
+
+struct KillClient
+{
+    byte[1] _pad0;
+    uint resource;
+
+    iovec[1] toIOVector()
+    {
+        byte[3] pad;
+        iovec[1] parts;
+
+        parts[0].iov_base = &this;
+        parts[0].iov_len = this.sizeof;
+
+        return parts;
+    }
+}
+
+
+struct RotateProperties
+{
+    byte[1] _pad0;
+    Window window;
+    ushort atoms_len;
+    short delta;
+    Atom[] atoms;
+
+    iovec[3] toIOVector()
+    {
+        byte[3] pad;
+        iovec[3] parts;
+
+        parts[0].iov_base = &this;
+        parts[0].iov_len = this.atoms.offsetof;
+
+        this.atoms_len = cast(typeof(this.atoms_len))this.atoms.length;
+        parts[1].iov_base = this.atoms.ptr;
+        parts[1].iov_len = this.atoms.length;
+
+        parts[2].iov_base = pad.ptr;
+        parts[2].iov_len = pad4(this.atoms.length);
+
+        return parts;
+    }
+}
+
+
+struct ForceScreenSaver
+{
+    ubyte mode;
+
+    iovec[1] toIOVector()
+    {
+        byte[3] pad;
+        iovec[1] parts;
+
+        parts[0].iov_base = &this;
+        parts[0].iov_len = this.sizeof;
+
+        return parts;
+    }
+}
+
+
+struct SetPointerMapping
+{
+    ubyte map_len;
+    ubyte[] map;
+
+    struct Reply
+    {
+        ubyte status;
+
+        this(const ubyte[] buf)
+        {
+            int offset_idx = 0;
+            auto this_buf = cast(ubyte*)&this;
+            this_buf[0..this.sizeof] = buf[offset_idx..offset_idx+this.sizeof];
+        }
+    }
+
+    iovec[3] toIOVector()
+    {
+        byte[3] pad;
+        iovec[3] parts;
+
+        parts[0].iov_base = &this;
+        parts[0].iov_len = this.map.offsetof;
+
+        this.map_len = cast(typeof(this.map_len))this.map.length;
+        parts[1].iov_base = this.map.ptr;
+        parts[1].iov_len = this.map.length;
+
+        parts[2].iov_base = pad.ptr;
+        parts[2].iov_len = pad4(this.map.length);
+
+        return parts;
+    }
+}
+
+
+struct GetPointerMapping
+{
+
+    struct Reply
+    {
+        ubyte map_len;
+        byte[24] _pad0;
+        ubyte[] map;
+
+        this(const ubyte[] buf)
+        {
+            int offset_idx = 0;
+            auto this_buf = cast(ubyte*)&this;
+            this_buf[0..this.map.offsetof] =
+                        buf[offset_idx..offset_idx+this.map.offsetof];
+            offset_idx += this.map.offsetof;
+
+            this.map = (cast(ubyte*)&buf[offset_idx])[0..this.map_len].dup;
+            offset_idx += this.map_len * ubyte.sizeof;
+            offset_idx += pad4(this.map_len * ubyte.sizeof);
+        }
+    }
+
+    iovec[1] toIOVector()
+    {
+        byte[3] pad;
+        iovec[1] parts;
+
+        parts[0].iov_base = &this;
+        parts[0].iov_len = this.sizeof;
+
+        return parts;
+    }
+}
+
+
+struct SetModifierMapping
+{
+    ubyte keycodes_per_modifier;
+    KeyCode[] keycodes;
+
+    struct Reply
+    {
+        ubyte status;
+
+        this(const ubyte[] buf)
+        {
+            int offset_idx = 0;
+            auto this_buf = cast(ubyte*)&this;
+            this_buf[0..this.sizeof] = buf[offset_idx..offset_idx+this.sizeof];
+        }
+    }
+
+    iovec[3] toIOVector()
+    {
+        byte[3] pad;
+        iovec[3] parts;
+
+        parts[0].iov_base = &this;
+        parts[0].iov_len = this.keycodes.offsetof;
+
+        this.(keycodes_per_modifier*8) = cast(typeof(this.(keycodes_per_modifier*8)))this.keycodes.length;
+        parts[1].iov_base = this.keycodes.ptr;
+        parts[1].iov_len = this.keycodes.length;
+
+        parts[2].iov_base = pad.ptr;
+        parts[2].iov_len = pad4(this.keycodes.length);
+
+        return parts;
+    }
+}
+
+
+struct GetModifierMapping
+{
+
+    struct Reply
+    {
+        ubyte keycodes_per_modifier;
+        byte[24] _pad0;
+        KeyCode[] keycodes;
+
+        this(const ubyte[] buf)
+        {
+            int offset_idx = 0;
+            auto this_buf = cast(ubyte*)&this;
+            this_buf[0..this.keycodes.offsetof] =
+                        buf[offset_idx..offset_idx+this.keycodes.offsetof];
+            offset_idx += this.keycodes.offsetof;
+
+            this.keycodes = (cast(KeyCode*)&buf[offset_idx])[0..this.(keycodes_per_modifier*8)].dup;
+            offset_idx += this.(keycodes_per_modifier*8) * KeyCode.sizeof;
+            offset_idx += pad4(this.(keycodes_per_modifier*8) * KeyCode.sizeof);
+        }
+    }
+
+    iovec[1] toIOVector()
+    {
+        byte[3] pad;
+        iovec[1] parts;
+
+        parts[0].iov_base = &this;
+        parts[0].iov_len = this.sizeof;
+
+        return parts;
+    }
+}
+
+
+struct NoOperation
+{
+
+    iovec[1] toIOVector()
+    {
+        byte[3] pad;
+        iovec[1] parts;
+
+        parts[0].iov_base = &this;
+        parts[0].iov_len = this.sizeof;
+
+        return parts;
+    }
+}
 
 
 /**

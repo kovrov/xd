@@ -143,17 +143,18 @@ class StructInfo:
 		#print "#"+' '*indent+"... True"
 		return True
 
-	def src(self, options={}, idt=0):
+	def src(self, idt=0, from_bytes=False, to_iovec=False):
+		print
 		print "    " * idt + "struct", self.name
 		print "    " * idt + "{"
 		idt += 1
 		for member in self.members:
 			if member.type == 'struct':
-				member.src(idt=idt)
+				member.src(idt=idt, from_bytes=True)
 			else:
 				print "    " * idt + member.type, member.name + ";"
 
-		if 'from_bytes' in options:
+		if from_bytes:
 			def nested_from_bytes(name, members, idt):
 				var_fields = [i for i in members if isinstance(i, ListMember)]
 				print "    " * idt + "auto %s_buf = cast(ubyte*)&%s;" % (name,name)
@@ -189,7 +190,7 @@ class StructInfo:
 			idt -= 1
 			print "    " * idt + "}"
 
-		if 'to_iovec' in options:
+		if to_iovec:
 			def nested_to_iovec(name, members, part_idx, idt):
 				var_fields = [m for m in self.members if isinstance(m, ListMember)]
 				print "    " * idt + "parts[%d].iov_base = &%s;" % (part_idx, name)
@@ -275,11 +276,11 @@ def tr(original):
 
 
 def src_options(name):
-	options = []
+	options = {}
 	if name.endswith('Response') or name in ['Setup', ]:
-		options.append('from_bytes')
+		options['from_bytes'] = True
 	if name.endswith('Request'):
-		options.append('to_iovec')
+		options['to_iovec'] = True
 	return options 
 
 
@@ -295,13 +296,17 @@ def main():
 			typedef_typeinfo = TypedefInfo(i)
 			declarations['typedefs'].append(typedef_typeinfo)
 			type_registry[typedef_typeinfo.name] = typedef_typeinfo
-		elif i.tag in ['struct', 'request']:
+		elif i.tag == 'struct':
 			# skipping exceptions
 			if i.attrib['name'] in ['CHAR2B',]:
 				continue
 			struct_typeinfo = StructInfo(i)
 			declarations['structs'].append(struct_typeinfo)
 			type_registry[struct_typeinfo.name] = struct_typeinfo
+		elif i.tag == 'request':
+			request_typeinfo = StructInfo(i)
+			declarations['requests'].append(request_typeinfo)
+			type_registry[request_typeinfo.name] = request_typeinfo
 		if i.tag == 'enum':
 			enum_typeinfo = EnumInfo(i)
 			declarations['enums'].append(enum_typeinfo)
@@ -338,7 +343,7 @@ import xd.util: iovec, pad4;
 		#for line in struct_typeinfo.xml.splitlines():
 		#	print " *", line
 		#print " */"
-		struct_typeinfo.src(src_options(struct_typeinfo.name))
+		struct_typeinfo.src(**src_options(struct_typeinfo.name))
 
 	print "\n"
 	print "/**"
@@ -364,7 +369,12 @@ import xd.util: iovec, pad4;
 	print " * requests"
 	print " */"
 	for request_typeinfo in declarations['requests']:
-		print request_typeinfo
+		print
+		#print "/*"
+		#for line in request_typeinfo.xml.splitlines():
+		#	print " *", line
+		#print " */"
+		request_typeinfo.src(to_iovec=True)
 
 	print "\n"
 	print "/**"
