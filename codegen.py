@@ -112,11 +112,19 @@ foreach (key; opt.keys.sort)
 }
 '''
 
-class ExprFieldMember:
+class ExprFieldMember(object):
 	def __init__(self, element, ctx):
-		# TODO: complete!
 		self.name = tr_name(element.attrib['name'])
 		self.type = tr_name(element.attrib['type'])
+		def flatten(em):
+			if em.tag == 'op':
+				a,b = em
+				return '(' + " ".join((flatten(a), em.attrib['op'], flatten(b))) + ')'
+			assert 0 == len(em)
+			assert 0 == len(em.attrib)
+			return em.text
+		assert len(element) == 1
+		self.value_expr = flatten(element[0])
 
 
 class StructInfo:
@@ -210,6 +218,10 @@ class StructInfo:
 					print "    " * idt + "parts[%d].iov_base = pad.ptr;" % part_idx
 					print "    " * idt + "parts[%d].iov_len = pad4(%s.%s.length);" % (part_idx, name,member.name)
 					part_idx += 1
+				for member in self.members:
+					if type(member) is ExprFieldMember:
+						print
+						print "    " * idt + name + '.' + member.name, '=', member.value_expr + ';'
 
 			iovec_len = 1 + len([m for m in self.members if isinstance(m, ListMember)]) * 2 # FIXME:
 

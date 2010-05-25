@@ -2210,6 +2210,8 @@ struct QueryTextExtents
         parts[2].iov_base = pad.ptr;
         parts[2].iov_len = pad4(this.string.length);
 
+        this.odd_length = (string_len & 1);
+
         return parts;
     }
 }
