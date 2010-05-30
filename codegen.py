@@ -14,12 +14,14 @@ class PrimitiveInfo:
 
 class EnumInfo:
 	def __init__(self, element):
-		self.name = tr(element.attrib['name'])
+		self.name = element.attrib['name'].upper()
 		self.members = []
 		self.xml = tostring(element).strip()
 		self.type = None
 		for i in element:
-			if i[0].tag == 'value':
+			if len(i) == 0:
+				init = None;
+			elif i[0].tag == 'value':
 				init = i[0].text
 			elif i[0].tag == 'bit':
 				init = i[0].text
@@ -63,7 +65,8 @@ class FieldMember:
 	def fixed(self):
 		#print "#"+' '*indent+"FieldMember(%s).fixed -> %s" % (self.name, type_registry[self.type].fixed())
 		return type_registry[self.type].fixed()
-
+	def declare(self, idt):
+		print "    " * idt + self.type, self.name + ";"
 
 class PadMember:
 	def __init__(self, element, ctx):
@@ -76,9 +79,11 @@ class PadMember:
 	def fixed(self):
 		#print "#"+' '*indent+"PadMember(%s).fixed -> True" % self.name
 		return True
+	def declare(self, idt):
+		print "    " * idt + self.type, self.name + ";"
 
 
-class ListMember:
+class ListMember(object):
 	def __init__(self, element, ctx):
 		def flatten(em):
 			if em.tag == 'op':
@@ -95,13 +100,48 @@ class ListMember:
 	def fixed(self):
 		#print "#"+' '*indent+"ListMember(%s).fixed -> %s" % (self.name, self.length_expr.isdigit())
 		return self.length_expr.isdigit()
+	def declare(self, idt):
+		#print "    " * idt + tr('CARD32') + "[%s] values;" % self.type
+		print "    " * idt + self.type, self.name + ";"
+	def to_iovec(self, idt, ctx_name, part_idx):
+		print
+		# FIXME !!! (?)
+		if self.length_expr:
+			# TODO: context pointer
+			print "    " * idt + "assert (%s == %s.%s.length);" % (self.length_expr, ctx_name,self.name)
+		print "    " * idt + "parts[%d].iov_base = %s.%s.ptr;" % (part_idx, ctx_name,self.name)
+		print "    " * idt + "parts[%d].iov_len = %s.%s.length * %s.sizeof;" % (part_idx, ctx_name,self.name, self.element_type)
+		part_idx += 1
+		print
+		print "    " * idt + "parts[%d].iov_base = null;" % part_idx
+		print "    " * idt + "parts[%d].iov_len = pad4(%s.%s.length * %s.sizeof);" % (part_idx, ctx_name,self.name, self.element_type)
+		return part_idx + 1
+	def offsetof_name(self):
+		return self.name
 
 
-class ValueParamMember:
+class ValueParamMember(object):
 	def __init__(self, element, ctx):
-		# TODO: complete!
-		self.name = tr_name(element.attrib['value-mask-name'])
-		self.type = tr_name(element.attrib['value-mask-type'])
+		self.mask_type = tr(element.attrib['value-mask-type'])
+		self.mask_name = tr_name(element.attrib['value-mask-name'])
+		self.list_name = tr_name(element.attrib['value-list-name'])
+	def fixed(self):
+		#print "#"+' '*indent+"ListMember(%s).fixed -> %s" % (self.name, self.length_expr.isdigit())
+		return False
+	def declare(self, idt):
+		print "    " * idt + self.mask_type, self.mask_name + ";"
+		print "    " * idt + tr('CARD32')+"[]", self.list_name + ";"
+	def to_iovec(self, idt, ctx_name, part_idx):
+		print
+		print "    " * idt + "parts[%d].iov_base = %s.%s.ptr;" % (part_idx, ctx_name,self.list_name)
+		print "    " * idt + "parts[%d].iov_len = bitcount(%s.%s) * %s.sizeof;" % (part_idx, ctx_name,self.mask_name, tr('CARD32'))
+		part_idx += 1
+		print
+		print "    " * idt + "parts[%d].iov_base = null;" % part_idx
+		print "    " * idt + "parts[%d].iov_len = pad4(%s.%s.length);" % (part_idx, ctx_name,self.list_name)
+		return part_idx + 1
+	def offsetof_name(self):
+		return self.list_name
 '''
 uint mask;
 uint[] values;
@@ -115,7 +155,7 @@ foreach (key; opt.keys.sort)
 class ExprFieldMember(object):
 	def __init__(self, element, ctx):
 		self.name = tr_name(element.attrib['name'])
-		self.type = tr_name(element.attrib['type'])
+		self.type = tr(element.attrib['type'])
 		def flatten(em):
 			if em.tag == 'op':
 				a,b = em
@@ -125,17 +165,25 @@ class ExprFieldMember(object):
 			return em.text
 		assert len(element) == 1
 		self.value_expr = flatten(element[0])
+	def declare(self, idt):
+		print "    " * idt + self.type, self.name + ";"
 
 
 class StructInfo:
 	def __init__(self, element, ctx=None):
 		self.type = 'struct'
+		# FIXME: standard fields - reply
 		self.name = 'Reply' if element.tag == 'reply' else tr(element.attrib['name'])
 		self.members = []
 		self.xml = tostring(element).strip()
 		ctx = {'structinfo': self} # just in case...
 		for i in element:
-			member = {'field':FieldMember, 'pad':PadMember, 'list':ListMember, 'valueparam':ValueParamMember, 'reply':StructInfo, 'exprfield':ExprFieldMember}[i.tag](i, ctx)
+			member = { 'field':FieldMember,
+			           'pad':PadMember,
+			           'list':ListMember,
+			           'valueparam':ValueParamMember,
+			           'reply':StructInfo,
+			           'exprfield':ExprFieldMember }[i.tag](i, ctx)
 			self.members.append(member)
 
 	def fixed(self):
@@ -150,6 +198,8 @@ class StructInfo:
 		indent -= 1
 		#print "#"+' '*indent+"... True"
 		return True
+	def declare(self, idt):
+		self.src(idt=idt, from_bytes=True)
 
 	def src(self, idt=0, from_bytes=False, to_iovec=False):
 		print
@@ -157,35 +207,35 @@ class StructInfo:
 		print "    " * idt + "{"
 		idt += 1
 		for member in self.members:
-			if member.type == 'struct':
-				member.src(idt=idt, from_bytes=True)
-			else:
-				print "    " * idt + member.type, member.name + ";"
+			member.declare(idt)
 
 		if from_bytes:
-			def nested_from_bytes(name, members, idt):
-				var_fields = [i for i in members if isinstance(i, ListMember)]
-				print "    " * idt + "auto %s_buf = cast(ubyte*)&%s;" % (name,name)
+			def nested_from_bytes(ctx_name, members, idt):
+				var_fields = [i for i in members if type(i) is ListMember]
+				print "    " * idt + "auto %s_buf = cast(ubyte*)&%s;" % (ctx_name,ctx_name)
 				if len(var_fields) == 0:
-					print "    " * idt + "%s_buf[0..%s.sizeof] = buf[offset_idx..offset_idx+%s.sizeof];" % (name,name,name)
+					print "    " * idt + "%s_buf[0..%s.sizeof] = buf[offset_idx..offset_idx+%s.sizeof];" % (ctx_name,ctx_name,ctx_name)
 				else:
-					print "    " * idt + "%s_buf[0..%s.%s.offsetof] =" % (name,name,var_fields[0].name)
-					print "    " * (idt+3) + "buf[offset_idx..offset_idx+%s.%s.offsetof];" % (name,var_fields[0].name)
-					print "    " * idt + "offset_idx += %s.%s.offsetof;" % (name,var_fields[0].name)
+					print "    " * idt + "%s_buf[0..%s.%s.offsetof] =" % (ctx_name,ctx_name,var_fields[0].name)
+					print "    " * (idt+3) + "buf[offset_idx..offset_idx+%s.%s.offsetof];" % (ctx_name,var_fields[0].name)
+					print "    " * idt + "offset_idx += %s.%s.offsetof;" % (ctx_name,var_fields[0].name)
 				for m in var_fields:
 					print
 					element_typeinfo = type_registry[m.element_type]
 					if element_typeinfo.fixed():
 						# dupe slice of elements of fixed type
-						print "    " * idt + "%s.%s = (cast(%s*)&buf[offset_idx])[0..%s.%s].dup;" % (name,m.name, m.element_type, name,m.length_expr)
-						print "    " * idt + "offset_idx += %s.%s * %s.sizeof;" % (name,m.length_expr, m.element_type)
+						# FIXME: context pointer
+						print "    " * idt + "%s.%s = (cast(%s*)&buf[offset_idx])[0..%s].dup;" % (
+						                      ctx_name,m.name, m.element_type, m.length_expr)
+						print "    " * idt + "offset_idx += %s * %s.sizeof;" % (m.length_expr, m.element_type)
 					   #if m.type.size % 4 != 0:
-						print "    " * idt + "offset_idx += pad4(%s.%s * %s.sizeof);" % (name,m.length_expr, m.element_type)
+						print "    " * idt + "offset_idx += pad4(%s * %s.sizeof);" % (m.length_expr, m.element_type)
 					else:
 						# allocate array and set each element (vaiable-length)
-						print "    " * idt + "%s.%s.length = %s.%s;" % (name,m.name, name,m.length_expr)
+						print "    " * idt + "%s.%s.length = %s.%s;" % (ctx_name,m.name, ctx_name,m.length_expr)
 						item = m.element_type.lower()
-						print "    " * idt + "foreach (ref %s; %s.%s)" % (item, name,m.name)
+						# TODO: const ref?
+						print "    " * idt + "foreach (ref %s; %s.%s)" % (item, ctx_name,m.name)
 						print "    " * idt + "{"
 						nested_from_bytes(item, element_typeinfo.members, idt + 1)  # recursion!
 						print "    " * idt + "}"
@@ -199,40 +249,38 @@ class StructInfo:
 			print "    " * idt + "}"
 
 		if to_iovec:
-			def nested_to_iovec(name, members, part_idx, idt):
-				var_fields = [m for m in self.members if isinstance(m, ListMember)]
-				print "    " * idt + "parts[%d].iov_base = &%s;" % (part_idx, name)
-				if len(var_fields) == 0:
-					print "    " * idt + "parts[%d].iov_len = %s.sizeof;" % (part_idx, name)
-					return
-				member = var_fields[0]
-				print "    " * idt + "parts[%d].iov_len = %s.%s.offsetof;" % (part_idx, name,member.name)
-				part_idx += 1
-				for member in var_fields:
-					print
-					print "    " * idt + "%s.%s = cast(typeof(%s.%s))%s.%s.length;" % (name,member.length_expr, name,member.length_expr, name,member.name)
-					print "    " * idt + "parts[%d].iov_base = %s.%s.ptr;" % (part_idx, name,member.name)
-					print "    " * idt + "parts[%d].iov_len = %s.%s.length;" % (part_idx, name,member.name)
-					part_idx += 1
-					print
-					print "    " * idt + "parts[%d].iov_base = pad.ptr;" % part_idx
-					print "    " * idt + "parts[%d].iov_len = pad4(%s.%s.length);" % (part_idx, name,member.name)
-					part_idx += 1
-				for member in self.members:
-					if type(member) is ExprFieldMember:
-						print
-						print "    " * idt + name + '.' + member.name, '=', member.value_expr + ';'
-
-			iovec_len = 1 + len([m for m in self.members if isinstance(m, ListMember)]) * 2 # FIXME:
-
+			var_fields = [m for m in self.members if type(m) in [ListMember, ValueParamMember]]
+			iovec_len = (1 + len(var_fields)) * 2
 			print
 			print "    " * idt + "iovec[%d] toIOVector()" % iovec_len
 			print "    " * idt + "{"
 			idt += 1
-			print "    " * idt + "byte[3] pad;"
 			print "    " * idt + "iovec[%d] parts;" % iovec_len
 			print
-			nested_to_iovec("this", self.members, 0, idt)
+			part_idx = 0
+			print "    " * idt + "parts[%d].iov_base = &this;" % part_idx
+			if len(var_fields) == 0:
+				print "    " * idt + "parts[%d].iov_len = this.sizeof;" % part_idx
+				part_idx += 1
+				print
+				print "    " * idt + "// FIXME: padding needed?"
+				print "    " * idt + "parts[%d].iov_base = null;" % part_idx
+				print "    " * idt + "parts[%d].iov_len = pad4(this.sizeof);" % part_idx
+			else:
+				print "    " * idt + "parts[%d].iov_len = this.%s.offsetof;" % (part_idx, var_fields[0].offsetof_name())
+				part_idx += 1
+				print
+				print "    " * idt + "// FIXME: padding needed?"
+				print "    " * idt + "parts[%d].iov_base = null;" % part_idx
+				print "    " * idt + "parts[%d].iov_len = pad4(this.%s.offsetof);" % (part_idx, var_fields[0].offsetof_name())
+				part_idx += 1
+				for member in var_fields:
+					part_idx = member.to_iovec(idt, 'this', part_idx)
+				for member in (m for m in self.members if type(m) is ExprFieldMember):
+					print
+					print "    " * idt + '// TODO: explain this'
+					# FIXME: member.name is wrong!
+					print "    " * idt + "this." + member.name, '=', member.value_expr + ';'
 			print
 			print "    " * idt + "return parts;"
 			idt -= 1
@@ -246,8 +294,9 @@ def tr_name(original):
 	if original.isdigit():
 		return "_"+original
 	return {
-		# class is keyword in D
+		# clashed keywords in D
 		'class': 'klass',
+		'delete': 'del',
 		}.get(original, original)
 
 
@@ -293,7 +342,7 @@ def src_options(name):
 		options['from_bytes'] = True
 	if name.endswith('Request'):
 		options['to_iovec'] = True
-	return options 
+	return options
 
 
 def main():
@@ -319,10 +368,11 @@ def main():
 			request_typeinfo = StructInfo(i)
 			declarations['requests'].append(request_typeinfo)
 			type_registry[request_typeinfo.name] = request_typeinfo
-		if i.tag == 'enum':
+		elif i.tag == 'enum':
 			enum_typeinfo = EnumInfo(i)
 			declarations['enums'].append(enum_typeinfo)
 			type_registry[enum_typeinfo.name] = enum_typeinfo
+		# TODO: xidunions
 		#else:
 		#	declarations[i.tag].append([i.attrib['name'],])
 
@@ -332,10 +382,10 @@ module xd.xproto;
 
 version (Posix)
 {
-	//import core.sys.posix.sys.uio: iovec;
+    //import core.sys.posix.sys.uio: iovec;
 }
 
-import xd.util: iovec, pad4;
+import xd.util: iovec, pad4, bitcount;
 """
 
 	print
