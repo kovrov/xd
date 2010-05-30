@@ -20,6 +20,8 @@ typedef uint Font;
 typedef uint GContext;
 typedef uint ColorMap;
 typedef uint Atom;
+typedef uint Drawable;
+typedef uint Fontable;
 typedef uint VisualID;
 typedef uint Timestamp;
 typedef uint KeySym;
@@ -4824,11 +4826,6 @@ struct NoOperation
 
 /**
  * errorcopys
- */
-
-
-/**
- * xidunion
  */
 
 

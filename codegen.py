@@ -44,7 +44,7 @@ class TypedefInfo:
 		if element.tag == 'typedef':
 			self.name = tr(element.attrib['newname'])
 			self.type = tr(element.attrib['oldname'])
-		elif 'xidtype':
+		else:
 			self.name = tr(element.attrib['name'])
 			self.type = "uint"
 		self.xml = tostring(element).strip()
@@ -350,10 +350,10 @@ def main():
 	tree.parse("xproto.xml")
 
 	#declarations = dict((i.tag, []) for i in tree.getroot())
-	declarations = dict((i, []) for i in ['typedefs','structs','unions','enums','requests','errorcopies','xidunions','errors','events','eventcopies'])
+	declarations = dict((i, []) for i in ['typedefs','structs','unions','enums','requests','errorcopies','errors','events','eventcopies'])
 
 	for i in tree.getroot():
-		if i.tag in ['typedef', 'xidtype']:
+		if i.tag in ['typedef', 'xidtype', 'xidunion']:
 			typedef_typeinfo = TypedefInfo(i)
 			declarations['typedefs'].append(typedef_typeinfo)
 			type_registry[typedef_typeinfo.name] = typedef_typeinfo
@@ -372,7 +372,6 @@ def main():
 			enum_typeinfo = EnumInfo(i)
 			declarations['enums'].append(enum_typeinfo)
 			type_registry[enum_typeinfo.name] = enum_typeinfo
-		# TODO: xidunions
 		#else:
 		#	declarations[i.tag].append([i.attrib['name'],])
 
@@ -444,13 +443,6 @@ import xd.util: iovec, pad4, bitcount;
 	print " */"
 	for errorcopy_typeinfo in declarations['errorcopies']:
 		print errorcopy_typeinfo
-
-	print "\n"
-	print "/**"
-	print " * xidunion"
-	print " */"
-	for xidunion_typeinfo in declarations['xidunions']:
-		print xidunion_typeinfo
 
 	print "\n"
 	print "/**"
