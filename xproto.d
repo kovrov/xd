@@ -2451,7 +2451,7 @@ struct QueryTextExtents
         parts[3].iov_len = pad4(this.string.length * wchar.sizeof);
 
         // TODO: explain this
-        this.odd_length = (string_len & 1);
+        this.odd_length = (this.string.length & 1);
 
         return parts;
     }

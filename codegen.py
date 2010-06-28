@@ -105,9 +105,8 @@ class ListMember(object):
 		print "    " * idt + self.type, self.name + ";"
 	def to_iovec(self, idt, ctx_name, part_idx):
 		print
-		# FIXME !!! (?)
 		if self.length_expr:
-			# TODO: context pointer
+			# FIXME: context pointer for length_expr (?)
 			print "    " * idt + "assert (%s == %s.%s.length);" % (self.length_expr, ctx_name,self.name)
 		print "    " * idt + "parts[%d].iov_base = %s.%s.ptr;" % (part_idx, ctx_name,self.name)
 		print "    " * idt + "parts[%d].iov_len = %s.%s.length * %s.sizeof;" % (part_idx, ctx_name,self.name, self.element_type)
@@ -156,17 +155,35 @@ class ExprFieldMember(object):
 	def __init__(self, element, ctx):
 		self.name = tr_name(element.attrib['name'])
 		self.type = tr(element.attrib['type'])
+		self.element = element
+	def declare(self, idt):
+		print "    " * idt + self.type, self.name + ";"
+	def value_expr(self, ctx_members, ctx_name='this'):
+		'''
+		FIXME: The `flatten` function have to be aware of other members
+		presence and do some deduction if necessary...
+		Consider to use lazy value_expr generation.
+		'''
+		# xcbgen.expr.Expression
 		def flatten(em):
 			if em.tag == 'op':
 				a,b = em
 				return '(' + " ".join((flatten(a), em.attrib['op'], flatten(b))) + ')'
+			if em.tag == 'fieldref':
+				assert 0 == len(em)
+				assert 0 == len(em.attrib)
+				for member in ctx_members:
+					if member.name == em.text:
+						return '.'.join((ctx_name, em.text))
+				# it is not a datamember, assuming this is a length
+				assert em.text.endswith('_len'), em.text
+				return '.'.join((ctx_name, em.text.rsplit('_', 1)[0] + '.length'))
+			# em.tag == 'value'
 			assert 0 == len(em)
 			assert 0 == len(em.attrib)
 			return em.text
-		assert len(element) == 1
-		self.value_expr = flatten(element[0])
-	def declare(self, idt):
-		print "    " * idt + self.type, self.name + ";"
+		assert len(self.element) == 1
+		return flatten(self.element[0])
 
 
 class StructInfo:
@@ -224,7 +241,7 @@ class StructInfo:
 					element_typeinfo = type_registry[m.element_type]
 					if element_typeinfo.fixed():
 						# dupe slice of elements of fixed type
-						# FIXME: context pointer
+						# FIXME: context pointer (!)
 						print "    " * idt + "%s.%s = (cast(%s*)&buf[offset_idx])[0..%s].dup;" % (
 						                      ctx_name,m.name, m.element_type, m.length_expr)
 						print "    " * idt + "offset_idx += %s * %s.sizeof;" % (m.length_expr, m.element_type)
@@ -279,8 +296,7 @@ class StructInfo:
 				for member in (m for m in self.members if type(m) is ExprFieldMember):
 					print
 					print "    " * idt + '// TODO: explain this'
-					# FIXME: member.name is wrong!
-					print "    " * idt + "this." + member.name, '=', member.value_expr + ';'
+					print "    " * idt + "this." + member.name, '=', member.value_expr(self.members) + ';'
 			print
 			print "    " * idt + "return parts;"
 			idt -= 1
