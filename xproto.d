@@ -988,7 +988,9 @@ enum MAPINDEX
 
 struct CreateWindow
 {
+    ubyte opcode;
     ubyte depth;
+    ushort length;  // request length expressed in units of four bytes
     Window wid;
     Window parent;
     short x;
@@ -1025,7 +1027,9 @@ struct CreateWindow
 
 struct ChangeWindowAttributes
 {
+    ubyte opcode;
     byte[1] _pad0;
+    ushort length;  // request length expressed in units of four bytes
     Window window;
     uint value_mask;
     uint[] value_list;
@@ -1054,12 +1058,17 @@ struct ChangeWindowAttributes
 
 struct GetWindowAttributes
 {
+    ubyte opcode;
     byte[1] _pad0;
+    ushort length;  // request length expressed in units of four bytes
     Window window;
 
     struct Reply
     {
+        ubyte response_type;
         ubyte backing_store;
+        ushort sequence;
+        uint length;  // repy length expressed in units of four bytes
         VisualID visual;
         ushort klass;
         ubyte bit_gravity;
@@ -1102,7 +1111,9 @@ struct GetWindowAttributes
 
 struct DestroyWindow
 {
+    ubyte opcode;
     byte[1] _pad0;
+    ushort length;  // request length expressed in units of four bytes
     Window window;
 
     iovec[2] toIOVector()
@@ -1123,7 +1134,9 @@ struct DestroyWindow
 
 struct DestroySubwindows
 {
+    ubyte opcode;
     byte[1] _pad0;
+    ushort length;  // request length expressed in units of four bytes
     Window window;
 
     iovec[2] toIOVector()
@@ -1144,7 +1157,9 @@ struct DestroySubwindows
 
 struct ChangeSaveSet
 {
+    ubyte opcode;
     ubyte mode;
+    ushort length;  // request length expressed in units of four bytes
     Window window;
 
     iovec[2] toIOVector()
@@ -1165,7 +1180,9 @@ struct ChangeSaveSet
 
 struct ReparentWindow
 {
+    ubyte opcode;
     byte[1] _pad0;
+    ushort length;  // request length expressed in units of four bytes
     Window window;
     Window parent;
     short x;
@@ -1189,7 +1206,9 @@ struct ReparentWindow
 
 struct MapWindow
 {
+    ubyte opcode;
     byte[1] _pad0;
+    ushort length;  // request length expressed in units of four bytes
     Window window;
 
     iovec[2] toIOVector()
@@ -1210,7 +1229,9 @@ struct MapWindow
 
 struct MapSubwindows
 {
+    ubyte opcode;
     byte[1] _pad0;
+    ushort length;  // request length expressed in units of four bytes
     Window window;
 
     iovec[2] toIOVector()
@@ -1231,7 +1252,9 @@ struct MapSubwindows
 
 struct UnmapWindow
 {
+    ubyte opcode;
     byte[1] _pad0;
+    ushort length;  // request length expressed in units of four bytes
     Window window;
 
     iovec[2] toIOVector()
@@ -1252,7 +1275,9 @@ struct UnmapWindow
 
 struct UnmapSubwindows
 {
+    ubyte opcode;
     byte[1] _pad0;
+    ushort length;  // request length expressed in units of four bytes
     Window window;
 
     iovec[2] toIOVector()
@@ -1273,7 +1298,9 @@ struct UnmapSubwindows
 
 struct ConfigureWindow
 {
+    ubyte opcode;
     byte[1] _pad0;
+    ushort length;  // request length expressed in units of four bytes
     Window window;
     ushort value_mask;
     byte[2] _pad1;
@@ -1303,7 +1330,9 @@ struct ConfigureWindow
 
 struct CirculateWindow
 {
+    ubyte opcode;
     ubyte direction;
+    ushort length;  // request length expressed in units of four bytes
     Window window;
 
     iovec[2] toIOVector()
@@ -1324,12 +1353,17 @@ struct CirculateWindow
 
 struct GetGeometry
 {
+    ubyte opcode;
     byte[1] _pad0;
+    ushort length;  // request length expressed in units of four bytes
     Drawable drawable;
 
     struct Reply
     {
+        ubyte response_type;
         ubyte depth;
+        ushort sequence;
+        uint length;  // repy length expressed in units of four bytes
         Window root;
         short x;
         short y;
@@ -1364,12 +1398,17 @@ struct GetGeometry
 
 struct QueryTree
 {
+    ubyte opcode;
     byte[1] _pad0;
+    ushort length;  // request length expressed in units of four bytes
     Window window;
 
     struct Reply
     {
+        ubyte response_type;
         byte[1] _pad0;
+        ushort sequence;
+        uint length;  // repy length expressed in units of four bytes
         Window root;
         Window parent;
         ushort children_len;
@@ -1408,14 +1447,19 @@ struct QueryTree
 
 struct InternAtom
 {
+    ubyte opcode;
     ubyte only_if_exists;
+    ushort length;  // request length expressed in units of four bytes
     ushort name_len;
     byte[2] _pad0;
     char[] name;
 
     struct Reply
     {
+        ubyte response_type;
         byte[1] _pad0;
+        ushort sequence;
+        uint length;  // repy length expressed in units of four bytes
         Atom atom;
 
         this(const ubyte[] buf)
@@ -1451,12 +1495,17 @@ struct InternAtom
 
 struct GetAtomName
 {
+    ubyte opcode;
     byte[1] _pad0;
+    ushort length;  // request length expressed in units of four bytes
     Atom atom;
 
     struct Reply
     {
+        ubyte response_type;
         byte[1] _pad0;
+        ushort sequence;
+        uint length;  // repy length expressed in units of four bytes
         ushort name_len;
         byte[22] _pad1;
         char[] name;
@@ -1493,7 +1542,9 @@ struct GetAtomName
 
 struct ChangeProperty
 {
+    ubyte opcode;
     ubyte mode;
+    ushort length;  // request length expressed in units of four bytes
     Window window;
     Atom property;
     Atom type;
@@ -1527,7 +1578,9 @@ struct ChangeProperty
 
 struct DeleteProperty
 {
+    ubyte opcode;
     byte[1] _pad0;
+    ushort length;  // request length expressed in units of four bytes
     Window window;
     Atom property;
 
@@ -1549,7 +1602,9 @@ struct DeleteProperty
 
 struct GetProperty
 {
+    ubyte opcode;
     ubyte del;
+    ushort length;  // request length expressed in units of four bytes
     Window window;
     Atom property;
     Atom type;
@@ -1558,7 +1613,10 @@ struct GetProperty
 
     struct Reply
     {
+        ubyte response_type;
         ubyte format;
+        ushort sequence;
+        uint length;  // repy length expressed in units of four bytes
         Atom type;
         uint bytes_after;
         uint value_len;
@@ -1597,12 +1655,17 @@ struct GetProperty
 
 struct ListProperties
 {
+    ubyte opcode;
     byte[1] _pad0;
+    ushort length;  // request length expressed in units of four bytes
     Window window;
 
     struct Reply
     {
+        ubyte response_type;
         byte[1] _pad0;
+        ushort sequence;
+        uint length;  // repy length expressed in units of four bytes
         ushort atoms_len;
         byte[22] _pad1;
         Atom[] atoms;
@@ -1639,7 +1702,9 @@ struct ListProperties
 
 struct SetSelectionOwner
 {
+    ubyte opcode;
     byte[1] _pad0;
+    ushort length;  // request length expressed in units of four bytes
     Window owner;
     Atom selection;
     Timestamp time;
@@ -1662,12 +1727,17 @@ struct SetSelectionOwner
 
 struct GetSelectionOwner
 {
+    ubyte opcode;
     byte[1] _pad0;
+    ushort length;  // request length expressed in units of four bytes
     Atom selection;
 
     struct Reply
     {
+        ubyte response_type;
         byte[1] _pad0;
+        ushort sequence;
+        uint length;  // repy length expressed in units of four bytes
         Window owner;
 
         this(const ubyte[] buf)
@@ -1696,7 +1766,9 @@ struct GetSelectionOwner
 
 struct ConvertSelection
 {
+    ubyte opcode;
     byte[1] _pad0;
+    ushort length;  // request length expressed in units of four bytes
     Window requestor;
     Atom selection;
     Atom target;
@@ -1721,7 +1793,9 @@ struct ConvertSelection
 
 struct SendEvent
 {
+    ubyte opcode;
     ubyte propagate;
+    ushort length;  // request length expressed in units of four bytes
     Window destination;
     uint event_mask;
     char[32] event;
@@ -1751,7 +1825,9 @@ struct SendEvent
 
 struct GrabPointer
 {
+    ubyte opcode;
     ubyte owner_events;
+    ushort length;  // request length expressed in units of four bytes
     Window grab_window;
     ushort event_mask;
     ubyte pointer_mode;
@@ -1762,7 +1838,10 @@ struct GrabPointer
 
     struct Reply
     {
+        ubyte response_type;
         ubyte status;
+        ushort sequence;
+        uint length;  // repy length expressed in units of four bytes
 
         this(const ubyte[] buf)
         {
@@ -1790,7 +1869,9 @@ struct GrabPointer
 
 struct UngrabPointer
 {
+    ubyte opcode;
     byte[1] _pad0;
+    ushort length;  // request length expressed in units of four bytes
     Timestamp time;
 
     iovec[2] toIOVector()
@@ -1811,7 +1892,9 @@ struct UngrabPointer
 
 struct GrabButton
 {
+    ubyte opcode;
     ubyte owner_events;
+    ushort length;  // request length expressed in units of four bytes
     Window grab_window;
     ushort event_mask;
     ubyte pointer_mode;
@@ -1840,7 +1923,9 @@ struct GrabButton
 
 struct UngrabButton
 {
+    ubyte opcode;
     ubyte button;
+    ushort length;  // request length expressed in units of four bytes
     Window grab_window;
     ushort modifiers;
     byte[2] _pad0;
@@ -1863,7 +1948,9 @@ struct UngrabButton
 
 struct ChangeActivePointerGrab
 {
+    ubyte opcode;
     byte[1] _pad0;
+    ushort length;  // request length expressed in units of four bytes
     Cursor cursor;
     Timestamp time;
     ushort event_mask;
@@ -1887,7 +1974,9 @@ struct ChangeActivePointerGrab
 
 struct GrabKeyboard
 {
+    ubyte opcode;
     ubyte owner_events;
+    ushort length;  // request length expressed in units of four bytes
     Window grab_window;
     Timestamp time;
     ubyte pointer_mode;
@@ -1896,7 +1985,10 @@ struct GrabKeyboard
 
     struct Reply
     {
+        ubyte response_type;
         ubyte status;
+        ushort sequence;
+        uint length;  // repy length expressed in units of four bytes
 
         this(const ubyte[] buf)
         {
@@ -1924,7 +2016,9 @@ struct GrabKeyboard
 
 struct UngrabKeyboard
 {
+    ubyte opcode;
     byte[1] _pad0;
+    ushort length;  // request length expressed in units of four bytes
     Timestamp time;
 
     iovec[2] toIOVector()
@@ -1945,7 +2039,9 @@ struct UngrabKeyboard
 
 struct GrabKey
 {
+    ubyte opcode;
     ubyte owner_events;
+    ushort length;  // request length expressed in units of four bytes
     Window grab_window;
     ushort modifiers;
     KeyCode key;
@@ -1971,7 +2067,9 @@ struct GrabKey
 
 struct UngrabKey
 {
+    ubyte opcode;
     KeyCode key;
+    ushort length;  // request length expressed in units of four bytes
     Window grab_window;
     ushort modifiers;
     byte[2] _pad0;
@@ -1994,7 +2092,9 @@ struct UngrabKey
 
 struct AllowEvents
 {
+    ubyte opcode;
     ubyte mode;
+    ushort length;  // request length expressed in units of four bytes
     Timestamp time;
 
     iovec[2] toIOVector()
@@ -2015,6 +2115,9 @@ struct AllowEvents
 
 struct GrabServer
 {
+    ubyte opcode;
+    byte[1] _pad0;
+    ushort length;  // request length expressed in units of four bytes
 
     iovec[2] toIOVector()
     {
@@ -2034,6 +2137,9 @@ struct GrabServer
 
 struct UngrabServer
 {
+    ubyte opcode;
+    byte[1] _pad0;
+    ushort length;  // request length expressed in units of four bytes
 
     iovec[2] toIOVector()
     {
@@ -2053,12 +2159,17 @@ struct UngrabServer
 
 struct QueryPointer
 {
+    ubyte opcode;
     byte[1] _pad0;
+    ushort length;  // request length expressed in units of four bytes
     Window window;
 
     struct Reply
     {
+        ubyte response_type;
         ubyte same_screen;
+        ushort sequence;
+        uint length;  // repy length expressed in units of four bytes
         Window root;
         Window child;
         short root_x;
@@ -2094,14 +2205,19 @@ struct QueryPointer
 
 struct GetMotionEvents
 {
+    ubyte opcode;
     byte[1] _pad0;
+    ushort length;  // request length expressed in units of four bytes
     Window window;
     Timestamp start;
     Timestamp stop;
 
     struct Reply
     {
+        ubyte response_type;
         byte[1] _pad0;
+        ushort sequence;
+        uint length;  // repy length expressed in units of four bytes
         uint events_len;
         byte[20] _pad1;
         TimeCoord[] events;
@@ -2138,7 +2254,9 @@ struct GetMotionEvents
 
 struct TranslateCoordinates
 {
+    ubyte opcode;
     byte[1] _pad0;
+    ushort length;  // request length expressed in units of four bytes
     Window src_window;
     Window dst_window;
     short src_x;
@@ -2146,7 +2264,10 @@ struct TranslateCoordinates
 
     struct Reply
     {
+        ubyte response_type;
         ubyte same_screen;
+        ushort sequence;
+        uint length;  // repy length expressed in units of four bytes
         Window child;
         ushort dst_x;
         ushort dst_y;
@@ -2177,7 +2298,9 @@ struct TranslateCoordinates
 
 struct WarpPointer
 {
+    ubyte opcode;
     byte[1] _pad0;
+    ushort length;  // request length expressed in units of four bytes
     Window src_window;
     Window dst_window;
     short src_x;
@@ -2205,7 +2328,9 @@ struct WarpPointer
 
 struct SetInputFocus
 {
+    ubyte opcode;
     ubyte revert_to;
+    ushort length;  // request length expressed in units of four bytes
     Window focus;
     Timestamp time;
 
@@ -2227,10 +2352,16 @@ struct SetInputFocus
 
 struct GetInputFocus
 {
+    ubyte opcode;
+    byte[1] _pad0;
+    ushort length;  // request length expressed in units of four bytes
 
     struct Reply
     {
+        ubyte response_type;
         ubyte revert_to;
+        ushort sequence;
+        uint length;  // repy length expressed in units of four bytes
         Window focus;
 
         this(const ubyte[] buf)
@@ -2259,10 +2390,16 @@ struct GetInputFocus
 
 struct QueryKeymap
 {
+    ubyte opcode;
+    byte[1] _pad0;
+    ushort length;  // request length expressed in units of four bytes
 
     struct Reply
     {
+        ubyte response_type;
         byte[1] _pad0;
+        ushort sequence;
+        uint length;  // repy length expressed in units of four bytes
         ubyte[32] keys;
 
         this(const ubyte[] buf)
@@ -2297,7 +2434,9 @@ struct QueryKeymap
 
 struct OpenFont
 {
+    ubyte opcode;
     byte[1] _pad0;
+    ushort length;  // request length expressed in units of four bytes
     Font fid;
     ushort name_len;
     byte[2] _pad1;
@@ -2328,7 +2467,9 @@ struct OpenFont
 
 struct CloseFont
 {
+    ubyte opcode;
     byte[1] _pad0;
+    ushort length;  // request length expressed in units of four bytes
     Font font;
 
     iovec[2] toIOVector()
@@ -2349,12 +2490,17 @@ struct CloseFont
 
 struct QueryFont
 {
+    ubyte opcode;
     byte[1] _pad0;
+    ushort length;  // request length expressed in units of four bytes
     Fontable font;
 
     struct Reply
     {
+        ubyte response_type;
         byte[1] _pad0;
+        ushort sequence;
+        uint length;  // repy length expressed in units of four bytes
         CharInfo min_bounds;
         byte[4] _pad1;
         CharInfo max_bounds;
@@ -2409,13 +2555,18 @@ struct QueryFont
 
 struct QueryTextExtents
 {
+    ubyte opcode;
     ubyte odd_length;
+    ushort length;  // request length expressed in units of four bytes
     Fontable font;
     wchar[] string;
 
     struct Reply
     {
+        ubyte response_type;
         ubyte draw_direction;
+        ushort sequence;
+        uint length;  // repy length expressed in units of four bytes
         short font_ascent;
         short font_descent;
         short overall_ascent;
@@ -2459,14 +2610,19 @@ struct QueryTextExtents
 
 struct ListFonts
 {
+    ubyte opcode;
     byte[1] _pad0;
+    ushort length;  // request length expressed in units of four bytes
     ushort max_names;
     ushort pattern_len;
     char[] pattern;
 
     struct Reply
     {
+        ubyte response_type;
         byte[1] _pad0;
+        ushort sequence;
+        uint length;  // repy length expressed in units of four bytes
         ushort names_len;
         byte[22] _pad1;
         Str[] names;
@@ -2519,14 +2675,19 @@ struct ListFonts
 
 struct ListFontsWithInfo
 {
+    ubyte opcode;
     byte[1] _pad0;
+    ushort length;  // request length expressed in units of four bytes
     ushort max_names;
     ushort pattern_len;
     char[] pattern;
 
     struct Reply
     {
+        ubyte response_type;
         ubyte name_len;
+        ushort sequence;
+        uint length;  // repy length expressed in units of four bytes
         CharInfo min_bounds;
         byte[4] _pad0;
         CharInfo max_bounds;
@@ -2588,7 +2749,9 @@ struct ListFontsWithInfo
 
 struct SetFontPath
 {
+    ubyte opcode;
     byte[1] _pad0;
+    ushort length;  // request length expressed in units of four bytes
     ushort font_qty;
     char[] path;
 
@@ -2616,10 +2779,16 @@ struct SetFontPath
 
 struct GetFontPath
 {
+    ubyte opcode;
+    byte[1] _pad0;
+    ushort length;  // request length expressed in units of four bytes
 
     struct Reply
     {
+        ubyte response_type;
         byte[1] _pad0;
+        ushort sequence;
+        uint length;  // repy length expressed in units of four bytes
         ushort path_len;
         byte[22] _pad1;
         Str[] path;
@@ -2665,7 +2834,9 @@ struct GetFontPath
 
 struct CreatePixmap
 {
+    ubyte opcode;
     ubyte depth;
+    ushort length;  // request length expressed in units of four bytes
     PixMap pid;
     Drawable drawable;
     ushort width;
@@ -2689,7 +2860,9 @@ struct CreatePixmap
 
 struct FreePixmap
 {
+    ubyte opcode;
     byte[1] _pad0;
+    ushort length;  // request length expressed in units of four bytes
     PixMap pixmap;
 
     iovec[2] toIOVector()
@@ -2710,7 +2883,9 @@ struct FreePixmap
 
 struct CreateGC
 {
+    ubyte opcode;
     byte[1] _pad0;
+    ushort length;  // request length expressed in units of four bytes
     GContext cid;
     Drawable drawable;
     uint value_mask;
@@ -2740,7 +2915,9 @@ struct CreateGC
 
 struct ChangeGC
 {
+    ubyte opcode;
     byte[1] _pad0;
+    ushort length;  // request length expressed in units of four bytes
     GContext gc;
     uint value_mask;
     uint[] value_list;
@@ -2769,7 +2946,9 @@ struct ChangeGC
 
 struct CopyGC
 {
+    ubyte opcode;
     byte[1] _pad0;
+    ushort length;  // request length expressed in units of four bytes
     GContext src_gc;
     GContext dst_gc;
     uint value_mask;
@@ -2792,7 +2971,9 @@ struct CopyGC
 
 struct SetDashes
 {
+    ubyte opcode;
     byte[1] _pad0;
+    ushort length;  // request length expressed in units of four bytes
     GContext gc;
     ushort dash_offset;
     ushort dashes_len;
@@ -2823,7 +3004,9 @@ struct SetDashes
 
 struct SetClipRectangles
 {
+    ubyte opcode;
     ubyte ordering;
+    ushort length;  // request length expressed in units of four bytes
     GContext gc;
     short clip_x_origin;
     short clip_y_origin;
@@ -2853,7 +3036,9 @@ struct SetClipRectangles
 
 struct FreeGC
 {
+    ubyte opcode;
     byte[1] _pad0;
+    ushort length;  // request length expressed in units of four bytes
     GContext gc;
 
     iovec[2] toIOVector()
@@ -2874,7 +3059,9 @@ struct FreeGC
 
 struct ClearArea
 {
+    ubyte opcode;
     ubyte exposures;
+    ushort length;  // request length expressed in units of four bytes
     Window window;
     short x;
     short y;
@@ -2899,7 +3086,9 @@ struct ClearArea
 
 struct CopyArea
 {
+    ubyte opcode;
     byte[1] _pad0;
+    ushort length;  // request length expressed in units of four bytes
     Drawable src_drawable;
     Drawable dst_drawable;
     GContext gc;
@@ -2928,7 +3117,9 @@ struct CopyArea
 
 struct CopyPlane
 {
+    ubyte opcode;
     byte[1] _pad0;
+    ushort length;  // request length expressed in units of four bytes
     Drawable src_drawable;
     Drawable dst_drawable;
     GContext gc;
@@ -2958,7 +3149,9 @@ struct CopyPlane
 
 struct PolyPoint
 {
+    ubyte opcode;
     ubyte coordinate_mode;
+    ushort length;  // request length expressed in units of four bytes
     Drawable drawable;
     GContext gc;
     Point[] points;
@@ -2987,7 +3180,9 @@ struct PolyPoint
 
 struct PolyLine
 {
+    ubyte opcode;
     ubyte coordinate_mode;
+    ushort length;  // request length expressed in units of four bytes
     Drawable drawable;
     GContext gc;
     Point[] points;
@@ -3016,7 +3211,9 @@ struct PolyLine
 
 struct PolySegment
 {
+    ubyte opcode;
     byte[1] _pad0;
+    ushort length;  // request length expressed in units of four bytes
     Drawable drawable;
     GContext gc;
     Segment[] segments;
@@ -3045,7 +3242,9 @@ struct PolySegment
 
 struct PolyRectangle
 {
+    ubyte opcode;
     byte[1] _pad0;
+    ushort length;  // request length expressed in units of four bytes
     Drawable drawable;
     GContext gc;
     Rectangle[] rectangles;
@@ -3074,7 +3273,9 @@ struct PolyRectangle
 
 struct PolyArc
 {
+    ubyte opcode;
     byte[1] _pad0;
+    ushort length;  // request length expressed in units of four bytes
     Drawable drawable;
     GContext gc;
     Arc[] arcs;
@@ -3103,7 +3304,9 @@ struct PolyArc
 
 struct FillPoly
 {
+    ubyte opcode;
     byte[1] _pad0;
+    ushort length;  // request length expressed in units of four bytes
     Drawable drawable;
     GContext gc;
     ubyte shape;
@@ -3135,7 +3338,9 @@ struct FillPoly
 
 struct PolyFillRectangle
 {
+    ubyte opcode;
     byte[1] _pad0;
+    ushort length;  // request length expressed in units of four bytes
     Drawable drawable;
     GContext gc;
     Rectangle[] rectangles;
@@ -3164,7 +3369,9 @@ struct PolyFillRectangle
 
 struct PolyFillArc
 {
+    ubyte opcode;
     byte[1] _pad0;
+    ushort length;  // request length expressed in units of four bytes
     Drawable drawable;
     GContext gc;
     Arc[] arcs;
@@ -3193,7 +3400,9 @@ struct PolyFillArc
 
 struct PutImage
 {
+    ubyte opcode;
     ubyte format;
+    ushort length;  // request length expressed in units of four bytes
     Drawable drawable;
     GContext gc;
     ushort width;
@@ -3229,7 +3438,9 @@ struct PutImage
 
 struct GetImage
 {
+    ubyte opcode;
     ubyte format;
+    ushort length;  // request length expressed in units of four bytes
     Drawable drawable;
     short x;
     short y;
@@ -3239,7 +3450,10 @@ struct GetImage
 
     struct Reply
     {
+        ubyte response_type;
         ubyte depth;
+        ushort sequence;
+        uint length;  // repy length expressed in units of four bytes
         VisualID visual;
         byte[20] _pad0;
         ubyte[] data;
@@ -3276,7 +3490,9 @@ struct GetImage
 
 struct PolyText8
 {
+    ubyte opcode;
     byte[1] _pad0;
+    ushort length;  // request length expressed in units of four bytes
     Drawable drawable;
     GContext gc;
     short x;
@@ -3307,7 +3523,9 @@ struct PolyText8
 
 struct PolyText16
 {
+    ubyte opcode;
     byte[1] _pad0;
+    ushort length;  // request length expressed in units of four bytes
     Drawable drawable;
     GContext gc;
     short x;
@@ -3338,7 +3556,9 @@ struct PolyText16
 
 struct ImageText8
 {
+    ubyte opcode;
     ubyte string_len;
+    ushort length;  // request length expressed in units of four bytes
     Drawable drawable;
     GContext gc;
     short x;
@@ -3370,7 +3590,9 @@ struct ImageText8
 
 struct ImageText16
 {
+    ubyte opcode;
     ubyte string_len;
+    ushort length;  // request length expressed in units of four bytes
     Drawable drawable;
     GContext gc;
     short x;
@@ -3402,7 +3624,9 @@ struct ImageText16
 
 struct CreateColormap
 {
+    ubyte opcode;
     ubyte alloc;
+    ushort length;  // request length expressed in units of four bytes
     ColorMap mid;
     Window window;
     VisualID visual;
@@ -3425,7 +3649,9 @@ struct CreateColormap
 
 struct FreeColormap
 {
+    ubyte opcode;
     byte[1] _pad0;
+    ushort length;  // request length expressed in units of four bytes
     ColorMap cmap;
 
     iovec[2] toIOVector()
@@ -3446,7 +3672,9 @@ struct FreeColormap
 
 struct CopyColormapAndFree
 {
+    ubyte opcode;
     byte[1] _pad0;
+    ushort length;  // request length expressed in units of four bytes
     ColorMap mid;
     ColorMap src_cmap;
 
@@ -3468,7 +3696,9 @@ struct CopyColormapAndFree
 
 struct InstallColormap
 {
+    ubyte opcode;
     byte[1] _pad0;
+    ushort length;  // request length expressed in units of four bytes
     ColorMap cmap;
 
     iovec[2] toIOVector()
@@ -3489,7 +3719,9 @@ struct InstallColormap
 
 struct UninstallColormap
 {
+    ubyte opcode;
     byte[1] _pad0;
+    ushort length;  // request length expressed in units of four bytes
     ColorMap cmap;
 
     iovec[2] toIOVector()
@@ -3510,12 +3742,17 @@ struct UninstallColormap
 
 struct ListInstalledColormaps
 {
+    ubyte opcode;
     byte[1] _pad0;
+    ushort length;  // request length expressed in units of four bytes
     Window window;
 
     struct Reply
     {
+        ubyte response_type;
         byte[1] _pad0;
+        ushort sequence;
+        uint length;  // repy length expressed in units of four bytes
         ushort cmaps_len;
         byte[22] _pad1;
         ColorMap[] cmaps;
@@ -3552,7 +3789,9 @@ struct ListInstalledColormaps
 
 struct AllocColor
 {
+    ubyte opcode;
     byte[1] _pad0;
+    ushort length;  // request length expressed in units of four bytes
     ColorMap cmap;
     ushort red;
     ushort green;
@@ -3561,7 +3800,10 @@ struct AllocColor
 
     struct Reply
     {
+        ubyte response_type;
         byte[1] _pad0;
+        ushort sequence;
+        uint length;  // repy length expressed in units of four bytes
         ushort red;
         ushort green;
         ushort blue;
@@ -3594,7 +3836,9 @@ struct AllocColor
 
 struct AllocNamedColor
 {
+    ubyte opcode;
     byte[1] _pad0;
+    ushort length;  // request length expressed in units of four bytes
     ColorMap cmap;
     ushort name_len;
     byte[2] _pad1;
@@ -3602,7 +3846,10 @@ struct AllocNamedColor
 
     struct Reply
     {
+        ubyte response_type;
         byte[1] _pad0;
+        ushort sequence;
+        uint length;  // repy length expressed in units of four bytes
         uint pixel;
         ushort exact_red;
         ushort exact_green;
@@ -3644,14 +3891,19 @@ struct AllocNamedColor
 
 struct AllocColorCells
 {
+    ubyte opcode;
     ubyte contiguous;
+    ushort length;  // request length expressed in units of four bytes
     ColorMap cmap;
     ushort colors;
     ushort planes;
 
     struct Reply
     {
+        ubyte response_type;
         byte[1] _pad0;
+        ushort sequence;
+        uint length;  // repy length expressed in units of four bytes
         ushort pixels_len;
         ushort masks_len;
         byte[20] _pad1;
@@ -3694,7 +3946,9 @@ struct AllocColorCells
 
 struct AllocColorPlanes
 {
+    ubyte opcode;
     ubyte contiguous;
+    ushort length;  // request length expressed in units of four bytes
     ColorMap cmap;
     ushort colors;
     ushort reds;
@@ -3703,7 +3957,10 @@ struct AllocColorPlanes
 
     struct Reply
     {
+        ubyte response_type;
         byte[1] _pad0;
+        ushort sequence;
+        uint length;  // repy length expressed in units of four bytes
         ushort pixels_len;
         byte[2] _pad1;
         uint red_mask;
@@ -3744,7 +4001,9 @@ struct AllocColorPlanes
 
 struct FreeColors
 {
+    ubyte opcode;
     byte[1] _pad0;
+    ushort length;  // request length expressed in units of four bytes
     ColorMap cmap;
     uint plane_mask;
     uint[] pixels;
@@ -3773,7 +4032,9 @@ struct FreeColors
 
 struct StoreColors
 {
+    ubyte opcode;
     byte[1] _pad0;
+    ushort length;  // request length expressed in units of four bytes
     ColorMap cmap;
     ColorItem[] items;
 
@@ -3801,7 +4062,9 @@ struct StoreColors
 
 struct StoreNamedColor
 {
+    ubyte opcode;
     ubyte flags;
+    ushort length;  // request length expressed in units of four bytes
     ColorMap cmap;
     uint pixel;
     ushort name_len;
@@ -3833,13 +4096,18 @@ struct StoreNamedColor
 
 struct QueryColors
 {
+    ubyte opcode;
     byte[1] _pad0;
+    ushort length;  // request length expressed in units of four bytes
     ColorMap cmap;
     uint[] pixels;
 
     struct Reply
     {
+        ubyte response_type;
         byte[1] _pad0;
+        ushort sequence;
+        uint length;  // repy length expressed in units of four bytes
         ushort colors_len;
         byte[22] _pad1;
         RGB[] colors;
@@ -3882,7 +4150,9 @@ struct QueryColors
 
 struct LookupColor
 {
+    ubyte opcode;
     byte[1] _pad0;
+    ushort length;  // request length expressed in units of four bytes
     ColorMap cmap;
     ushort name_len;
     byte[2] _pad1;
@@ -3890,7 +4160,10 @@ struct LookupColor
 
     struct Reply
     {
+        ubyte response_type;
         byte[1] _pad0;
+        ushort sequence;
+        uint length;  // repy length expressed in units of four bytes
         ushort exact_red;
         ushort exact_green;
         ushort exact_blue;
@@ -3931,7 +4204,9 @@ struct LookupColor
 
 struct CreateCursor
 {
+    ubyte opcode;
     byte[1] _pad0;
+    ushort length;  // request length expressed in units of four bytes
     Cursor cid;
     PixMap source;
     PixMap mask;
@@ -3962,7 +4237,9 @@ struct CreateCursor
 
 struct CreateGlyphCursor
 {
+    ubyte opcode;
     byte[1] _pad0;
+    ushort length;  // request length expressed in units of four bytes
     Cursor cid;
     Font source_font;
     Font mask_font;
@@ -3993,7 +4270,9 @@ struct CreateGlyphCursor
 
 struct FreeCursor
 {
+    ubyte opcode;
     byte[1] _pad0;
+    ushort length;  // request length expressed in units of four bytes
     Cursor cursor;
 
     iovec[2] toIOVector()
@@ -4014,7 +4293,9 @@ struct FreeCursor
 
 struct RecolorCursor
 {
+    ubyte opcode;
     byte[1] _pad0;
+    ushort length;  // request length expressed in units of four bytes
     Cursor cursor;
     ushort fore_red;
     ushort fore_green;
@@ -4041,14 +4322,19 @@ struct RecolorCursor
 
 struct QueryBestSize
 {
+    ubyte opcode;
     ubyte klass;
+    ushort length;  // request length expressed in units of four bytes
     Drawable drawable;
     ushort width;
     ushort height;
 
     struct Reply
     {
+        ubyte response_type;
         byte[1] _pad0;
+        ushort sequence;
+        uint length;  // repy length expressed in units of four bytes
         ushort width;
         ushort height;
 
@@ -4078,14 +4364,19 @@ struct QueryBestSize
 
 struct QueryExtension
 {
+    ubyte opcode;
     byte[1] _pad0;
+    ushort length;  // request length expressed in units of four bytes
     ushort name_len;
     byte[2] _pad1;
     char[] name;
 
     struct Reply
     {
+        ubyte response_type;
         byte[1] _pad0;
+        ushort sequence;
+        uint length;  // repy length expressed in units of four bytes
         ubyte present;
         ubyte major_opcode;
         ubyte first_event;
@@ -4124,10 +4415,16 @@ struct QueryExtension
 
 struct ListExtensions
 {
+    ubyte opcode;
+    byte[1] _pad0;
+    ushort length;  // request length expressed in units of four bytes
 
     struct Reply
     {
+        ubyte response_type;
         ubyte names_len;
+        ushort sequence;
+        uint length;  // repy length expressed in units of four bytes
         byte[24] _pad0;
         Str[] names;
 
@@ -4172,7 +4469,9 @@ struct ListExtensions
 
 struct ChangeKeyboardMapping
 {
+    ubyte opcode;
     ubyte keycode_count;
+    ushort length;  // request length expressed in units of four bytes
     KeyCode first_keycode;
     ubyte keysyms_per_keycode;
     KeySym[] keysyms;
@@ -4202,13 +4501,18 @@ struct ChangeKeyboardMapping
 
 struct GetKeyboardMapping
 {
+    ubyte opcode;
     byte[1] _pad0;
+    ushort length;  // request length expressed in units of four bytes
     KeyCode first_keycode;
     ubyte count;
 
     struct Reply
     {
+        ubyte response_type;
         ubyte keysyms_per_keycode;
+        ushort sequence;
+        uint length;  // repy length expressed in units of four bytes
         byte[24] _pad0;
         KeySym[] keysyms;
 
@@ -4244,7 +4548,9 @@ struct GetKeyboardMapping
 
 struct ChangeKeyboardControl
 {
+    ubyte opcode;
     byte[1] _pad0;
+    ushort length;  // request length expressed in units of four bytes
     uint value_mask;
     uint[] value_list;
 
@@ -4272,10 +4578,16 @@ struct ChangeKeyboardControl
 
 struct GetKeyboardControl
 {
+    ubyte opcode;
+    byte[1] _pad0;
+    ushort length;  // request length expressed in units of four bytes
 
     struct Reply
     {
+        ubyte response_type;
         ubyte global_auto_repeat;
+        ushort sequence;
+        uint length;  // repy length expressed in units of four bytes
         uint led_mask;
         ubyte key_click_percent;
         ubyte bell_percent;
@@ -4316,7 +4628,9 @@ struct GetKeyboardControl
 
 struct Bell
 {
+    ubyte opcode;
     byte percent;
+    ushort length;  // request length expressed in units of four bytes
 
     iovec[2] toIOVector()
     {
@@ -4336,7 +4650,9 @@ struct Bell
 
 struct ChangePointerControl
 {
+    ubyte opcode;
     byte[1] _pad0;
+    ushort length;  // request length expressed in units of four bytes
     short acceleration_numerator;
     short acceleration_denominator;
     short threshold;
@@ -4361,10 +4677,16 @@ struct ChangePointerControl
 
 struct GetPointerControl
 {
+    ubyte opcode;
+    byte[1] _pad0;
+    ushort length;  // request length expressed in units of four bytes
 
     struct Reply
     {
+        ubyte response_type;
         byte[1] _pad0;
+        ushort sequence;
+        uint length;  // repy length expressed in units of four bytes
         ushort acceleration_numerator;
         ushort acceleration_denominator;
         ushort threshold;
@@ -4396,7 +4718,9 @@ struct GetPointerControl
 
 struct SetScreenSaver
 {
+    ubyte opcode;
     byte[1] _pad0;
+    ushort length;  // request length expressed in units of four bytes
     short timeout;
     short interval;
     ubyte prefer_blanking;
@@ -4420,10 +4744,16 @@ struct SetScreenSaver
 
 struct GetScreenSaver
 {
+    ubyte opcode;
+    byte[1] _pad0;
+    ushort length;  // request length expressed in units of four bytes
 
     struct Reply
     {
+        ubyte response_type;
         byte[1] _pad0;
+        ushort sequence;
+        uint length;  // repy length expressed in units of four bytes
         ushort timeout;
         ushort interval;
         ubyte prefer_blanking;
@@ -4456,7 +4786,9 @@ struct GetScreenSaver
 
 struct ChangeHosts
 {
+    ubyte opcode;
     ubyte mode;
+    ushort length;  // request length expressed in units of four bytes
     ubyte family;
     byte[1] _pad0;
     ushort address_len;
@@ -4487,10 +4819,16 @@ struct ChangeHosts
 
 struct ListHosts
 {
+    ubyte opcode;
+    byte[1] _pad0;
+    ushort length;  // request length expressed in units of four bytes
 
     struct Reply
     {
+        ubyte response_type;
         ubyte mode;
+        ushort sequence;
+        uint length;  // repy length expressed in units of four bytes
         ushort hosts_len;
         byte[22] _pad0;
         Host[] hosts;
@@ -4536,7 +4874,9 @@ struct ListHosts
 
 struct SetAccessControl
 {
+    ubyte opcode;
     ubyte mode;
+    ushort length;  // request length expressed in units of four bytes
 
     iovec[2] toIOVector()
     {
@@ -4556,7 +4896,9 @@ struct SetAccessControl
 
 struct SetCloseDownMode
 {
+    ubyte opcode;
     ubyte mode;
+    ushort length;  // request length expressed in units of four bytes
 
     iovec[2] toIOVector()
     {
@@ -4576,7 +4918,9 @@ struct SetCloseDownMode
 
 struct KillClient
 {
+    ubyte opcode;
     byte[1] _pad0;
+    ushort length;  // request length expressed in units of four bytes
     uint resource;
 
     iovec[2] toIOVector()
@@ -4597,7 +4941,9 @@ struct KillClient
 
 struct RotateProperties
 {
+    ubyte opcode;
     byte[1] _pad0;
+    ushort length;  // request length expressed in units of four bytes
     Window window;
     ushort atoms_len;
     short delta;
@@ -4628,7 +4974,9 @@ struct RotateProperties
 
 struct ForceScreenSaver
 {
+    ubyte opcode;
     ubyte mode;
+    ushort length;  // request length expressed in units of four bytes
 
     iovec[2] toIOVector()
     {
@@ -4648,12 +4996,17 @@ struct ForceScreenSaver
 
 struct SetPointerMapping
 {
+    ubyte opcode;
     ubyte map_len;
+    ushort length;  // request length expressed in units of four bytes
     ubyte[] map;
 
     struct Reply
     {
+        ubyte response_type;
         ubyte status;
+        ushort sequence;
+        uint length;  // repy length expressed in units of four bytes
 
         this(const ubyte[] buf)
         {
@@ -4688,10 +5041,16 @@ struct SetPointerMapping
 
 struct GetPointerMapping
 {
+    ubyte opcode;
+    byte[1] _pad0;
+    ushort length;  // request length expressed in units of four bytes
 
     struct Reply
     {
+        ubyte response_type;
         ubyte map_len;
+        ushort sequence;
+        uint length;  // repy length expressed in units of four bytes
         byte[24] _pad0;
         ubyte[] map;
 
@@ -4727,12 +5086,17 @@ struct GetPointerMapping
 
 struct SetModifierMapping
 {
+    ubyte opcode;
     ubyte keycodes_per_modifier;
+    ushort length;  // request length expressed in units of four bytes
     KeyCode[] keycodes;
 
     struct Reply
     {
+        ubyte response_type;
         ubyte status;
+        ushort sequence;
+        uint length;  // repy length expressed in units of four bytes
 
         this(const ubyte[] buf)
         {
@@ -4767,10 +5131,16 @@ struct SetModifierMapping
 
 struct GetModifierMapping
 {
+    ubyte opcode;
+    byte[1] _pad0;
+    ushort length;  // request length expressed in units of four bytes
 
     struct Reply
     {
+        ubyte response_type;
         ubyte keycodes_per_modifier;
+        ushort sequence;
+        uint length;  // repy length expressed in units of four bytes
         byte[24] _pad0;
         KeyCode[] keycodes;
 
@@ -4806,6 +5176,9 @@ struct GetModifierMapping
 
 struct NoOperation
 {
+    ubyte opcode;
+    byte[1] _pad0;
+    ushort length;  // request length expressed in units of four bytes
 
     iovec[2] toIOVector()
     {

@@ -137,7 +137,7 @@ class ValueParamMember(object):
 		#print "#"+' '*indent+"ListMember(%s).fixed -> %s" % (self.name, self.length_expr.isdigit())
 		return False
 	def declare(self, idt, ctx_members=[]):
-		# checking against ctx_members as a specal case for ConfigureWindow
+		# HACK: checking against ctx_members as a specal case for ConfigureWindow
 		# request, allowing padding of value_mask (mask_name)
 		for m in ctx_members:
 			if type(m) != ValueParamMember and m.name == self.mask_name:
@@ -196,12 +196,15 @@ class ExprFieldMember(object):
 		return flatten(self.element[0])
 
 
-class StructInfo:
+class StructInfo(object):
 	def __init__(self, element, ctx=None):
 		self.type = 'struct'
+		self.is_request = element.tag == 'request'
+		self.is_reply = element.tag == 'reply'
 		# FIXME: standard fields - reply
 		self.name = 'Reply' if element.tag == 'reply' else tr(element.attrib['name'])
 		self.members = []
+		self.reply_struct = None
 		self.xml = tostring(element).strip()
 		ctx = {'structinfo': self} # just in case...
 		for i in element:
@@ -211,7 +214,10 @@ class StructInfo:
 			           'valueparam':ValueParamMember,
 			           'reply':StructInfo,
 			           'exprfield':ExprFieldMember }[i.tag](i, ctx)
-			self.members.append(member)
+			if type(member) is StructInfo:
+				self.reply_struct = member
+			else:
+				self.members.append(member)
 
 	def fixed(self):
 		global indent
@@ -233,8 +239,35 @@ class StructInfo:
 		print "    " * idt + "struct", self.name
 		print "    " * idt + "{"
 		idt += 1
-		for member in self.members:
-			member.declare(idt, self.members)
+		if self.is_request:  # FIXME: does to_iovec means request? NO!!!
+			# standard request fields
+			print "    " * idt + "ubyte opcode;"  # major opcode
+			if len(self.members) > 0:
+				self.members[0].declare(idt, self.members)
+				print "    " * idt + "ushort length;  // request length expressed in units of four bytes"
+				for member in self.members[1:]:
+					member.declare(idt, self.members)
+			else:
+				print "    " * idt + "byte[1] _pad0;"
+				print "    " * idt + "ushort length;  // request length expressed in units of four bytes"
+		elif self.is_reply:
+			print "    " * idt + "ubyte response_type;"
+			if len(self.members) > 0:
+				self.members[0].declare(idt, self.members)
+				print "    " * idt + "ushort sequence;"
+				print "    " * idt + "uint length;  // repy length expressed in units of four bytes"
+				for member in self.members[1:]:
+					member.declare(idt, self.members)
+			else:
+				print "    " * idt + "byte[1] _pad0;"
+				print "    " * idt + "ushort sequence;"
+				print "    " * idt + "uint length;  // repy length expressed in units of four bytes"
+		else:
+			for member in self.members:
+				member.declare(idt, self.members)
+
+		if self.reply_struct:
+			self.reply_struct.declare(idt, self.members)
 
 		if from_bytes:
 			def nested_from_bytes(ctx_name, members, idt):
