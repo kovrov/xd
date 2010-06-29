@@ -65,7 +65,7 @@ class FieldMember:
 	def fixed(self):
 		#print "#"+' '*indent+"FieldMember(%s).fixed -> %s" % (self.name, type_registry[self.type].fixed())
 		return type_registry[self.type].fixed()
-	def declare(self, idt):
+	def declare(self, idt, ctx_members=[]):
 		print "    " * idt + self.type, self.name + ";"
 
 class PadMember:
@@ -79,7 +79,7 @@ class PadMember:
 	def fixed(self):
 		#print "#"+' '*indent+"PadMember(%s).fixed -> True" % self.name
 		return True
-	def declare(self, idt):
+	def declare(self, idt, ctx_members=[]):
 		print "    " * idt + self.type, self.name + ";"
 
 
@@ -92,7 +92,7 @@ class ListMember(object):
 	def fixed(self):
 		#print "#"+' '*indent+"ListMember(%s).fixed -> %s" % (self.name, self.length_expr.isdigit())
 		return self.length_expr().isdigit()
-	def declare(self, idt):
+	def declare(self, idt, ctx_members=[]):
 		#print "    " * idt + tr('CARD32') + "[%s] values;" % self.type
 		print "    " * idt + self.type, self.name + ";"
 	def to_iovec(self, idt, ctx_name, part_idx):
@@ -136,8 +136,14 @@ class ValueParamMember(object):
 	def fixed(self):
 		#print "#"+' '*indent+"ListMember(%s).fixed -> %s" % (self.name, self.length_expr.isdigit())
 		return False
-	def declare(self, idt):
-		print "    " * idt + self.mask_type, self.mask_name + ";"
+	def declare(self, idt, ctx_members=[]):
+		# checking against ctx_members as a specal case for ConfigureWindow
+		# request, allowing padding of value_mask (mask_name)
+		for m in ctx_members:
+			if type(m) != ValueParamMember and m.name == self.mask_name:
+				break
+		else:
+			print "    " * idt + self.mask_type, self.mask_name + ";"
 		print "    " * idt + tr('CARD32')+"[]", self.list_name + ";"
 	def to_iovec(self, idt, ctx_name, part_idx):
 		print
@@ -165,7 +171,7 @@ class ExprFieldMember(object):
 		self.name = tr_name(element.attrib['name'])
 		self.type = tr(element.attrib['type'])
 		self.element = element
-	def declare(self, idt):
+	def declare(self, idt, ctx_members=[]):
 		print "    " * idt + self.type, self.name + ";"
 	def value_expr(self, ctx_members, ctx_name='this'):
 		# see xcbgen.expr.Expression
@@ -219,7 +225,7 @@ class StructInfo:
 		indent -= 1
 		#print "#"+' '*indent+"... True"
 		return True
-	def declare(self, idt):
+	def declare(self, idt, ctx_members=[]):
 		self.src(idt=idt, from_bytes=True)
 
 	def src(self, idt=0, from_bytes=False, to_iovec=False):
@@ -228,7 +234,7 @@ class StructInfo:
 		print "    " * idt + "{"
 		idt += 1
 		for member in self.members:
-			member.declare(idt)
+			member.declare(idt, self.members)
 
 		if from_bytes:
 			def nested_from_bytes(ctx_name, members, idt):

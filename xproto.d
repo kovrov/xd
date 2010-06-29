@@ -1277,7 +1277,6 @@ struct ConfigureWindow
     Window window;
     ushort value_mask;
     byte[2] _pad1;
-    //ushort value_mask;
     uint[] value_list;
 
     iovec[4] toIOVector()
@@ -3241,7 +3240,6 @@ struct GetImage
     struct Reply
     {
         ubyte depth;
-		ushort length;
         VisualID visual;
         byte[20] _pad0;
         ubyte[] data;
@@ -4211,7 +4209,6 @@ struct GetKeyboardMapping
     struct Reply
     {
         ubyte keysyms_per_keycode;
-		ushort length;
         byte[24] _pad0;
         KeySym[] keysyms;
 
