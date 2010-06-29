@@ -85,29 +85,21 @@ class PadMember:
 
 class ListMember(object):
 	def __init__(self, element, ctx):
-		def flatten(em):
-			if em.tag == 'op':
-				a,b = em
-				return '(' + flatten(a) + em.attrib['op'] + flatten(b) + ')'
-			assert 0 == len(em)
-			assert 0 == len(em.attrib)
-			return em.text
-		# element[0] is exprfield?
-		self.length_expr = flatten(element[0]) if len(element) == 1 else ""
+		self.element = element
 		self.name = tr_name(element.attrib['name'])
 		self.element_type = tr(element.attrib['type'])
-		self.type = self.element_type + ("[%s]" % self.length_expr if self.length_expr.isdigit() else "[]")
+		self.type = self.element_type + ("[%s]" % self.length_expr() if self.length_expr().isdigit() else "[]")
 	def fixed(self):
 		#print "#"+' '*indent+"ListMember(%s).fixed -> %s" % (self.name, self.length_expr.isdigit())
-		return self.length_expr.isdigit()
+		return self.length_expr().isdigit()
 	def declare(self, idt):
 		#print "    " * idt + tr('CARD32') + "[%s] values;" % self.type
 		print "    " * idt + self.type, self.name + ";"
 	def to_iovec(self, idt, ctx_name, part_idx):
 		print
-		if self.length_expr:
+		if self.length_expr(ctx_name):
 			# FIXME: context pointer for length_expr (?)
-			print "    " * idt + "assert (%s == %s.%s.length);" % (self.length_expr, ctx_name,self.name)
+			print "    " * idt + "assert (%s == %s.%s.length);" % (self.length_expr(ctx_name), ctx_name,self.name)
 		print "    " * idt + "parts[%d].iov_base = %s.%s.ptr;" % (part_idx, ctx_name,self.name)
 		print "    " * idt + "parts[%d].iov_len = %s.%s.length * %s.sizeof;" % (part_idx, ctx_name,self.name, self.element_type)
 		part_idx += 1
@@ -117,6 +109,23 @@ class ListMember(object):
 		return part_idx + 1
 	def offsetof_name(self):
 		return self.name
+	def length_expr(self, ctx_name='this'):
+		# TODO: refactor to merge with ExprFieldMember.value_expr.flatten
+		def flatten(em):
+			if em.tag == 'op':
+				a,b = em
+				return '(' + " ".join((flatten(a), em.attrib['op'], flatten(b))) + ')'
+			if em.tag == 'fieldref':
+				assert 0 == len(em)
+				assert 0 == len(em.attrib)
+				# TODO: consider to check if member really in ctx_members:
+				return '.'.join((ctx_name, em.text))
+			# em.tag == 'value'
+			assert 0 == len(em)
+			assert 0 == len(em.attrib)
+			return em.text
+		# element[0] is exprfield?
+		return flatten(self.element[0]) if len(self.element) == 1 else ""
 
 
 class ValueParamMember(object):
@@ -159,12 +168,7 @@ class ExprFieldMember(object):
 	def declare(self, idt):
 		print "    " * idt + self.type, self.name + ";"
 	def value_expr(self, ctx_members, ctx_name='this'):
-		'''
-		FIXME: The `flatten` function have to be aware of other members
-		presence and do some deduction if necessary...
-		Consider to use lazy value_expr generation.
-		'''
-		# xcbgen.expr.Expression
+		# see xcbgen.expr.Expression
 		def flatten(em):
 			if em.tag == 'op':
 				a,b = em
@@ -241,15 +245,14 @@ class StructInfo:
 					element_typeinfo = type_registry[m.element_type]
 					if element_typeinfo.fixed():
 						# dupe slice of elements of fixed type
-						# FIXME: context pointer (!)
 						print "    " * idt + "%s.%s = (cast(%s*)&buf[offset_idx])[0..%s].dup;" % (
-						                      ctx_name,m.name, m.element_type, m.length_expr)
-						print "    " * idt + "offset_idx += %s * %s.sizeof;" % (m.length_expr, m.element_type)
+						                      ctx_name,m.name, m.element_type, m.length_expr(ctx_name))
+						print "    " * idt + "offset_idx += %s * %s.sizeof;" % (m.length_expr(ctx_name), m.element_type)
 					   #if m.type.size % 4 != 0:
-						print "    " * idt + "offset_idx += pad4(%s * %s.sizeof);" % (m.length_expr, m.element_type)
+						print "    " * idt + "offset_idx += pad4(%s * %s.sizeof);" % (m.length_expr(ctx_name), m.element_type)
 					else:
 						# allocate array and set each element (vaiable-length)
-						print "    " * idt + "%s.%s.length = %s.%s;" % (ctx_name,m.name, ctx_name,m.length_expr)
+						print "    " * idt + "%s.%s.length = %s;" % (ctx_name,m.name, m.length_expr(ctx_name))
 						item = m.element_type.lower()
 						# TODO: const ref?
 						print "    " * idt + "foreach (ref %s; %s.%s)" % (item, ctx_name,m.name)

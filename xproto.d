@@ -138,14 +138,14 @@ struct SetupRequest
         parts[1].iov_base = null;
         parts[1].iov_len = pad4(this.authorization_protocol_name.offsetof);
 
-        assert (authorization_protocol_name_len == this.authorization_protocol_name.length);
+        assert (this.authorization_protocol_name_len == this.authorization_protocol_name.length);
         parts[2].iov_base = this.authorization_protocol_name.ptr;
         parts[2].iov_len = this.authorization_protocol_name.length * char.sizeof;
 
         parts[3].iov_base = null;
         parts[3].iov_len = pad4(this.authorization_protocol_name.length * char.sizeof);
 
-        assert (authorization_protocol_data_len == this.authorization_protocol_data.length);
+        assert (this.authorization_protocol_data_len == this.authorization_protocol_data.length);
         parts[4].iov_base = this.authorization_protocol_data.ptr;
         parts[4].iov_len = this.authorization_protocol_data.length * char.sizeof;
 
@@ -211,13 +211,13 @@ struct Setup
                     buf[offset_idx..offset_idx+this.vendor.offsetof];
         offset_idx += this.vendor.offsetof;
 
-        this.vendor = (cast(char*)&buf[offset_idx])[0..vendor_len].dup;
-        offset_idx += vendor_len * char.sizeof;
-        offset_idx += pad4(vendor_len * char.sizeof);
+        this.vendor = (cast(char*)&buf[offset_idx])[0..this.vendor_len].dup;
+        offset_idx += this.vendor_len * char.sizeof;
+        offset_idx += pad4(this.vendor_len * char.sizeof);
 
-        this.pixmap_formats = (cast(Format*)&buf[offset_idx])[0..pixmap_formats_len].dup;
-        offset_idx += pixmap_formats_len * Format.sizeof;
-        offset_idx += pad4(pixmap_formats_len * Format.sizeof);
+        this.pixmap_formats = (cast(Format*)&buf[offset_idx])[0..this.pixmap_formats_len].dup;
+        offset_idx += this.pixmap_formats_len * Format.sizeof;
+        offset_idx += pad4(this.pixmap_formats_len * Format.sizeof);
 
         this.roots.length = this.roots_len;
         foreach (ref screen; this.roots)
@@ -235,9 +235,9 @@ struct Setup
                             buf[offset_idx..offset_idx+depth.visuals.offsetof];
                 offset_idx += depth.visuals.offsetof;
 
-                depth.visuals = (cast(VisualType*)&buf[offset_idx])[0..visuals_len].dup;
-                offset_idx += visuals_len * VisualType.sizeof;
-                offset_idx += pad4(visuals_len * VisualType.sizeof);
+                depth.visuals = (cast(VisualType*)&buf[offset_idx])[0..depth.visuals_len].dup;
+                offset_idx += depth.visuals_len * VisualType.sizeof;
+                offset_idx += pad4(depth.visuals_len * VisualType.sizeof);
             }
         }
     }
@@ -1277,7 +1277,7 @@ struct ConfigureWindow
     Window window;
     ushort value_mask;
     byte[2] _pad1;
-    ushort value_mask;
+    //ushort value_mask;
     uint[] value_list;
 
     iovec[4] toIOVector()
@@ -1385,9 +1385,9 @@ struct QueryTree
                         buf[offset_idx..offset_idx+this.children.offsetof];
             offset_idx += this.children.offsetof;
 
-            this.children = (cast(Window*)&buf[offset_idx])[0..children_len].dup;
-            offset_idx += children_len * Window.sizeof;
-            offset_idx += pad4(children_len * Window.sizeof);
+            this.children = (cast(Window*)&buf[offset_idx])[0..this.children_len].dup;
+            offset_idx += this.children_len * Window.sizeof;
+            offset_idx += pad4(this.children_len * Window.sizeof);
         }
     }
 
@@ -1438,7 +1438,7 @@ struct InternAtom
         parts[1].iov_base = null;
         parts[1].iov_len = pad4(this.name.offsetof);
 
-        assert (name_len == this.name.length);
+        assert (this.name_len == this.name.length);
         parts[2].iov_base = this.name.ptr;
         parts[2].iov_len = this.name.length * char.sizeof;
 
@@ -1470,9 +1470,9 @@ struct GetAtomName
                         buf[offset_idx..offset_idx+this.name.offsetof];
             offset_idx += this.name.offsetof;
 
-            this.name = (cast(char*)&buf[offset_idx])[0..name_len].dup;
-            offset_idx += name_len * char.sizeof;
-            offset_idx += pad4(name_len * char.sizeof);
+            this.name = (cast(char*)&buf[offset_idx])[0..this.name_len].dup;
+            offset_idx += this.name_len * char.sizeof;
+            offset_idx += pad4(this.name_len * char.sizeof);
         }
     }
 
@@ -1514,7 +1514,7 @@ struct ChangeProperty
         parts[1].iov_base = null;
         parts[1].iov_len = pad4(this.data.offsetof);
 
-        assert (((data_len*format)/8) == this.data.length);
+        assert (((this.data_len * this.format) / 8) == this.data.length);
         parts[2].iov_base = this.data.ptr;
         parts[2].iov_len = this.data.length * void.sizeof;
 
@@ -1574,9 +1574,9 @@ struct GetProperty
                         buf[offset_idx..offset_idx+this.value.offsetof];
             offset_idx += this.value.offsetof;
 
-            this.value = (cast(void*)&buf[offset_idx])[0..(value_len*(format/8))].dup;
-            offset_idx += (value_len*(format/8)) * void.sizeof;
-            offset_idx += pad4((value_len*(format/8)) * void.sizeof);
+            this.value = (cast(void*)&buf[offset_idx])[0..(this.value_len * (this.format / 8))].dup;
+            offset_idx += (this.value_len * (this.format / 8)) * void.sizeof;
+            offset_idx += pad4((this.value_len * (this.format / 8)) * void.sizeof);
         }
     }
 
@@ -1616,9 +1616,9 @@ struct ListProperties
                         buf[offset_idx..offset_idx+this.atoms.offsetof];
             offset_idx += this.atoms.offsetof;
 
-            this.atoms = (cast(Atom*)&buf[offset_idx])[0..atoms_len].dup;
-            offset_idx += atoms_len * Atom.sizeof;
-            offset_idx += pad4(atoms_len * Atom.sizeof);
+            this.atoms = (cast(Atom*)&buf[offset_idx])[0..this.atoms_len].dup;
+            offset_idx += this.atoms_len * Atom.sizeof;
+            offset_idx += pad4(this.atoms_len * Atom.sizeof);
         }
     }
 
@@ -2115,9 +2115,9 @@ struct GetMotionEvents
                         buf[offset_idx..offset_idx+this.events.offsetof];
             offset_idx += this.events.offsetof;
 
-            this.events = (cast(TimeCoord*)&buf[offset_idx])[0..events_len].dup;
-            offset_idx += events_len * TimeCoord.sizeof;
-            offset_idx += pad4(events_len * TimeCoord.sizeof);
+            this.events = (cast(TimeCoord*)&buf[offset_idx])[0..this.events_len].dup;
+            offset_idx += this.events_len * TimeCoord.sizeof;
+            offset_idx += pad4(this.events_len * TimeCoord.sizeof);
         }
     }
 
@@ -2315,7 +2315,7 @@ struct OpenFont
         parts[1].iov_base = null;
         parts[1].iov_len = pad4(this.name.offsetof);
 
-        assert (name_len == this.name.length);
+        assert (this.name_len == this.name.length);
         parts[2].iov_base = this.name.ptr;
         parts[2].iov_len = this.name.length * char.sizeof;
 
@@ -2382,13 +2382,13 @@ struct QueryFont
                         buf[offset_idx..offset_idx+this.properties.offsetof];
             offset_idx += this.properties.offsetof;
 
-            this.properties = (cast(FontProp*)&buf[offset_idx])[0..properties_len].dup;
-            offset_idx += properties_len * FontProp.sizeof;
-            offset_idx += pad4(properties_len * FontProp.sizeof);
+            this.properties = (cast(FontProp*)&buf[offset_idx])[0..this.properties_len].dup;
+            offset_idx += this.properties_len * FontProp.sizeof;
+            offset_idx += pad4(this.properties_len * FontProp.sizeof);
 
-            this.char_infos = (cast(CharInfo*)&buf[offset_idx])[0..char_infos_len].dup;
-            offset_idx += char_infos_len * CharInfo.sizeof;
-            offset_idx += pad4(char_infos_len * CharInfo.sizeof);
+            this.char_infos = (cast(CharInfo*)&buf[offset_idx])[0..this.char_infos_len].dup;
+            offset_idx += this.char_infos_len * CharInfo.sizeof;
+            offset_idx += pad4(this.char_infos_len * CharInfo.sizeof);
         }
     }
 
@@ -2488,9 +2488,9 @@ struct ListFonts
                             buf[offset_idx..offset_idx+str.name.offsetof];
                 offset_idx += str.name.offsetof;
 
-                str.name = (cast(char*)&buf[offset_idx])[0..name_len].dup;
-                offset_idx += name_len * char.sizeof;
-                offset_idx += pad4(name_len * char.sizeof);
+                str.name = (cast(char*)&buf[offset_idx])[0..str.name_len].dup;
+                offset_idx += str.name_len * char.sizeof;
+                offset_idx += pad4(str.name_len * char.sizeof);
             }
         }
     }
@@ -2506,7 +2506,7 @@ struct ListFonts
         parts[1].iov_base = null;
         parts[1].iov_len = pad4(this.pattern.offsetof);
 
-        assert (pattern_len == this.pattern.length);
+        assert (this.pattern_len == this.pattern.length);
         parts[2].iov_base = this.pattern.ptr;
         parts[2].iov_len = this.pattern.length * char.sizeof;
 
@@ -2554,13 +2554,13 @@ struct ListFontsWithInfo
                         buf[offset_idx..offset_idx+this.properties.offsetof];
             offset_idx += this.properties.offsetof;
 
-            this.properties = (cast(FontProp*)&buf[offset_idx])[0..properties_len].dup;
-            offset_idx += properties_len * FontProp.sizeof;
-            offset_idx += pad4(properties_len * FontProp.sizeof);
+            this.properties = (cast(FontProp*)&buf[offset_idx])[0..this.properties_len].dup;
+            offset_idx += this.properties_len * FontProp.sizeof;
+            offset_idx += pad4(this.properties_len * FontProp.sizeof);
 
-            this.name = (cast(char*)&buf[offset_idx])[0..name_len].dup;
-            offset_idx += name_len * char.sizeof;
-            offset_idx += pad4(name_len * char.sizeof);
+            this.name = (cast(char*)&buf[offset_idx])[0..this.name_len].dup;
+            offset_idx += this.name_len * char.sizeof;
+            offset_idx += pad4(this.name_len * char.sizeof);
         }
     }
 
@@ -2575,7 +2575,7 @@ struct ListFontsWithInfo
         parts[1].iov_base = null;
         parts[1].iov_len = pad4(this.pattern.offsetof);
 
-        assert (pattern_len == this.pattern.length);
+        assert (this.pattern_len == this.pattern.length);
         parts[2].iov_base = this.pattern.ptr;
         parts[2].iov_len = this.pattern.length * char.sizeof;
 
@@ -2641,9 +2641,9 @@ struct GetFontPath
                             buf[offset_idx..offset_idx+str.name.offsetof];
                 offset_idx += str.name.offsetof;
 
-                str.name = (cast(char*)&buf[offset_idx])[0..name_len].dup;
-                offset_idx += name_len * char.sizeof;
-                offset_idx += pad4(name_len * char.sizeof);
+                str.name = (cast(char*)&buf[offset_idx])[0..str.name_len].dup;
+                offset_idx += str.name_len * char.sizeof;
+                offset_idx += pad4(str.name_len * char.sizeof);
             }
         }
     }
@@ -2810,7 +2810,7 @@ struct SetDashes
         parts[1].iov_base = null;
         parts[1].iov_len = pad4(this.dashes.offsetof);
 
-        assert (dashes_len == this.dashes.length);
+        assert (this.dashes_len == this.dashes.length);
         parts[2].iov_base = this.dashes.ptr;
         parts[2].iov_len = this.dashes.length * ubyte.sizeof;
 
@@ -3241,6 +3241,7 @@ struct GetImage
     struct Reply
     {
         ubyte depth;
+		ushort length;
         VisualID visual;
         byte[20] _pad0;
         ubyte[] data;
@@ -3253,9 +3254,9 @@ struct GetImage
                         buf[offset_idx..offset_idx+this.data.offsetof];
             offset_idx += this.data.offsetof;
 
-            this.data = (cast(ubyte*)&buf[offset_idx])[0..(length*4)].dup;
-            offset_idx += (length*4) * ubyte.sizeof;
-            offset_idx += pad4((length*4) * ubyte.sizeof);
+            this.data = (cast(ubyte*)&buf[offset_idx])[0..(this.length * 4)].dup;
+            offset_idx += (this.length * 4) * ubyte.sizeof;
+            offset_idx += pad4((this.length * 4) * ubyte.sizeof);
         }
     }
 
@@ -3357,7 +3358,7 @@ struct ImageText8
         parts[1].iov_base = null;
         parts[1].iov_len = pad4(this.string.offsetof);
 
-        assert (string_len == this.string.length);
+        assert (this.string_len == this.string.length);
         parts[2].iov_base = this.string.ptr;
         parts[2].iov_len = this.string.length * char.sizeof;
 
@@ -3389,7 +3390,7 @@ struct ImageText16
         parts[1].iov_base = null;
         parts[1].iov_len = pad4(this.string.offsetof);
 
-        assert (string_len == this.string.length);
+        assert (this.string_len == this.string.length);
         parts[2].iov_base = this.string.ptr;
         parts[2].iov_len = this.string.length * wchar.sizeof;
 
@@ -3529,9 +3530,9 @@ struct ListInstalledColormaps
                         buf[offset_idx..offset_idx+this.cmaps.offsetof];
             offset_idx += this.cmaps.offsetof;
 
-            this.cmaps = (cast(ColorMap*)&buf[offset_idx])[0..cmaps_len].dup;
-            offset_idx += cmaps_len * ColorMap.sizeof;
-            offset_idx += pad4(cmaps_len * ColorMap.sizeof);
+            this.cmaps = (cast(ColorMap*)&buf[offset_idx])[0..this.cmaps_len].dup;
+            offset_idx += this.cmaps_len * ColorMap.sizeof;
+            offset_idx += pad4(this.cmaps_len * ColorMap.sizeof);
         }
     }
 
@@ -3631,7 +3632,7 @@ struct AllocNamedColor
         parts[1].iov_base = null;
         parts[1].iov_len = pad4(this.name.offsetof);
 
-        assert (name_len == this.name.length);
+        assert (this.name_len == this.name.length);
         parts[2].iov_base = this.name.ptr;
         parts[2].iov_len = this.name.length * char.sizeof;
 
@@ -3667,13 +3668,13 @@ struct AllocColorCells
                         buf[offset_idx..offset_idx+this.pixels.offsetof];
             offset_idx += this.pixels.offsetof;
 
-            this.pixels = (cast(uint*)&buf[offset_idx])[0..pixels_len].dup;
-            offset_idx += pixels_len * uint.sizeof;
-            offset_idx += pad4(pixels_len * uint.sizeof);
+            this.pixels = (cast(uint*)&buf[offset_idx])[0..this.pixels_len].dup;
+            offset_idx += this.pixels_len * uint.sizeof;
+            offset_idx += pad4(this.pixels_len * uint.sizeof);
 
-            this.masks = (cast(uint*)&buf[offset_idx])[0..masks_len].dup;
-            offset_idx += masks_len * uint.sizeof;
-            offset_idx += pad4(masks_len * uint.sizeof);
+            this.masks = (cast(uint*)&buf[offset_idx])[0..this.masks_len].dup;
+            offset_idx += this.masks_len * uint.sizeof;
+            offset_idx += pad4(this.masks_len * uint.sizeof);
         }
     }
 
@@ -3721,9 +3722,9 @@ struct AllocColorPlanes
                         buf[offset_idx..offset_idx+this.pixels.offsetof];
             offset_idx += this.pixels.offsetof;
 
-            this.pixels = (cast(uint*)&buf[offset_idx])[0..pixels_len].dup;
-            offset_idx += pixels_len * uint.sizeof;
-            offset_idx += pad4(pixels_len * uint.sizeof);
+            this.pixels = (cast(uint*)&buf[offset_idx])[0..this.pixels_len].dup;
+            offset_idx += this.pixels_len * uint.sizeof;
+            offset_idx += pad4(this.pixels_len * uint.sizeof);
         }
     }
 
@@ -3820,7 +3821,7 @@ struct StoreNamedColor
         parts[1].iov_base = null;
         parts[1].iov_len = pad4(this.name.offsetof);
 
-        assert (name_len == this.name.length);
+        assert (this.name_len == this.name.length);
         parts[2].iov_base = this.name.ptr;
         parts[2].iov_len = this.name.length * char.sizeof;
 
@@ -3853,9 +3854,9 @@ struct QueryColors
                         buf[offset_idx..offset_idx+this.colors.offsetof];
             offset_idx += this.colors.offsetof;
 
-            this.colors = (cast(RGB*)&buf[offset_idx])[0..colors_len].dup;
-            offset_idx += colors_len * RGB.sizeof;
-            offset_idx += pad4(colors_len * RGB.sizeof);
+            this.colors = (cast(RGB*)&buf[offset_idx])[0..this.colors_len].dup;
+            offset_idx += this.colors_len * RGB.sizeof;
+            offset_idx += pad4(this.colors_len * RGB.sizeof);
         }
     }
 
@@ -3918,7 +3919,7 @@ struct LookupColor
         parts[1].iov_base = null;
         parts[1].iov_len = pad4(this.name.offsetof);
 
-        assert (name_len == this.name.length);
+        assert (this.name_len == this.name.length);
         parts[2].iov_base = this.name.ptr;
         parts[2].iov_len = this.name.length * char.sizeof;
 
@@ -4111,7 +4112,7 @@ struct QueryExtension
         parts[1].iov_base = null;
         parts[1].iov_len = pad4(this.name.offsetof);
 
-        assert (name_len == this.name.length);
+        assert (this.name_len == this.name.length);
         parts[2].iov_base = this.name.ptr;
         parts[2].iov_len = this.name.length * char.sizeof;
 
@@ -4148,9 +4149,9 @@ struct ListExtensions
                             buf[offset_idx..offset_idx+str.name.offsetof];
                 offset_idx += str.name.offsetof;
 
-                str.name = (cast(char*)&buf[offset_idx])[0..name_len].dup;
-                offset_idx += name_len * char.sizeof;
-                offset_idx += pad4(name_len * char.sizeof);
+                str.name = (cast(char*)&buf[offset_idx])[0..str.name_len].dup;
+                offset_idx += str.name_len * char.sizeof;
+                offset_idx += pad4(str.name_len * char.sizeof);
             }
         }
     }
@@ -4189,7 +4190,7 @@ struct ChangeKeyboardMapping
         parts[1].iov_base = null;
         parts[1].iov_len = pad4(this.keysyms.offsetof);
 
-        assert ((keycode_count*keysyms_per_keycode) == this.keysyms.length);
+        assert ((this.keycode_count * this.keysyms_per_keycode) == this.keysyms.length);
         parts[2].iov_base = this.keysyms.ptr;
         parts[2].iov_len = this.keysyms.length * KeySym.sizeof;
 
@@ -4210,6 +4211,7 @@ struct GetKeyboardMapping
     struct Reply
     {
         ubyte keysyms_per_keycode;
+		ushort length;
         byte[24] _pad0;
         KeySym[] keysyms;
 
@@ -4221,9 +4223,9 @@ struct GetKeyboardMapping
                         buf[offset_idx..offset_idx+this.keysyms.offsetof];
             offset_idx += this.keysyms.offsetof;
 
-            this.keysyms = (cast(KeySym*)&buf[offset_idx])[0..length].dup;
-            offset_idx += length * KeySym.sizeof;
-            offset_idx += pad4(length * KeySym.sizeof);
+            this.keysyms = (cast(KeySym*)&buf[offset_idx])[0..this.length].dup;
+            offset_idx += this.length * KeySym.sizeof;
+            offset_idx += pad4(this.length * KeySym.sizeof);
         }
     }
 
@@ -4474,7 +4476,7 @@ struct ChangeHosts
         parts[1].iov_base = null;
         parts[1].iov_len = pad4(this.address.offsetof);
 
-        assert (address_len == this.address.length);
+        assert (this.address_len == this.address.length);
         parts[2].iov_base = this.address.ptr;
         parts[2].iov_len = this.address.length * char.sizeof;
 
@@ -4512,9 +4514,9 @@ struct ListHosts
                             buf[offset_idx..offset_idx+host.address.offsetof];
                 offset_idx += host.address.offsetof;
 
-                host.address = (cast(ubyte*)&buf[offset_idx])[0..address_len].dup;
-                offset_idx += address_len * ubyte.sizeof;
-                offset_idx += pad4(address_len * ubyte.sizeof);
+                host.address = (cast(ubyte*)&buf[offset_idx])[0..host.address_len].dup;
+                offset_idx += host.address_len * ubyte.sizeof;
+                offset_idx += pad4(host.address_len * ubyte.sizeof);
             }
         }
     }
@@ -4615,7 +4617,7 @@ struct RotateProperties
         parts[1].iov_base = null;
         parts[1].iov_len = pad4(this.atoms.offsetof);
 
-        assert (atoms_len == this.atoms.length);
+        assert (this.atoms_len == this.atoms.length);
         parts[2].iov_base = this.atoms.ptr;
         parts[2].iov_len = this.atoms.length * Atom.sizeof;
 
@@ -4675,7 +4677,7 @@ struct SetPointerMapping
         parts[1].iov_base = null;
         parts[1].iov_len = pad4(this.map.offsetof);
 
-        assert (map_len == this.map.length);
+        assert (this.map_len == this.map.length);
         parts[2].iov_base = this.map.ptr;
         parts[2].iov_len = this.map.length * ubyte.sizeof;
 
@@ -4704,9 +4706,9 @@ struct GetPointerMapping
                         buf[offset_idx..offset_idx+this.map.offsetof];
             offset_idx += this.map.offsetof;
 
-            this.map = (cast(ubyte*)&buf[offset_idx])[0..map_len].dup;
-            offset_idx += map_len * ubyte.sizeof;
-            offset_idx += pad4(map_len * ubyte.sizeof);
+            this.map = (cast(ubyte*)&buf[offset_idx])[0..this.map_len].dup;
+            offset_idx += this.map_len * ubyte.sizeof;
+            offset_idx += pad4(this.map_len * ubyte.sizeof);
         }
     }
 
@@ -4754,7 +4756,7 @@ struct SetModifierMapping
         parts[1].iov_base = null;
         parts[1].iov_len = pad4(this.keycodes.offsetof);
 
-        assert ((keycodes_per_modifier*8) == this.keycodes.length);
+        assert ((this.keycodes_per_modifier * 8) == this.keycodes.length);
         parts[2].iov_base = this.keycodes.ptr;
         parts[2].iov_len = this.keycodes.length * KeyCode.sizeof;
 
@@ -4783,9 +4785,9 @@ struct GetModifierMapping
                         buf[offset_idx..offset_idx+this.keycodes.offsetof];
             offset_idx += this.keycodes.offsetof;
 
-            this.keycodes = (cast(KeyCode*)&buf[offset_idx])[0..(keycodes_per_modifier*8)].dup;
-            offset_idx += (keycodes_per_modifier*8) * KeyCode.sizeof;
-            offset_idx += pad4((keycodes_per_modifier*8) * KeyCode.sizeof);
+            this.keycodes = (cast(KeyCode*)&buf[offset_idx])[0..(this.keycodes_per_modifier * 8)].dup;
+            offset_idx += (this.keycodes_per_modifier * 8) * KeyCode.sizeof;
+            offset_idx += pad4((this.keycodes_per_modifier * 8) * KeyCode.sizeof);
         }
     }
 
