@@ -1,9 +1,13 @@
+/*
+ * dmd xproto.d core.d util.d -run test/connection_info.d
+ */
+
 import xd.core;
 //import xd.xproto;
 
 void main()
 {
-	auto conn = new Connection(0);
+	auto conn = new xd.core.Connection(0);
 
 	writefln("	status: %d", conn.setup.status);
 	writefln("	protocol_major_version: %d", conn.setup.protocol_major_version);

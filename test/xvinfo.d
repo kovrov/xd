@@ -52,10 +52,10 @@ void main()
 			writefln("");
 
 			writefln("    supported visuals:");
-			for (format; adaptor_info.formats)
+			foreach (format; adaptor_info.formats)
 				writefln("      depth %i, visualID 0x%2x", format.depth, format.visual);
 
-			auto port_attributes = conn.get_reply(conn.send(xd.xv.QueryPortAttributes(adaptor_info.base_id));
+			auto port_attributes = conn.get_reply(conn.send(xd.xv.QueryPortAttributes(adaptor_info.base_id)));
 
 			if (port_attributes.attributes.length == 0)
 			{
@@ -79,7 +79,7 @@ void main()
 						attribute_atom = conn.get_reply(conn.send(InternAtom(true, attribute_info.name)));
 						if (attribute_atom.atom != 0)
 						{
-							auto port_attribute = conn.get_reply(conn.send(xd.xv.GetPortAttribute(adaptor_info.base_id, attribute_atom.atom));
+							auto port_attribute = conn.get_reply(conn.send(xd.xv.GetPortAttribute(adaptor_info.base_id, attribute_atom.atom)));
 							writef(" (current value is %i)", port_attribute.value);
 						}
 						writefln("");
@@ -87,13 +87,13 @@ void main()
 				}
 			}
 
-			encodings = conn.get_reply(conn.send(xd.xv.QueryEncodings(adaptor_info.base_id));
+			encodings = conn.get_reply(conn.send(xd.xv.QueryEncodings(adaptor_info.base_id)));
 			int ImageEncodings = 0;
 			if (encodings.num_encodings)
 			{
 				foreach (encoding_info; encodings.info)
 				{
-					if (encoding_info == "XV_IMAGE"))
+					if (encoding_info == "XV_IMAGE")
 						ImageEncodings++;
 				}
 
@@ -102,11 +102,11 @@ void main()
 					writefln("    number of encodings: %i", encodings.num_encodings - ImageEncodings);
 					foreach (encoding_info; encodings.info)
 					{
-						if (encoding_info.name == "XV_IMAGE"))
+						if (encoding_info.name == "XV_IMAGE")
 						{
 							writefln("      encoding ID #%i: \"%*s\"", encoding_info.encoding, strlen(name), name);
 							writefln("        size: %i x %i", encoding_info.width, encoding_info.height);
-							writefln("        rate: %f", (float)encoding_info.rate.numerator / (float)encoding_info.rate.denominator);
+							writefln("        rate: %f", cast(float)encoding_info.rate.numerator / cast(float)encoding_info.rate.denominator);
 							free(name);
 						}
 					}
@@ -116,7 +116,7 @@ void main()
 				{
 					foreach (encoding_info; encodings.info)
 					{
-						if (encoding_info == "XV_IMAGE"))
+						if (encoding_info == "XV_IMAGE")
 						{
 							writefln("    maximum XvImage size: %i x %i",	encoding_info.width, encoding_info.height);
 							break;
@@ -137,22 +137,22 @@ void main()
 							writefln("");
 
 						writef("        guid: ");
-						writef("%02x",   cast(unsigned char)image_format_info.guid[0]);
-						writef("%02x",   cast(unsigned char)image_format_info.guid[1]);
-						writef("%02x",   cast(unsigned char)image_format_info.guid[2]);
-						writef("%02x-",  cast(unsigned char)image_format_info.guid[3]);
-						writef("%02x",   cast(unsigned char)image_format_info.guid[4]);
-						writef("%02x-",  cast(unsigned char)image_format_info.guid[5]);
-						writef("%02x",   cast(unsigned char)image_format_info.guid[6]);
-						writef("%02x-",  cast(unsigned char)image_format_info.guid[7]);
-						writef("%02x",   cast(unsigned char)image_format_info.guid[8]);
-						writef("%02x-",  cast(unsigned char)image_format_info.guid[9]);
-						writef("%02x",   cast(unsigned char)image_format_info.guid[10]);
-						writef("%02x",   cast(unsigned char)image_format_info.guid[11]);
-						writef("%02x",   cast(unsigned char)image_format_info.guid[12]);
-						writef("%02x",   cast(unsigned char)image_format_info.guid[13]);
-						writef("%02x",   cast(unsigned char)image_format_info.guid[14]);
-						writefln("%02x", cast(unsigned char)image_format_info.guid[15]);
+						writef("%02x",   cast(ubyte)image_format_info.guid[0]);
+						writef("%02x",   cast(ubyte)image_format_info.guid[1]);
+						writef("%02x",   cast(ubyte)image_format_info.guid[2]);
+						writef("%02x-",  cast(ubyte)image_format_info.guid[3]);
+						writef("%02x",   cast(ubyte)image_format_info.guid[4]);
+						writef("%02x-",  cast(ubyte)image_format_info.guid[5]);
+						writef("%02x",   cast(ubyte)image_format_info.guid[6]);
+						writef("%02x-",  cast(ubyte)image_format_info.guid[7]);
+						writef("%02x",   cast(ubyte)image_format_info.guid[8]);
+						writef("%02x-",  cast(ubyte)image_format_info.guid[9]);
+						writef("%02x",   cast(ubyte)image_format_info.guid[10]);
+						writef("%02x",   cast(ubyte)image_format_info.guid[11]);
+						writef("%02x",   cast(ubyte)image_format_info.guid[12]);
+						writef("%02x",   cast(ubyte)image_format_info.guid[13]);
+						writef("%02x",   cast(ubyte)image_format_info.guid[14]);
+						writefln("%02x", cast(ubyte)image_format_info.guid[15]);
 
 						writefln("        bits per pixel: %i", image_format_info.bpp);
 						writefln("        number of planes: %i", image_format_info.num_planes);
