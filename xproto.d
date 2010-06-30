@@ -157,27 +157,28 @@ struct SetupRequest
 
     iovec[6] toIOVector()
     {
+        static immutable byte[3] pad;
         iovec[6] parts;
 
         parts[0].iov_base = &this;
         parts[0].iov_len = this.authorization_protocol_name.offsetof;
 
         // FIXME: padding needed?
-        parts[1].iov_base = null;
+        parts[1].iov_base = pad.ptr;
         parts[1].iov_len = pad4(this.authorization_protocol_name.offsetof);
 
         assert (this.authorization_protocol_name_len == this.authorization_protocol_name.length);
         parts[2].iov_base = this.authorization_protocol_name.ptr;
         parts[2].iov_len = this.authorization_protocol_name.length * char.sizeof;
 
-        parts[3].iov_base = null;
+        parts[3].iov_base = pad.ptr;
         parts[3].iov_len = pad4(this.authorization_protocol_name.length * char.sizeof);
 
         assert (this.authorization_protocol_data_len == this.authorization_protocol_data.length);
         parts[4].iov_base = this.authorization_protocol_data.ptr;
         parts[4].iov_len = this.authorization_protocol_data.length * char.sizeof;
 
-        parts[5].iov_base = null;
+        parts[5].iov_base = pad.ptr;
         parts[5].iov_len = pad4(this.authorization_protocol_data.length * char.sizeof);
 
         return parts;
@@ -1105,19 +1106,20 @@ struct CreateWindow
 
     iovec[4] toIOVector()
     {
+        static immutable byte[3] pad;
         iovec[4] parts;
 
         parts[0].iov_base = &this;
         parts[0].iov_len = this.value_list.offsetof;
 
         // FIXME: padding needed?
-        parts[1].iov_base = null;
+        parts[1].iov_base = pad.ptr;
         parts[1].iov_len = pad4(this.value_list.offsetof);
 
         parts[2].iov_base = this.value_list.ptr;
         parts[2].iov_len = bitcount(this.value_mask) * uint.sizeof;
 
-        parts[3].iov_base = null;
+        parts[3].iov_base = pad.ptr;
         parts[3].iov_len = pad4(this.value_list.length);
 
         return parts;
@@ -1136,19 +1138,20 @@ struct ChangeWindowAttributes
 
     iovec[4] toIOVector()
     {
+        static immutable byte[3] pad;
         iovec[4] parts;
 
         parts[0].iov_base = &this;
         parts[0].iov_len = this.value_list.offsetof;
 
         // FIXME: padding needed?
-        parts[1].iov_base = null;
+        parts[1].iov_base = pad.ptr;
         parts[1].iov_len = pad4(this.value_list.offsetof);
 
         parts[2].iov_base = this.value_list.ptr;
         parts[2].iov_len = bitcount(this.value_mask) * uint.sizeof;
 
-        parts[3].iov_base = null;
+        parts[3].iov_base = pad.ptr;
         parts[3].iov_len = pad4(this.value_list.length);
 
         return parts;
@@ -1223,13 +1226,14 @@ struct GetWindowAttributes
 
     iovec[2] toIOVector()
     {
+        static immutable byte[3] pad;
         iovec[2] parts;
 
         parts[0].iov_base = &this;
         parts[0].iov_len = this.sizeof;
 
         // FIXME: padding needed?
-        parts[1].iov_base = null;
+        parts[1].iov_base = pad.ptr;
         parts[1].iov_len = pad4(this.sizeof);
 
         return parts;
@@ -1252,13 +1256,14 @@ struct DestroyWindow
 
     iovec[2] toIOVector()
     {
+        static immutable byte[3] pad;
         iovec[2] parts;
 
         parts[0].iov_base = &this;
         parts[0].iov_len = this.sizeof;
 
         // FIXME: padding needed?
-        parts[1].iov_base = null;
+        parts[1].iov_base = pad.ptr;
         parts[1].iov_len = pad4(this.sizeof);
 
         return parts;
@@ -1281,13 +1286,14 @@ struct DestroySubwindows
 
     iovec[2] toIOVector()
     {
+        static immutable byte[3] pad;
         iovec[2] parts;
 
         parts[0].iov_base = &this;
         parts[0].iov_len = this.sizeof;
 
         // FIXME: padding needed?
-        parts[1].iov_base = null;
+        parts[1].iov_base = pad.ptr;
         parts[1].iov_len = pad4(this.sizeof);
 
         return parts;
@@ -1310,13 +1316,14 @@ struct ChangeSaveSet
 
     iovec[2] toIOVector()
     {
+        static immutable byte[3] pad;
         iovec[2] parts;
 
         parts[0].iov_base = &this;
         parts[0].iov_len = this.sizeof;
 
         // FIXME: padding needed?
-        parts[1].iov_base = null;
+        parts[1].iov_base = pad.ptr;
         parts[1].iov_len = pad4(this.sizeof);
 
         return parts;
@@ -1336,13 +1343,14 @@ struct ReparentWindow
 
     iovec[2] toIOVector()
     {
+        static immutable byte[3] pad;
         iovec[2] parts;
 
         parts[0].iov_base = &this;
         parts[0].iov_len = this.sizeof;
 
         // FIXME: padding needed?
-        parts[1].iov_base = null;
+        parts[1].iov_base = pad.ptr;
         parts[1].iov_len = pad4(this.sizeof);
 
         return parts;
@@ -1368,13 +1376,14 @@ struct MapWindow
 
     iovec[2] toIOVector()
     {
+        static immutable byte[3] pad;
         iovec[2] parts;
 
         parts[0].iov_base = &this;
         parts[0].iov_len = this.sizeof;
 
         // FIXME: padding needed?
-        parts[1].iov_base = null;
+        parts[1].iov_base = pad.ptr;
         parts[1].iov_len = pad4(this.sizeof);
 
         return parts;
@@ -1397,13 +1406,14 @@ struct MapSubwindows
 
     iovec[2] toIOVector()
     {
+        static immutable byte[3] pad;
         iovec[2] parts;
 
         parts[0].iov_base = &this;
         parts[0].iov_len = this.sizeof;
 
         // FIXME: padding needed?
-        parts[1].iov_base = null;
+        parts[1].iov_base = pad.ptr;
         parts[1].iov_len = pad4(this.sizeof);
 
         return parts;
@@ -1426,13 +1436,14 @@ struct UnmapWindow
 
     iovec[2] toIOVector()
     {
+        static immutable byte[3] pad;
         iovec[2] parts;
 
         parts[0].iov_base = &this;
         parts[0].iov_len = this.sizeof;
 
         // FIXME: padding needed?
-        parts[1].iov_base = null;
+        parts[1].iov_base = pad.ptr;
         parts[1].iov_len = pad4(this.sizeof);
 
         return parts;
@@ -1455,13 +1466,14 @@ struct UnmapSubwindows
 
     iovec[2] toIOVector()
     {
+        static immutable byte[3] pad;
         iovec[2] parts;
 
         parts[0].iov_base = &this;
         parts[0].iov_len = this.sizeof;
 
         // FIXME: padding needed?
-        parts[1].iov_base = null;
+        parts[1].iov_base = pad.ptr;
         parts[1].iov_len = pad4(this.sizeof);
 
         return parts;
@@ -1487,19 +1499,20 @@ struct ConfigureWindow
 
     iovec[4] toIOVector()
     {
+        static immutable byte[3] pad;
         iovec[4] parts;
 
         parts[0].iov_base = &this;
         parts[0].iov_len = this.value_list.offsetof;
 
         // FIXME: padding needed?
-        parts[1].iov_base = null;
+        parts[1].iov_base = pad.ptr;
         parts[1].iov_len = pad4(this.value_list.offsetof);
 
         parts[2].iov_base = this.value_list.ptr;
         parts[2].iov_len = bitcount(this.value_mask) * uint.sizeof;
 
-        parts[3].iov_base = null;
+        parts[3].iov_base = pad.ptr;
         parts[3].iov_len = pad4(this.value_list.length);
 
         return parts;
@@ -1525,13 +1538,14 @@ struct CirculateWindow
 
     iovec[2] toIOVector()
     {
+        static immutable byte[3] pad;
         iovec[2] parts;
 
         parts[0].iov_base = &this;
         parts[0].iov_len = this.sizeof;
 
         // FIXME: padding needed?
-        parts[1].iov_base = null;
+        parts[1].iov_base = pad.ptr;
         parts[1].iov_len = pad4(this.sizeof);
 
         return parts;
@@ -1582,13 +1596,14 @@ struct GetGeometry
 
     iovec[2] toIOVector()
     {
+        static immutable byte[3] pad;
         iovec[2] parts;
 
         parts[0].iov_base = &this;
         parts[0].iov_len = this.sizeof;
 
         // FIXME: padding needed?
-        parts[1].iov_base = null;
+        parts[1].iov_base = pad.ptr;
         parts[1].iov_len = pad4(this.sizeof);
 
         return parts;
@@ -1646,13 +1661,14 @@ struct QueryTree
 
     iovec[2] toIOVector()
     {
+        static immutable byte[3] pad;
         iovec[2] parts;
 
         parts[0].iov_base = &this;
         parts[0].iov_len = this.sizeof;
 
         // FIXME: padding needed?
-        parts[1].iov_base = null;
+        parts[1].iov_base = pad.ptr;
         parts[1].iov_len = pad4(this.sizeof);
 
         return parts;
@@ -1699,20 +1715,21 @@ struct InternAtom
 
     iovec[4] toIOVector()
     {
+        static immutable byte[3] pad;
         iovec[4] parts;
 
         parts[0].iov_base = &this;
         parts[0].iov_len = this.name.offsetof;
 
         // FIXME: padding needed?
-        parts[1].iov_base = null;
+        parts[1].iov_base = pad.ptr;
         parts[1].iov_len = pad4(this.name.offsetof);
 
         assert (this.name_len == this.name.length);
         parts[2].iov_base = this.name.ptr;
         parts[2].iov_len = this.name.length * char.sizeof;
 
-        parts[3].iov_base = null;
+        parts[3].iov_base = pad.ptr;
         parts[3].iov_len = pad4(this.name.length * char.sizeof);
 
         return parts;
@@ -1768,13 +1785,14 @@ struct GetAtomName
 
     iovec[2] toIOVector()
     {
+        static immutable byte[3] pad;
         iovec[2] parts;
 
         parts[0].iov_base = &this;
         parts[0].iov_len = this.sizeof;
 
         // FIXME: padding needed?
-        parts[1].iov_base = null;
+        parts[1].iov_base = pad.ptr;
         parts[1].iov_len = pad4(this.sizeof);
 
         return parts;
@@ -1803,20 +1821,21 @@ struct ChangeProperty
 
     iovec[4] toIOVector()
     {
+        static immutable byte[3] pad;
         iovec[4] parts;
 
         parts[0].iov_base = &this;
         parts[0].iov_len = this.data.offsetof;
 
         // FIXME: padding needed?
-        parts[1].iov_base = null;
+        parts[1].iov_base = pad.ptr;
         parts[1].iov_len = pad4(this.data.offsetof);
 
         assert (((this.data_len * this.format) / 8) == this.data.length);
         parts[2].iov_base = this.data.ptr;
         parts[2].iov_len = this.data.length * void.sizeof;
 
-        parts[3].iov_base = null;
+        parts[3].iov_base = pad.ptr;
         parts[3].iov_len = pad4(this.data.length * void.sizeof);
 
         return parts;
@@ -1846,13 +1865,14 @@ struct DeleteProperty
 
     iovec[2] toIOVector()
     {
+        static immutable byte[3] pad;
         iovec[2] parts;
 
         parts[0].iov_base = &this;
         parts[0].iov_len = this.sizeof;
 
         // FIXME: padding needed?
-        parts[1].iov_base = null;
+        parts[1].iov_base = pad.ptr;
         parts[1].iov_len = pad4(this.sizeof);
 
         return parts;
@@ -1916,13 +1936,14 @@ struct GetProperty
 
     iovec[2] toIOVector()
     {
+        static immutable byte[3] pad;
         iovec[2] parts;
 
         parts[0].iov_base = &this;
         parts[0].iov_len = this.sizeof;
 
         // FIXME: padding needed?
-        parts[1].iov_base = null;
+        parts[1].iov_base = pad.ptr;
         parts[1].iov_len = pad4(this.sizeof);
 
         return parts;
@@ -1970,13 +1991,14 @@ struct ListProperties
 
     iovec[2] toIOVector()
     {
+        static immutable byte[3] pad;
         iovec[2] parts;
 
         parts[0].iov_base = &this;
         parts[0].iov_len = this.sizeof;
 
         // FIXME: padding needed?
-        parts[1].iov_base = null;
+        parts[1].iov_base = pad.ptr;
         parts[1].iov_len = pad4(this.sizeof);
 
         return parts;
@@ -2001,13 +2023,14 @@ struct SetSelectionOwner
 
     iovec[2] toIOVector()
     {
+        static immutable byte[3] pad;
         iovec[2] parts;
 
         parts[0].iov_base = &this;
         parts[0].iov_len = this.sizeof;
 
         // FIXME: padding needed?
-        parts[1].iov_base = null;
+        parts[1].iov_base = pad.ptr;
         parts[1].iov_len = pad4(this.sizeof);
 
         return parts;
@@ -2054,13 +2077,14 @@ struct GetSelectionOwner
 
     iovec[2] toIOVector()
     {
+        static immutable byte[3] pad;
         iovec[2] parts;
 
         parts[0].iov_base = &this;
         parts[0].iov_len = this.sizeof;
 
         // FIXME: padding needed?
-        parts[1].iov_base = null;
+        parts[1].iov_base = pad.ptr;
         parts[1].iov_len = pad4(this.sizeof);
 
         return parts;
@@ -2087,13 +2111,14 @@ struct ConvertSelection
 
     iovec[2] toIOVector()
     {
+        static immutable byte[3] pad;
         iovec[2] parts;
 
         parts[0].iov_base = &this;
         parts[0].iov_len = this.sizeof;
 
         // FIXME: padding needed?
-        parts[1].iov_base = null;
+        parts[1].iov_base = pad.ptr;
         parts[1].iov_len = pad4(this.sizeof);
 
         return parts;
@@ -2122,20 +2147,21 @@ struct SendEvent
 
     iovec[4] toIOVector()
     {
+        static immutable byte[3] pad;
         iovec[4] parts;
 
         parts[0].iov_base = &this;
         parts[0].iov_len = this.event.offsetof;
 
         // FIXME: padding needed?
-        parts[1].iov_base = null;
+        parts[1].iov_base = pad.ptr;
         parts[1].iov_len = pad4(this.event.offsetof);
 
         assert (32 == this.event.length);
         parts[2].iov_base = this.event.ptr;
         parts[2].iov_len = this.event.length * char.sizeof;
 
-        parts[3].iov_base = null;
+        parts[3].iov_base = pad.ptr;
         parts[3].iov_len = pad4(this.event.length * char.sizeof);
 
         return parts;
@@ -2173,13 +2199,14 @@ struct GrabPointer
 
     iovec[2] toIOVector()
     {
+        static immutable byte[3] pad;
         iovec[2] parts;
 
         parts[0].iov_base = &this;
         parts[0].iov_len = this.sizeof;
 
         // FIXME: padding needed?
-        parts[1].iov_base = null;
+        parts[1].iov_base = pad.ptr;
         parts[1].iov_len = pad4(this.sizeof);
 
         return parts;
@@ -2196,13 +2223,14 @@ struct UngrabPointer
 
     iovec[2] toIOVector()
     {
+        static immutable byte[3] pad;
         iovec[2] parts;
 
         parts[0].iov_base = &this;
         parts[0].iov_len = this.sizeof;
 
         // FIXME: padding needed?
-        parts[1].iov_base = null;
+        parts[1].iov_base = pad.ptr;
         parts[1].iov_len = pad4(this.sizeof);
 
         return parts;
@@ -2233,13 +2261,14 @@ struct GrabButton
 
     iovec[2] toIOVector()
     {
+        static immutable byte[3] pad;
         iovec[2] parts;
 
         parts[0].iov_base = &this;
         parts[0].iov_len = this.sizeof;
 
         // FIXME: padding needed?
-        parts[1].iov_base = null;
+        parts[1].iov_base = pad.ptr;
         parts[1].iov_len = pad4(this.sizeof);
 
         return parts;
@@ -2272,13 +2301,14 @@ struct UngrabButton
 
     iovec[2] toIOVector()
     {
+        static immutable byte[3] pad;
         iovec[2] parts;
 
         parts[0].iov_base = &this;
         parts[0].iov_len = this.sizeof;
 
         // FIXME: padding needed?
-        parts[1].iov_base = null;
+        parts[1].iov_base = pad.ptr;
         parts[1].iov_len = pad4(this.sizeof);
 
         return parts;
@@ -2306,13 +2336,14 @@ struct ChangeActivePointerGrab
 
     iovec[2] toIOVector()
     {
+        static immutable byte[3] pad;
         iovec[2] parts;
 
         parts[0].iov_base = &this;
         parts[0].iov_len = this.sizeof;
 
         // FIXME: padding needed?
-        parts[1].iov_base = null;
+        parts[1].iov_base = pad.ptr;
         parts[1].iov_len = pad4(this.sizeof);
 
         return parts;
@@ -2356,13 +2387,14 @@ struct GrabKeyboard
 
     iovec[2] toIOVector()
     {
+        static immutable byte[3] pad;
         iovec[2] parts;
 
         parts[0].iov_base = &this;
         parts[0].iov_len = this.sizeof;
 
         // FIXME: padding needed?
-        parts[1].iov_base = null;
+        parts[1].iov_base = pad.ptr;
         parts[1].iov_len = pad4(this.sizeof);
 
         return parts;
@@ -2389,13 +2421,14 @@ struct UngrabKeyboard
 
     iovec[2] toIOVector()
     {
+        static immutable byte[3] pad;
         iovec[2] parts;
 
         parts[0].iov_base = &this;
         parts[0].iov_len = this.sizeof;
 
         // FIXME: padding needed?
-        parts[1].iov_base = null;
+        parts[1].iov_base = pad.ptr;
         parts[1].iov_len = pad4(this.sizeof);
 
         return parts;
@@ -2423,13 +2456,14 @@ struct GrabKey
 
     iovec[2] toIOVector()
     {
+        static immutable byte[3] pad;
         iovec[2] parts;
 
         parts[0].iov_base = &this;
         parts[0].iov_len = this.sizeof;
 
         // FIXME: padding needed?
-        parts[1].iov_base = null;
+        parts[1].iov_base = pad.ptr;
         parts[1].iov_len = pad4(this.sizeof);
 
         return parts;
@@ -2459,13 +2493,14 @@ struct UngrabKey
 
     iovec[2] toIOVector()
     {
+        static immutable byte[3] pad;
         iovec[2] parts;
 
         parts[0].iov_base = &this;
         parts[0].iov_len = this.sizeof;
 
         // FIXME: padding needed?
-        parts[1].iov_base = null;
+        parts[1].iov_base = pad.ptr;
         parts[1].iov_len = pad4(this.sizeof);
 
         return parts;
@@ -2490,13 +2525,14 @@ struct AllowEvents
 
     iovec[2] toIOVector()
     {
+        static immutable byte[3] pad;
         iovec[2] parts;
 
         parts[0].iov_base = &this;
         parts[0].iov_len = this.sizeof;
 
         // FIXME: padding needed?
-        parts[1].iov_base = null;
+        parts[1].iov_base = pad.ptr;
         parts[1].iov_len = pad4(this.sizeof);
 
         return parts;
@@ -2512,13 +2548,14 @@ struct GrabServer
 
     iovec[2] toIOVector()
     {
+        static immutable byte[3] pad;
         iovec[2] parts;
 
         parts[0].iov_base = &this;
         parts[0].iov_len = this.sizeof;
 
         // FIXME: padding needed?
-        parts[1].iov_base = null;
+        parts[1].iov_base = pad.ptr;
         parts[1].iov_len = pad4(this.sizeof);
 
         return parts;
@@ -2534,13 +2571,14 @@ struct UngrabServer
 
     iovec[2] toIOVector()
     {
+        static immutable byte[3] pad;
         iovec[2] parts;
 
         parts[0].iov_base = &this;
         parts[0].iov_len = this.sizeof;
 
         // FIXME: padding needed?
-        parts[1].iov_base = null;
+        parts[1].iov_base = pad.ptr;
         parts[1].iov_len = pad4(this.sizeof);
 
         return parts;
@@ -2593,13 +2631,14 @@ struct QueryPointer
 
     iovec[2] toIOVector()
     {
+        static immutable byte[3] pad;
         iovec[2] parts;
 
         parts[0].iov_base = &this;
         parts[0].iov_len = this.sizeof;
 
         // FIXME: padding needed?
-        parts[1].iov_base = null;
+        parts[1].iov_base = pad.ptr;
         parts[1].iov_len = pad4(this.sizeof);
 
         return parts;
@@ -2655,13 +2694,14 @@ struct GetMotionEvents
 
     iovec[2] toIOVector()
     {
+        static immutable byte[3] pad;
         iovec[2] parts;
 
         parts[0].iov_base = &this;
         parts[0].iov_len = this.sizeof;
 
         // FIXME: padding needed?
-        parts[1].iov_base = null;
+        parts[1].iov_base = pad.ptr;
         parts[1].iov_len = pad4(this.sizeof);
 
         return parts;
@@ -2707,13 +2747,14 @@ struct TranslateCoordinates
 
     iovec[2] toIOVector()
     {
+        static immutable byte[3] pad;
         iovec[2] parts;
 
         parts[0].iov_base = &this;
         parts[0].iov_len = this.sizeof;
 
         // FIXME: padding needed?
-        parts[1].iov_base = null;
+        parts[1].iov_base = pad.ptr;
         parts[1].iov_len = pad4(this.sizeof);
 
         return parts;
@@ -2746,13 +2787,14 @@ struct WarpPointer
 
     iovec[2] toIOVector()
     {
+        static immutable byte[3] pad;
         iovec[2] parts;
 
         parts[0].iov_base = &this;
         parts[0].iov_len = this.sizeof;
 
         // FIXME: padding needed?
-        parts[1].iov_base = null;
+        parts[1].iov_base = pad.ptr;
         parts[1].iov_len = pad4(this.sizeof);
 
         return parts;
@@ -2783,13 +2825,14 @@ struct SetInputFocus
 
     iovec[2] toIOVector()
     {
+        static immutable byte[3] pad;
         iovec[2] parts;
 
         parts[0].iov_base = &this;
         parts[0].iov_len = this.sizeof;
 
         // FIXME: padding needed?
-        parts[1].iov_base = null;
+        parts[1].iov_base = pad.ptr;
         parts[1].iov_len = pad4(this.sizeof);
 
         return parts;
@@ -2821,13 +2864,14 @@ struct GetInputFocus
 
     iovec[2] toIOVector()
     {
+        static immutable byte[3] pad;
         iovec[2] parts;
 
         parts[0].iov_base = &this;
         parts[0].iov_len = this.sizeof;
 
         // FIXME: padding needed?
-        parts[1].iov_base = null;
+        parts[1].iov_base = pad.ptr;
         parts[1].iov_len = pad4(this.sizeof);
 
         return parts;
@@ -2871,13 +2915,14 @@ struct QueryKeymap
 
     iovec[2] toIOVector()
     {
+        static immutable byte[3] pad;
         iovec[2] parts;
 
         parts[0].iov_base = &this;
         parts[0].iov_len = this.sizeof;
 
         // FIXME: padding needed?
-        parts[1].iov_base = null;
+        parts[1].iov_base = pad.ptr;
         parts[1].iov_len = pad4(this.sizeof);
 
         return parts;
@@ -2897,20 +2942,21 @@ struct OpenFont
 
     iovec[4] toIOVector()
     {
+        static immutable byte[3] pad;
         iovec[4] parts;
 
         parts[0].iov_base = &this;
         parts[0].iov_len = this.name.offsetof;
 
         // FIXME: padding needed?
-        parts[1].iov_base = null;
+        parts[1].iov_base = pad.ptr;
         parts[1].iov_len = pad4(this.name.offsetof);
 
         assert (this.name_len == this.name.length);
         parts[2].iov_base = this.name.ptr;
         parts[2].iov_len = this.name.length * char.sizeof;
 
-        parts[3].iov_base = null;
+        parts[3].iov_base = pad.ptr;
         parts[3].iov_len = pad4(this.name.length * char.sizeof);
 
         return parts;
@@ -2935,13 +2981,14 @@ struct CloseFont
 
     iovec[2] toIOVector()
     {
+        static immutable byte[3] pad;
         iovec[2] parts;
 
         parts[0].iov_base = &this;
         parts[0].iov_len = this.sizeof;
 
         // FIXME: padding needed?
-        parts[1].iov_base = null;
+        parts[1].iov_base = pad.ptr;
         parts[1].iov_len = pad4(this.sizeof);
 
         return parts;
@@ -3026,13 +3073,14 @@ struct QueryFont
 
     iovec[2] toIOVector()
     {
+        static immutable byte[3] pad;
         iovec[2] parts;
 
         parts[0].iov_base = &this;
         parts[0].iov_len = this.sizeof;
 
         // FIXME: padding needed?
-        parts[1].iov_base = null;
+        parts[1].iov_base = pad.ptr;
         parts[1].iov_len = pad4(this.sizeof);
 
         return parts;
@@ -3078,19 +3126,20 @@ struct QueryTextExtents
 
     iovec[4] toIOVector()
     {
+        static immutable byte[3] pad;
         iovec[4] parts;
 
         parts[0].iov_base = &this;
         parts[0].iov_len = this.string.offsetof;
 
         // FIXME: padding needed?
-        parts[1].iov_base = null;
+        parts[1].iov_base = pad.ptr;
         parts[1].iov_len = pad4(this.string.offsetof);
 
         parts[2].iov_base = this.string.ptr;
         parts[2].iov_len = this.string.length * wchar.sizeof;
 
-        parts[3].iov_base = null;
+        parts[3].iov_base = pad.ptr;
         parts[3].iov_len = pad4(this.string.length * wchar.sizeof);
 
         // TODO: explain this
@@ -3152,20 +3201,21 @@ struct ListFonts
 
     iovec[4] toIOVector()
     {
+        static immutable byte[3] pad;
         iovec[4] parts;
 
         parts[0].iov_base = &this;
         parts[0].iov_len = this.pattern.offsetof;
 
         // FIXME: padding needed?
-        parts[1].iov_base = null;
+        parts[1].iov_base = pad.ptr;
         parts[1].iov_len = pad4(this.pattern.offsetof);
 
         assert (this.pattern_len == this.pattern.length);
         parts[2].iov_base = this.pattern.ptr;
         parts[2].iov_len = this.pattern.length * char.sizeof;
 
-        parts[3].iov_base = null;
+        parts[3].iov_base = pad.ptr;
         parts[3].iov_len = pad4(this.pattern.length * char.sizeof);
 
         return parts;
@@ -3255,20 +3305,21 @@ struct ListFontsWithInfo
 
     iovec[4] toIOVector()
     {
+        static immutable byte[3] pad;
         iovec[4] parts;
 
         parts[0].iov_base = &this;
         parts[0].iov_len = this.pattern.offsetof;
 
         // FIXME: padding needed?
-        parts[1].iov_base = null;
+        parts[1].iov_base = pad.ptr;
         parts[1].iov_len = pad4(this.pattern.offsetof);
 
         assert (this.pattern_len == this.pattern.length);
         parts[2].iov_base = this.pattern.ptr;
         parts[2].iov_len = this.pattern.length * char.sizeof;
 
-        parts[3].iov_base = null;
+        parts[3].iov_base = pad.ptr;
         parts[3].iov_len = pad4(this.pattern.length * char.sizeof);
 
         return parts;
@@ -3294,19 +3345,20 @@ struct SetFontPath
 
     iovec[4] toIOVector()
     {
+        static immutable byte[3] pad;
         iovec[4] parts;
 
         parts[0].iov_base = &this;
         parts[0].iov_len = this.path.offsetof;
 
         // FIXME: padding needed?
-        parts[1].iov_base = null;
+        parts[1].iov_base = pad.ptr;
         parts[1].iov_len = pad4(this.path.offsetof);
 
         parts[2].iov_base = this.path.ptr;
         parts[2].iov_len = this.path.length * char.sizeof;
 
-        parts[3].iov_base = null;
+        parts[3].iov_base = pad.ptr;
         parts[3].iov_len = pad4(this.path.length * char.sizeof);
 
         return parts;
@@ -3369,13 +3421,14 @@ struct GetFontPath
 
     iovec[2] toIOVector()
     {
+        static immutable byte[3] pad;
         iovec[2] parts;
 
         parts[0].iov_base = &this;
         parts[0].iov_len = this.sizeof;
 
         // FIXME: padding needed?
-        parts[1].iov_base = null;
+        parts[1].iov_base = pad.ptr;
         parts[1].iov_len = pad4(this.sizeof);
 
         return parts;
@@ -3395,13 +3448,14 @@ struct CreatePixmap
 
     iovec[2] toIOVector()
     {
+        static immutable byte[3] pad;
         iovec[2] parts;
 
         parts[0].iov_base = &this;
         parts[0].iov_len = this.sizeof;
 
         // FIXME: padding needed?
-        parts[1].iov_base = null;
+        parts[1].iov_base = pad.ptr;
         parts[1].iov_len = pad4(this.sizeof);
 
         return parts;
@@ -3418,13 +3472,14 @@ struct FreePixmap
 
     iovec[2] toIOVector()
     {
+        static immutable byte[3] pad;
         iovec[2] parts;
 
         parts[0].iov_base = &this;
         parts[0].iov_len = this.sizeof;
 
         // FIXME: padding needed?
-        parts[1].iov_base = null;
+        parts[1].iov_base = pad.ptr;
         parts[1].iov_len = pad4(this.sizeof);
 
         return parts;
@@ -3450,19 +3505,20 @@ struct CreateGC
 
     iovec[4] toIOVector()
     {
+        static immutable byte[3] pad;
         iovec[4] parts;
 
         parts[0].iov_base = &this;
         parts[0].iov_len = this.value_list.offsetof;
 
         // FIXME: padding needed?
-        parts[1].iov_base = null;
+        parts[1].iov_base = pad.ptr;
         parts[1].iov_len = pad4(this.value_list.offsetof);
 
         parts[2].iov_base = this.value_list.ptr;
         parts[2].iov_len = bitcount(this.value_mask) * uint.sizeof;
 
-        parts[3].iov_base = null;
+        parts[3].iov_base = pad.ptr;
         parts[3].iov_len = pad4(this.value_list.length);
 
         return parts;
@@ -3490,19 +3546,20 @@ struct ChangeGC
 
     iovec[4] toIOVector()
     {
+        static immutable byte[3] pad;
         iovec[4] parts;
 
         parts[0].iov_base = &this;
         parts[0].iov_len = this.value_list.offsetof;
 
         // FIXME: padding needed?
-        parts[1].iov_base = null;
+        parts[1].iov_base = pad.ptr;
         parts[1].iov_len = pad4(this.value_list.offsetof);
 
         parts[2].iov_base = this.value_list.ptr;
         parts[2].iov_len = bitcount(this.value_mask) * uint.sizeof;
 
-        parts[3].iov_base = null;
+        parts[3].iov_base = pad.ptr;
         parts[3].iov_len = pad4(this.value_list.length);
 
         return parts;
@@ -3529,13 +3586,14 @@ struct CopyGC
 
     iovec[2] toIOVector()
     {
+        static immutable byte[3] pad;
         iovec[2] parts;
 
         parts[0].iov_base = &this;
         parts[0].iov_len = this.sizeof;
 
         // FIXME: padding needed?
-        parts[1].iov_base = null;
+        parts[1].iov_base = pad.ptr;
         parts[1].iov_len = pad4(this.sizeof);
 
         return parts;
@@ -3563,20 +3621,21 @@ struct SetDashes
 
     iovec[4] toIOVector()
     {
+        static immutable byte[3] pad;
         iovec[4] parts;
 
         parts[0].iov_base = &this;
         parts[0].iov_len = this.dashes.offsetof;
 
         // FIXME: padding needed?
-        parts[1].iov_base = null;
+        parts[1].iov_base = pad.ptr;
         parts[1].iov_len = pad4(this.dashes.offsetof);
 
         assert (this.dashes_len == this.dashes.length);
         parts[2].iov_base = this.dashes.ptr;
         parts[2].iov_len = this.dashes.length * ubyte.sizeof;
 
-        parts[3].iov_base = null;
+        parts[3].iov_base = pad.ptr;
         parts[3].iov_len = pad4(this.dashes.length * ubyte.sizeof);
 
         return parts;
@@ -3605,19 +3664,20 @@ struct SetClipRectangles
 
     iovec[4] toIOVector()
     {
+        static immutable byte[3] pad;
         iovec[4] parts;
 
         parts[0].iov_base = &this;
         parts[0].iov_len = this.rectangles.offsetof;
 
         // FIXME: padding needed?
-        parts[1].iov_base = null;
+        parts[1].iov_base = pad.ptr;
         parts[1].iov_len = pad4(this.rectangles.offsetof);
 
         parts[2].iov_base = this.rectangles.ptr;
         parts[2].iov_len = this.rectangles.length * Rectangle.sizeof;
 
-        parts[3].iov_base = null;
+        parts[3].iov_base = pad.ptr;
         parts[3].iov_len = pad4(this.rectangles.length * Rectangle.sizeof);
 
         return parts;
@@ -3634,13 +3694,14 @@ struct FreeGC
 
     iovec[2] toIOVector()
     {
+        static immutable byte[3] pad;
         iovec[2] parts;
 
         parts[0].iov_base = &this;
         parts[0].iov_len = this.sizeof;
 
         // FIXME: padding needed?
-        parts[1].iov_base = null;
+        parts[1].iov_base = pad.ptr;
         parts[1].iov_len = pad4(this.sizeof);
 
         return parts;
@@ -3667,13 +3728,14 @@ struct ClearArea
 
     iovec[2] toIOVector()
     {
+        static immutable byte[3] pad;
         iovec[2] parts;
 
         parts[0].iov_base = &this;
         parts[0].iov_len = this.sizeof;
 
         // FIXME: padding needed?
-        parts[1].iov_base = null;
+        parts[1].iov_base = pad.ptr;
         parts[1].iov_len = pad4(this.sizeof);
 
         return parts;
@@ -3698,13 +3760,14 @@ struct CopyArea
 
     iovec[2] toIOVector()
     {
+        static immutable byte[3] pad;
         iovec[2] parts;
 
         parts[0].iov_base = &this;
         parts[0].iov_len = this.sizeof;
 
         // FIXME: padding needed?
-        parts[1].iov_base = null;
+        parts[1].iov_base = pad.ptr;
         parts[1].iov_len = pad4(this.sizeof);
 
         return parts;
@@ -3744,13 +3807,14 @@ struct CopyPlane
 
     iovec[2] toIOVector()
     {
+        static immutable byte[3] pad;
         iovec[2] parts;
 
         parts[0].iov_base = &this;
         parts[0].iov_len = this.sizeof;
 
         // FIXME: padding needed?
-        parts[1].iov_base = null;
+        parts[1].iov_base = pad.ptr;
         parts[1].iov_len = pad4(this.sizeof);
 
         return parts;
@@ -3784,19 +3848,20 @@ struct PolyPoint
 
     iovec[4] toIOVector()
     {
+        static immutable byte[3] pad;
         iovec[4] parts;
 
         parts[0].iov_base = &this;
         parts[0].iov_len = this.points.offsetof;
 
         // FIXME: padding needed?
-        parts[1].iov_base = null;
+        parts[1].iov_base = pad.ptr;
         parts[1].iov_len = pad4(this.points.offsetof);
 
         parts[2].iov_base = this.points.ptr;
         parts[2].iov_len = this.points.length * Point.sizeof;
 
-        parts[3].iov_base = null;
+        parts[3].iov_base = pad.ptr;
         parts[3].iov_len = pad4(this.points.length * Point.sizeof);
 
         return parts;
@@ -3815,19 +3880,20 @@ struct PolyLine
 
     iovec[4] toIOVector()
     {
+        static immutable byte[3] pad;
         iovec[4] parts;
 
         parts[0].iov_base = &this;
         parts[0].iov_len = this.points.offsetof;
 
         // FIXME: padding needed?
-        parts[1].iov_base = null;
+        parts[1].iov_base = pad.ptr;
         parts[1].iov_len = pad4(this.points.offsetof);
 
         parts[2].iov_base = this.points.ptr;
         parts[2].iov_len = this.points.length * Point.sizeof;
 
-        parts[3].iov_base = null;
+        parts[3].iov_base = pad.ptr;
         parts[3].iov_len = pad4(this.points.length * Point.sizeof);
 
         return parts;
@@ -3846,19 +3912,20 @@ struct PolySegment
 
     iovec[4] toIOVector()
     {
+        static immutable byte[3] pad;
         iovec[4] parts;
 
         parts[0].iov_base = &this;
         parts[0].iov_len = this.segments.offsetof;
 
         // FIXME: padding needed?
-        parts[1].iov_base = null;
+        parts[1].iov_base = pad.ptr;
         parts[1].iov_len = pad4(this.segments.offsetof);
 
         parts[2].iov_base = this.segments.ptr;
         parts[2].iov_len = this.segments.length * Segment.sizeof;
 
-        parts[3].iov_base = null;
+        parts[3].iov_base = pad.ptr;
         parts[3].iov_len = pad4(this.segments.length * Segment.sizeof);
 
         return parts;
@@ -3885,19 +3952,20 @@ struct PolyRectangle
 
     iovec[4] toIOVector()
     {
+        static immutable byte[3] pad;
         iovec[4] parts;
 
         parts[0].iov_base = &this;
         parts[0].iov_len = this.rectangles.offsetof;
 
         // FIXME: padding needed?
-        parts[1].iov_base = null;
+        parts[1].iov_base = pad.ptr;
         parts[1].iov_len = pad4(this.rectangles.offsetof);
 
         parts[2].iov_base = this.rectangles.ptr;
         parts[2].iov_len = this.rectangles.length * Rectangle.sizeof;
 
-        parts[3].iov_base = null;
+        parts[3].iov_base = pad.ptr;
         parts[3].iov_len = pad4(this.rectangles.length * Rectangle.sizeof);
 
         return parts;
@@ -3924,19 +3992,20 @@ struct PolyArc
 
     iovec[4] toIOVector()
     {
+        static immutable byte[3] pad;
         iovec[4] parts;
 
         parts[0].iov_base = &this;
         parts[0].iov_len = this.arcs.offsetof;
 
         // FIXME: padding needed?
-        parts[1].iov_base = null;
+        parts[1].iov_base = pad.ptr;
         parts[1].iov_len = pad4(this.arcs.offsetof);
 
         parts[2].iov_base = this.arcs.ptr;
         parts[2].iov_len = this.arcs.length * Arc.sizeof;
 
-        parts[3].iov_base = null;
+        parts[3].iov_base = pad.ptr;
         parts[3].iov_len = pad4(this.arcs.length * Arc.sizeof);
 
         return parts;
@@ -3966,19 +4035,20 @@ struct FillPoly
 
     iovec[4] toIOVector()
     {
+        static immutable byte[3] pad;
         iovec[4] parts;
 
         parts[0].iov_base = &this;
         parts[0].iov_len = this.points.offsetof;
 
         // FIXME: padding needed?
-        parts[1].iov_base = null;
+        parts[1].iov_base = pad.ptr;
         parts[1].iov_len = pad4(this.points.offsetof);
 
         parts[2].iov_base = this.points.ptr;
         parts[2].iov_len = this.points.length * Point.sizeof;
 
-        parts[3].iov_base = null;
+        parts[3].iov_base = pad.ptr;
         parts[3].iov_len = pad4(this.points.length * Point.sizeof);
 
         return parts;
@@ -4007,19 +4077,20 @@ struct PolyFillRectangle
 
     iovec[4] toIOVector()
     {
+        static immutable byte[3] pad;
         iovec[4] parts;
 
         parts[0].iov_base = &this;
         parts[0].iov_len = this.rectangles.offsetof;
 
         // FIXME: padding needed?
-        parts[1].iov_base = null;
+        parts[1].iov_base = pad.ptr;
         parts[1].iov_len = pad4(this.rectangles.offsetof);
 
         parts[2].iov_base = this.rectangles.ptr;
         parts[2].iov_len = this.rectangles.length * Rectangle.sizeof;
 
-        parts[3].iov_base = null;
+        parts[3].iov_base = pad.ptr;
         parts[3].iov_len = pad4(this.rectangles.length * Rectangle.sizeof);
 
         return parts;
@@ -4046,19 +4117,20 @@ struct PolyFillArc
 
     iovec[4] toIOVector()
     {
+        static immutable byte[3] pad;
         iovec[4] parts;
 
         parts[0].iov_base = &this;
         parts[0].iov_len = this.arcs.offsetof;
 
         // FIXME: padding needed?
-        parts[1].iov_base = null;
+        parts[1].iov_base = pad.ptr;
         parts[1].iov_len = pad4(this.arcs.offsetof);
 
         parts[2].iov_base = this.arcs.ptr;
         parts[2].iov_len = this.arcs.length * Arc.sizeof;
 
-        parts[3].iov_base = null;
+        parts[3].iov_base = pad.ptr;
         parts[3].iov_len = pad4(this.arcs.length * Arc.sizeof);
 
         return parts;
@@ -4092,19 +4164,20 @@ struct PutImage
 
     iovec[4] toIOVector()
     {
+        static immutable byte[3] pad;
         iovec[4] parts;
 
         parts[0].iov_base = &this;
         parts[0].iov_len = this.data.offsetof;
 
         // FIXME: padding needed?
-        parts[1].iov_base = null;
+        parts[1].iov_base = pad.ptr;
         parts[1].iov_len = pad4(this.data.offsetof);
 
         parts[2].iov_base = this.data.ptr;
         parts[2].iov_len = this.data.length * ubyte.sizeof;
 
-        parts[3].iov_base = null;
+        parts[3].iov_base = pad.ptr;
         parts[3].iov_len = pad4(this.data.length * ubyte.sizeof);
 
         return parts;
@@ -4173,13 +4246,14 @@ struct GetImage
 
     iovec[2] toIOVector()
     {
+        static immutable byte[3] pad;
         iovec[2] parts;
 
         parts[0].iov_base = &this;
         parts[0].iov_len = this.sizeof;
 
         // FIXME: padding needed?
-        parts[1].iov_base = null;
+        parts[1].iov_base = pad.ptr;
         parts[1].iov_len = pad4(this.sizeof);
 
         return parts;
@@ -4200,19 +4274,20 @@ struct PolyText8
 
     iovec[4] toIOVector()
     {
+        static immutable byte[3] pad;
         iovec[4] parts;
 
         parts[0].iov_base = &this;
         parts[0].iov_len = this.items.offsetof;
 
         // FIXME: padding needed?
-        parts[1].iov_base = null;
+        parts[1].iov_base = pad.ptr;
         parts[1].iov_len = pad4(this.items.offsetof);
 
         parts[2].iov_base = this.items.ptr;
         parts[2].iov_len = this.items.length * ubyte.sizeof;
 
-        parts[3].iov_base = null;
+        parts[3].iov_base = pad.ptr;
         parts[3].iov_len = pad4(this.items.length * ubyte.sizeof);
 
         return parts;
@@ -4243,19 +4318,20 @@ struct PolyText16
 
     iovec[4] toIOVector()
     {
+        static immutable byte[3] pad;
         iovec[4] parts;
 
         parts[0].iov_base = &this;
         parts[0].iov_len = this.items.offsetof;
 
         // FIXME: padding needed?
-        parts[1].iov_base = null;
+        parts[1].iov_base = pad.ptr;
         parts[1].iov_len = pad4(this.items.offsetof);
 
         parts[2].iov_base = this.items.ptr;
         parts[2].iov_len = this.items.length * ubyte.sizeof;
 
-        parts[3].iov_base = null;
+        parts[3].iov_base = pad.ptr;
         parts[3].iov_len = pad4(this.items.length * ubyte.sizeof);
 
         return parts;
@@ -4286,20 +4362,21 @@ struct ImageText8
 
     iovec[4] toIOVector()
     {
+        static immutable byte[3] pad;
         iovec[4] parts;
 
         parts[0].iov_base = &this;
         parts[0].iov_len = this.string.offsetof;
 
         // FIXME: padding needed?
-        parts[1].iov_base = null;
+        parts[1].iov_base = pad.ptr;
         parts[1].iov_len = pad4(this.string.offsetof);
 
         assert (this.string_len == this.string.length);
         parts[2].iov_base = this.string.ptr;
         parts[2].iov_len = this.string.length * char.sizeof;
 
-        parts[3].iov_base = null;
+        parts[3].iov_base = pad.ptr;
         parts[3].iov_len = pad4(this.string.length * char.sizeof);
 
         return parts;
@@ -4320,20 +4397,21 @@ struct ImageText16
 
     iovec[4] toIOVector()
     {
+        static immutable byte[3] pad;
         iovec[4] parts;
 
         parts[0].iov_base = &this;
         parts[0].iov_len = this.string.offsetof;
 
         // FIXME: padding needed?
-        parts[1].iov_base = null;
+        parts[1].iov_base = pad.ptr;
         parts[1].iov_len = pad4(this.string.offsetof);
 
         assert (this.string_len == this.string.length);
         parts[2].iov_base = this.string.ptr;
         parts[2].iov_len = this.string.length * wchar.sizeof;
 
-        parts[3].iov_base = null;
+        parts[3].iov_base = pad.ptr;
         parts[3].iov_len = pad4(this.string.length * wchar.sizeof);
 
         return parts;
@@ -4352,13 +4430,14 @@ struct CreateColormap
 
     iovec[2] toIOVector()
     {
+        static immutable byte[3] pad;
         iovec[2] parts;
 
         parts[0].iov_base = &this;
         parts[0].iov_len = this.sizeof;
 
         // FIXME: padding needed?
-        parts[1].iov_base = null;
+        parts[1].iov_base = pad.ptr;
         parts[1].iov_len = pad4(this.sizeof);
 
         return parts;
@@ -4375,13 +4454,14 @@ struct FreeColormap
 
     iovec[2] toIOVector()
     {
+        static immutable byte[3] pad;
         iovec[2] parts;
 
         parts[0].iov_base = &this;
         parts[0].iov_len = this.sizeof;
 
         // FIXME: padding needed?
-        parts[1].iov_base = null;
+        parts[1].iov_base = pad.ptr;
         parts[1].iov_len = pad4(this.sizeof);
 
         return parts;
@@ -4405,13 +4485,14 @@ struct CopyColormapAndFree
 
     iovec[2] toIOVector()
     {
+        static immutable byte[3] pad;
         iovec[2] parts;
 
         parts[0].iov_base = &this;
         parts[0].iov_len = this.sizeof;
 
         // FIXME: padding needed?
-        parts[1].iov_base = null;
+        parts[1].iov_base = pad.ptr;
         parts[1].iov_len = pad4(this.sizeof);
 
         return parts;
@@ -4435,13 +4516,14 @@ struct InstallColormap
 
     iovec[2] toIOVector()
     {
+        static immutable byte[3] pad;
         iovec[2] parts;
 
         parts[0].iov_base = &this;
         parts[0].iov_len = this.sizeof;
 
         // FIXME: padding needed?
-        parts[1].iov_base = null;
+        parts[1].iov_base = pad.ptr;
         parts[1].iov_len = pad4(this.sizeof);
 
         return parts;
@@ -4464,13 +4546,14 @@ struct UninstallColormap
 
     iovec[2] toIOVector()
     {
+        static immutable byte[3] pad;
         iovec[2] parts;
 
         parts[0].iov_base = &this;
         parts[0].iov_len = this.sizeof;
 
         // FIXME: padding needed?
-        parts[1].iov_base = null;
+        parts[1].iov_base = pad.ptr;
         parts[1].iov_len = pad4(this.sizeof);
 
         return parts;
@@ -4524,13 +4607,14 @@ struct ListInstalledColormaps
 
     iovec[2] toIOVector()
     {
+        static immutable byte[3] pad;
         iovec[2] parts;
 
         parts[0].iov_base = &this;
         parts[0].iov_len = this.sizeof;
 
         // FIXME: padding needed?
-        parts[1].iov_base = null;
+        parts[1].iov_base = pad.ptr;
         parts[1].iov_len = pad4(this.sizeof);
 
         return parts;
@@ -4586,13 +4670,14 @@ struct AllocColor
 
     iovec[2] toIOVector()
     {
+        static immutable byte[3] pad;
         iovec[2] parts;
 
         parts[0].iov_base = &this;
         parts[0].iov_len = this.sizeof;
 
         // FIXME: padding needed?
-        parts[1].iov_base = null;
+        parts[1].iov_base = pad.ptr;
         parts[1].iov_len = pad4(this.sizeof);
 
         return parts;
@@ -4655,20 +4740,21 @@ struct AllocNamedColor
 
     iovec[4] toIOVector()
     {
+        static immutable byte[3] pad;
         iovec[4] parts;
 
         parts[0].iov_base = &this;
         parts[0].iov_len = this.name.offsetof;
 
         // FIXME: padding needed?
-        parts[1].iov_base = null;
+        parts[1].iov_base = pad.ptr;
         parts[1].iov_len = pad4(this.name.offsetof);
 
         assert (this.name_len == this.name.length);
         parts[2].iov_base = this.name.ptr;
         parts[2].iov_len = this.name.length * char.sizeof;
 
-        parts[3].iov_base = null;
+        parts[3].iov_base = pad.ptr;
         parts[3].iov_len = pad4(this.name.length * char.sizeof);
 
         return parts;
@@ -4734,13 +4820,14 @@ struct AllocColorCells
 
     iovec[2] toIOVector()
     {
+        static immutable byte[3] pad;
         iovec[2] parts;
 
         parts[0].iov_base = &this;
         parts[0].iov_len = this.sizeof;
 
         // FIXME: padding needed?
-        parts[1].iov_base = null;
+        parts[1].iov_base = pad.ptr;
         parts[1].iov_len = pad4(this.sizeof);
 
         return parts;
@@ -4799,13 +4886,14 @@ struct AllocColorPlanes
 
     iovec[2] toIOVector()
     {
+        static immutable byte[3] pad;
         iovec[2] parts;
 
         parts[0].iov_base = &this;
         parts[0].iov_len = this.sizeof;
 
         // FIXME: padding needed?
-        parts[1].iov_base = null;
+        parts[1].iov_base = pad.ptr;
         parts[1].iov_len = pad4(this.sizeof);
 
         return parts;
@@ -4824,19 +4912,20 @@ struct FreeColors
 
     iovec[4] toIOVector()
     {
+        static immutable byte[3] pad;
         iovec[4] parts;
 
         parts[0].iov_base = &this;
         parts[0].iov_len = this.pixels.offsetof;
 
         // FIXME: padding needed?
-        parts[1].iov_base = null;
+        parts[1].iov_base = pad.ptr;
         parts[1].iov_len = pad4(this.pixels.offsetof);
 
         parts[2].iov_base = this.pixels.ptr;
         parts[2].iov_len = this.pixels.length * uint.sizeof;
 
-        parts[3].iov_base = null;
+        parts[3].iov_base = pad.ptr;
         parts[3].iov_len = pad4(this.pixels.length * uint.sizeof);
 
         return parts;
@@ -4862,19 +4951,20 @@ struct StoreColors
 
     iovec[4] toIOVector()
     {
+        static immutable byte[3] pad;
         iovec[4] parts;
 
         parts[0].iov_base = &this;
         parts[0].iov_len = this.items.offsetof;
 
         // FIXME: padding needed?
-        parts[1].iov_base = null;
+        parts[1].iov_base = pad.ptr;
         parts[1].iov_len = pad4(this.items.offsetof);
 
         parts[2].iov_base = this.items.ptr;
         parts[2].iov_len = this.items.length * ColorItem.sizeof;
 
-        parts[3].iov_base = null;
+        parts[3].iov_base = pad.ptr;
         parts[3].iov_len = pad4(this.items.length * ColorItem.sizeof);
 
         return parts;
@@ -4902,20 +4992,21 @@ struct StoreNamedColor
 
     iovec[4] toIOVector()
     {
+        static immutable byte[3] pad;
         iovec[4] parts;
 
         parts[0].iov_base = &this;
         parts[0].iov_len = this.name.offsetof;
 
         // FIXME: padding needed?
-        parts[1].iov_base = null;
+        parts[1].iov_base = pad.ptr;
         parts[1].iov_len = pad4(this.name.offsetof);
 
         assert (this.name_len == this.name.length);
         parts[2].iov_base = this.name.ptr;
         parts[2].iov_len = this.name.length * char.sizeof;
 
-        parts[3].iov_base = null;
+        parts[3].iov_base = pad.ptr;
         parts[3].iov_len = pad4(this.name.length * char.sizeof);
 
         return parts;
@@ -4974,19 +5065,20 @@ struct QueryColors
 
     iovec[4] toIOVector()
     {
+        static immutable byte[3] pad;
         iovec[4] parts;
 
         parts[0].iov_base = &this;
         parts[0].iov_len = this.pixels.offsetof;
 
         // FIXME: padding needed?
-        parts[1].iov_base = null;
+        parts[1].iov_base = pad.ptr;
         parts[1].iov_len = pad4(this.pixels.offsetof);
 
         parts[2].iov_base = this.pixels.ptr;
         parts[2].iov_len = this.pixels.length * uint.sizeof;
 
-        parts[3].iov_base = null;
+        parts[3].iov_base = pad.ptr;
         parts[3].iov_len = pad4(this.pixels.length * uint.sizeof);
 
         return parts;
@@ -5045,20 +5137,21 @@ struct LookupColor
 
     iovec[4] toIOVector()
     {
+        static immutable byte[3] pad;
         iovec[4] parts;
 
         parts[0].iov_base = &this;
         parts[0].iov_len = this.name.offsetof;
 
         // FIXME: padding needed?
-        parts[1].iov_base = null;
+        parts[1].iov_base = pad.ptr;
         parts[1].iov_len = pad4(this.name.offsetof);
 
         assert (this.name_len == this.name.length);
         parts[2].iov_base = this.name.ptr;
         parts[2].iov_len = this.name.length * char.sizeof;
 
-        parts[3].iov_base = null;
+        parts[3].iov_base = pad.ptr;
         parts[3].iov_len = pad4(this.name.length * char.sizeof);
 
         return parts;
@@ -5093,13 +5186,14 @@ struct CreateCursor
 
     iovec[2] toIOVector()
     {
+        static immutable byte[3] pad;
         iovec[2] parts;
 
         parts[0].iov_base = &this;
         parts[0].iov_len = this.sizeof;
 
         // FIXME: padding needed?
-        parts[1].iov_base = null;
+        parts[1].iov_base = pad.ptr;
         parts[1].iov_len = pad4(this.sizeof);
 
         return parts;
@@ -5142,13 +5236,14 @@ struct CreateGlyphCursor
 
     iovec[2] toIOVector()
     {
+        static immutable byte[3] pad;
         iovec[2] parts;
 
         parts[0].iov_base = &this;
         parts[0].iov_len = this.sizeof;
 
         // FIXME: padding needed?
-        parts[1].iov_base = null;
+        parts[1].iov_base = pad.ptr;
         parts[1].iov_len = pad4(this.sizeof);
 
         return parts;
@@ -5181,13 +5276,14 @@ struct FreeCursor
 
     iovec[2] toIOVector()
     {
+        static immutable byte[3] pad;
         iovec[2] parts;
 
         parts[0].iov_base = &this;
         parts[0].iov_len = this.sizeof;
 
         // FIXME: padding needed?
-        parts[1].iov_base = null;
+        parts[1].iov_base = pad.ptr;
         parts[1].iov_len = pad4(this.sizeof);
 
         return parts;
@@ -5216,13 +5312,14 @@ struct RecolorCursor
 
     iovec[2] toIOVector()
     {
+        static immutable byte[3] pad;
         iovec[2] parts;
 
         parts[0].iov_base = &this;
         parts[0].iov_len = this.sizeof;
 
         // FIXME: padding needed?
-        parts[1].iov_base = null;
+        parts[1].iov_base = pad.ptr;
         parts[1].iov_len = pad4(this.sizeof);
 
         return parts;
@@ -5277,13 +5374,14 @@ struct QueryBestSize
 
     iovec[2] toIOVector()
     {
+        static immutable byte[3] pad;
         iovec[2] parts;
 
         parts[0].iov_base = &this;
         parts[0].iov_len = this.sizeof;
 
         // FIXME: padding needed?
-        parts[1].iov_base = null;
+        parts[1].iov_base = pad.ptr;
         parts[1].iov_len = pad4(this.sizeof);
 
         return parts;
@@ -5330,20 +5428,21 @@ struct QueryExtension
 
     iovec[4] toIOVector()
     {
+        static immutable byte[3] pad;
         iovec[4] parts;
 
         parts[0].iov_base = &this;
         parts[0].iov_len = this.name.offsetof;
 
         // FIXME: padding needed?
-        parts[1].iov_base = null;
+        parts[1].iov_base = pad.ptr;
         parts[1].iov_len = pad4(this.name.offsetof);
 
         assert (this.name_len == this.name.length);
         parts[2].iov_base = this.name.ptr;
         parts[2].iov_len = this.name.length * char.sizeof;
 
-        parts[3].iov_base = null;
+        parts[3].iov_base = pad.ptr;
         parts[3].iov_len = pad4(this.name.length * char.sizeof);
 
         return parts;
@@ -5405,13 +5504,14 @@ struct ListExtensions
 
     iovec[2] toIOVector()
     {
+        static immutable byte[3] pad;
         iovec[2] parts;
 
         parts[0].iov_base = &this;
         parts[0].iov_len = this.sizeof;
 
         // FIXME: padding needed?
-        parts[1].iov_base = null;
+        parts[1].iov_base = pad.ptr;
         parts[1].iov_len = pad4(this.sizeof);
 
         return parts;
@@ -5430,20 +5530,21 @@ struct ChangeKeyboardMapping
 
     iovec[4] toIOVector()
     {
+        static immutable byte[3] pad;
         iovec[4] parts;
 
         parts[0].iov_base = &this;
         parts[0].iov_len = this.keysyms.offsetof;
 
         // FIXME: padding needed?
-        parts[1].iov_base = null;
+        parts[1].iov_base = pad.ptr;
         parts[1].iov_len = pad4(this.keysyms.offsetof);
 
         assert ((this.keycode_count * this.keysyms_per_keycode) == this.keysyms.length);
         parts[2].iov_base = this.keysyms.ptr;
         parts[2].iov_len = this.keysyms.length * KeySym.sizeof;
 
-        parts[3].iov_base = null;
+        parts[3].iov_base = pad.ptr;
         parts[3].iov_len = pad4(this.keysyms.length * KeySym.sizeof);
 
         return parts;
@@ -5491,13 +5592,14 @@ struct GetKeyboardMapping
 
     iovec[2] toIOVector()
     {
+        static immutable byte[3] pad;
         iovec[2] parts;
 
         parts[0].iov_base = &this;
         parts[0].iov_len = this.sizeof;
 
         // FIXME: padding needed?
-        parts[1].iov_base = null;
+        parts[1].iov_base = pad.ptr;
         parts[1].iov_len = pad4(this.sizeof);
 
         return parts;
@@ -5522,19 +5624,20 @@ struct ChangeKeyboardControl
 
     iovec[4] toIOVector()
     {
+        static immutable byte[3] pad;
         iovec[4] parts;
 
         parts[0].iov_base = &this;
         parts[0].iov_len = this.value_list.offsetof;
 
         // FIXME: padding needed?
-        parts[1].iov_base = null;
+        parts[1].iov_base = pad.ptr;
         parts[1].iov_len = pad4(this.value_list.offsetof);
 
         parts[2].iov_base = this.value_list.ptr;
         parts[2].iov_len = bitcount(this.value_mask) * uint.sizeof;
 
-        parts[3].iov_base = null;
+        parts[3].iov_base = pad.ptr;
         parts[3].iov_len = pad4(this.value_list.length);
 
         return parts;
@@ -5597,13 +5700,14 @@ struct GetKeyboardControl
 
     iovec[2] toIOVector()
     {
+        static immutable byte[3] pad;
         iovec[2] parts;
 
         parts[0].iov_base = &this;
         parts[0].iov_len = this.sizeof;
 
         // FIXME: padding needed?
-        parts[1].iov_base = null;
+        parts[1].iov_base = pad.ptr;
         parts[1].iov_len = pad4(this.sizeof);
 
         return parts;
@@ -5619,13 +5723,14 @@ struct Bell
 
     iovec[2] toIOVector()
     {
+        static immutable byte[3] pad;
         iovec[2] parts;
 
         parts[0].iov_base = &this;
         parts[0].iov_len = this.sizeof;
 
         // FIXME: padding needed?
-        parts[1].iov_base = null;
+        parts[1].iov_base = pad.ptr;
         parts[1].iov_len = pad4(this.sizeof);
 
         return parts;
@@ -5646,13 +5751,14 @@ struct ChangePointerControl
 
     iovec[2] toIOVector()
     {
+        static immutable byte[3] pad;
         iovec[2] parts;
 
         parts[0].iov_base = &this;
         parts[0].iov_len = this.sizeof;
 
         // FIXME: padding needed?
-        parts[1].iov_base = null;
+        parts[1].iov_base = pad.ptr;
         parts[1].iov_len = pad4(this.sizeof);
 
         return parts;
@@ -5705,13 +5811,14 @@ struct GetPointerControl
 
     iovec[2] toIOVector()
     {
+        static immutable byte[3] pad;
         iovec[2] parts;
 
         parts[0].iov_base = &this;
         parts[0].iov_len = this.sizeof;
 
         // FIXME: padding needed?
-        parts[1].iov_base = null;
+        parts[1].iov_base = pad.ptr;
         parts[1].iov_len = pad4(this.sizeof);
 
         return parts;
@@ -5731,13 +5838,14 @@ struct SetScreenSaver
 
     iovec[2] toIOVector()
     {
+        static immutable byte[3] pad;
         iovec[2] parts;
 
         parts[0].iov_base = &this;
         parts[0].iov_len = this.sizeof;
 
         // FIXME: padding needed?
-        parts[1].iov_base = null;
+        parts[1].iov_base = pad.ptr;
         parts[1].iov_len = pad4(this.sizeof);
 
         return parts;
@@ -5791,13 +5899,14 @@ struct GetScreenSaver
 
     iovec[2] toIOVector()
     {
+        static immutable byte[3] pad;
         iovec[2] parts;
 
         parts[0].iov_base = &this;
         parts[0].iov_len = this.sizeof;
 
         // FIXME: padding needed?
-        parts[1].iov_base = null;
+        parts[1].iov_base = pad.ptr;
         parts[1].iov_len = pad4(this.sizeof);
 
         return parts;
@@ -5817,20 +5926,21 @@ struct ChangeHosts
 
     iovec[4] toIOVector()
     {
+        static immutable byte[3] pad;
         iovec[4] parts;
 
         parts[0].iov_base = &this;
         parts[0].iov_len = this.address.offsetof;
 
         // FIXME: padding needed?
-        parts[1].iov_base = null;
+        parts[1].iov_base = pad.ptr;
         parts[1].iov_len = pad4(this.address.offsetof);
 
         assert (this.address_len == this.address.length);
         parts[2].iov_base = this.address.ptr;
         parts[2].iov_len = this.address.length * char.sizeof;
 
-        parts[3].iov_base = null;
+        parts[3].iov_base = pad.ptr;
         parts[3].iov_len = pad4(this.address.length * char.sizeof);
 
         return parts;
@@ -5896,13 +6006,14 @@ struct ListHosts
 
     iovec[2] toIOVector()
     {
+        static immutable byte[3] pad;
         iovec[2] parts;
 
         parts[0].iov_base = &this;
         parts[0].iov_len = this.sizeof;
 
         // FIXME: padding needed?
-        parts[1].iov_base = null;
+        parts[1].iov_base = pad.ptr;
         parts[1].iov_len = pad4(this.sizeof);
 
         return parts;
@@ -5918,13 +6029,14 @@ struct SetAccessControl
 
     iovec[2] toIOVector()
     {
+        static immutable byte[3] pad;
         iovec[2] parts;
 
         parts[0].iov_base = &this;
         parts[0].iov_len = this.sizeof;
 
         // FIXME: padding needed?
-        parts[1].iov_base = null;
+        parts[1].iov_base = pad.ptr;
         parts[1].iov_len = pad4(this.sizeof);
 
         return parts;
@@ -5940,13 +6052,14 @@ struct SetCloseDownMode
 
     iovec[2] toIOVector()
     {
+        static immutable byte[3] pad;
         iovec[2] parts;
 
         parts[0].iov_base = &this;
         parts[0].iov_len = this.sizeof;
 
         // FIXME: padding needed?
-        parts[1].iov_base = null;
+        parts[1].iov_base = pad.ptr;
         parts[1].iov_len = pad4(this.sizeof);
 
         return parts;
@@ -5963,13 +6076,14 @@ struct KillClient
 
     iovec[2] toIOVector()
     {
+        static immutable byte[3] pad;
         iovec[2] parts;
 
         parts[0].iov_base = &this;
         parts[0].iov_len = this.sizeof;
 
         // FIXME: padding needed?
-        parts[1].iov_base = null;
+        parts[1].iov_base = pad.ptr;
         parts[1].iov_len = pad4(this.sizeof);
 
         return parts;
@@ -5995,20 +6109,21 @@ struct RotateProperties
 
     iovec[4] toIOVector()
     {
+        static immutable byte[3] pad;
         iovec[4] parts;
 
         parts[0].iov_base = &this;
         parts[0].iov_len = this.atoms.offsetof;
 
         // FIXME: padding needed?
-        parts[1].iov_base = null;
+        parts[1].iov_base = pad.ptr;
         parts[1].iov_len = pad4(this.atoms.offsetof);
 
         assert (this.atoms_len == this.atoms.length);
         parts[2].iov_base = this.atoms.ptr;
         parts[2].iov_len = this.atoms.length * Atom.sizeof;
 
-        parts[3].iov_base = null;
+        parts[3].iov_base = pad.ptr;
         parts[3].iov_len = pad4(this.atoms.length * Atom.sizeof);
 
         return parts;
@@ -6033,13 +6148,14 @@ struct ForceScreenSaver
 
     iovec[2] toIOVector()
     {
+        static immutable byte[3] pad;
         iovec[2] parts;
 
         parts[0].iov_base = &this;
         parts[0].iov_len = this.sizeof;
 
         // FIXME: padding needed?
-        parts[1].iov_base = null;
+        parts[1].iov_base = pad.ptr;
         parts[1].iov_len = pad4(this.sizeof);
 
         return parts;
@@ -6071,20 +6187,21 @@ struct SetPointerMapping
 
     iovec[4] toIOVector()
     {
+        static immutable byte[3] pad;
         iovec[4] parts;
 
         parts[0].iov_base = &this;
         parts[0].iov_len = this.map.offsetof;
 
         // FIXME: padding needed?
-        parts[1].iov_base = null;
+        parts[1].iov_base = pad.ptr;
         parts[1].iov_len = pad4(this.map.offsetof);
 
         assert (this.map_len == this.map.length);
         parts[2].iov_base = this.map.ptr;
         parts[2].iov_len = this.map.length * ubyte.sizeof;
 
-        parts[3].iov_base = null;
+        parts[3].iov_base = pad.ptr;
         parts[3].iov_len = pad4(this.map.length * ubyte.sizeof);
 
         return parts;
@@ -6130,13 +6247,14 @@ struct GetPointerMapping
 
     iovec[2] toIOVector()
     {
+        static immutable byte[3] pad;
         iovec[2] parts;
 
         parts[0].iov_base = &this;
         parts[0].iov_len = this.sizeof;
 
         // FIXME: padding needed?
-        parts[1].iov_base = null;
+        parts[1].iov_base = pad.ptr;
         parts[1].iov_len = pad4(this.sizeof);
 
         return parts;
@@ -6168,20 +6286,21 @@ struct SetModifierMapping
 
     iovec[4] toIOVector()
     {
+        static immutable byte[3] pad;
         iovec[4] parts;
 
         parts[0].iov_base = &this;
         parts[0].iov_len = this.keycodes.offsetof;
 
         // FIXME: padding needed?
-        parts[1].iov_base = null;
+        parts[1].iov_base = pad.ptr;
         parts[1].iov_len = pad4(this.keycodes.offsetof);
 
         assert ((this.keycodes_per_modifier * 8) == this.keycodes.length);
         parts[2].iov_base = this.keycodes.ptr;
         parts[2].iov_len = this.keycodes.length * KeyCode.sizeof;
 
-        parts[3].iov_base = null;
+        parts[3].iov_base = pad.ptr;
         parts[3].iov_len = pad4(this.keycodes.length * KeyCode.sizeof);
 
         return parts;
@@ -6227,13 +6346,14 @@ struct GetModifierMapping
 
     iovec[2] toIOVector()
     {
+        static immutable byte[3] pad;
         iovec[2] parts;
 
         parts[0].iov_base = &this;
         parts[0].iov_len = this.sizeof;
 
         // FIXME: padding needed?
-        parts[1].iov_base = null;
+        parts[1].iov_base = pad.ptr;
         parts[1].iov_len = pad4(this.sizeof);
 
         return parts;
@@ -6249,13 +6369,14 @@ struct NoOperation
 
     iovec[2] toIOVector()
     {
+        static immutable byte[3] pad;
         iovec[2] parts;
 
         parts[0].iov_base = &this;
         parts[0].iov_len = this.sizeof;
 
         // FIXME: padding needed?
-        parts[1].iov_base = null;
+        parts[1].iov_base = pad.ptr;
         parts[1].iov_len = pad4(this.sizeof);
 
         return parts;

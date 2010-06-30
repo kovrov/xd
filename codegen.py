@@ -104,7 +104,7 @@ class ListMember(object):
 		print "    " * idt + "parts[%d].iov_len = %s.%s.length * %s.sizeof;" % (part_idx, ctx_name,self.name, self.element_type)
 		part_idx += 1
 		print
-		print "    " * idt + "parts[%d].iov_base = null;" % part_idx
+		print "    " * idt + "parts[%d].iov_base = pad.ptr;" % part_idx
 		print "    " * idt + "parts[%d].iov_len = pad4(%s.%s.length * %s.sizeof);" % (part_idx, ctx_name,self.name, self.element_type)
 		return part_idx + 1
 	def offsetof_name(self):
@@ -153,7 +153,7 @@ class ValueParamMember(object):
 		print "    " * idt + "parts[%d].iov_len = bitcount(%s.%s) * %s.sizeof;" % (part_idx, ctx_name,self.mask_name, tr('CARD32'))
 		part_idx += 1
 		print
-		print "    " * idt + "parts[%d].iov_base = null;" % part_idx
+		print "    " * idt + "parts[%d].iov_base = pad.ptr;" % part_idx
 		print "    " * idt + "parts[%d].iov_len = pad4(%s.%s.length);" % (part_idx, ctx_name,self.list_name)
 		return part_idx + 1
 	def offsetof_name(self):
@@ -309,6 +309,7 @@ class StructInfo(object):
 			print "    " * idt + "iovec[%d] toIOVector()" % iovec_len
 			print "    " * idt + "{"
 			idt += 1
+			print "    " * idt + "static immutable byte[3] pad;"
 			print "    " * idt + "iovec[%d] parts;" % iovec_len
 			print
 			part_idx = 0
@@ -318,14 +319,14 @@ class StructInfo(object):
 				part_idx += 1
 				print
 				print "    " * idt + "// FIXME: padding needed?"
-				print "    " * idt + "parts[%d].iov_base = null;" % part_idx
+				print "    " * idt + "parts[%d].iov_base = pad.ptr;" % part_idx
 				print "    " * idt + "parts[%d].iov_len = pad4(this.sizeof);" % part_idx
 			else:
 				print "    " * idt + "parts[%d].iov_len = this.%s.offsetof;" % (part_idx, var_fields[0].offsetof_name())
 				part_idx += 1
 				print
 				print "    " * idt + "// FIXME: padding needed?"
-				print "    " * idt + "parts[%d].iov_base = null;" % part_idx
+				print "    " * idt + "parts[%d].iov_base = pad.ptr;" % part_idx
 				print "    " * idt + "parts[%d].iov_len = pad4(this.%s.offsetof);" % (part_idx, var_fields[0].offsetof_name())
 				part_idx += 1
 				for member in var_fields:

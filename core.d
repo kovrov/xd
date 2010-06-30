@@ -78,7 +78,9 @@ class Connection
 
 		auto auth = get_auth(xd.util.Family.Local, "MIT-MAGIC-COOKIE-1");
 		setup_request.authorization_protocol_name = auth.name.dup; // FIXME dupless
+		setup_request.authorization_protocol_name_len = cast(ushort)setup_request.authorization_protocol_name.length;
 		setup_request.authorization_protocol_data = auth.data.dup;
+        setup_request.authorization_protocol_data_len = cast(ushort)setup_request.authorization_protocol_data.length;
 
 		this._process_io(setup_request.toIOVector(), null);
 		this._process_io(null, (ubyte[] input){this.setup = Setup(input);});
