@@ -68,7 +68,7 @@ class FieldMember:
 	def declarations(self, ctx_members=[]):
 		return ((self.type, self.name),)
 
-class PadMember:
+class PadMember(object):
 	def __init__(self, element, ctx):
 		count = ctx.get('pad_count', 0)
 		self.name = "_pad" + str(count)
@@ -336,6 +336,19 @@ class StructInfo(object):
 					print "    " * idt + "this." + member.name, '=', member.value_expr(self.members) + ';'
 			print
 			print "    " * idt + "return parts;"
+			idt -= 1
+			print "    " * idt + "}"
+
+		# for structs with padding fields we need custom equality operator
+		if len([m for m in self.members if type(m) is PadMember]):  # has pads
+			print
+			print "    " * idt + "version (unittest)"
+			print "    " * idt + "bool opEquals(ref const %s other) const" % self.name
+			print "    " * idt + "{"
+			idt += 1
+			print "    " * idt + "return",
+			print ("\n" + "    " * idt + "    && ").join(
+				["this.%s == other.%s" % (d[1], d[1]) for m in self.members if type(m) is not PadMember for d in m.declarations()]) + ";"
 			idt -= 1
 			print "    " * idt + "}"
 

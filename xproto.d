@@ -67,6 +67,14 @@ struct Format
     ubyte bits_per_pixel;
     ubyte scanline_pad;
     byte[5] _pad0;
+
+    version (unittest)
+    bool opEquals(ref const Format other) const
+    {
+        return this.depth == other.depth
+            && this.bits_per_pixel == other.bits_per_pixel
+            && this.scanline_pad == other.scanline_pad;
+    }
 }
 
 
@@ -80,6 +88,18 @@ struct VisualType
     uint green_mask;
     uint blue_mask;
     byte[4] _pad0;
+
+    version (unittest)
+    bool opEquals(ref const VisualType other) const
+    {
+        return this.visual_id == other.visual_id
+            && this.klass == other.klass
+            && this.bits_per_rgb_value == other.bits_per_rgb_value
+            && this.colormap_entries == other.colormap_entries
+            && this.red_mask == other.red_mask
+            && this.green_mask == other.green_mask
+            && this.blue_mask == other.blue_mask;
+    }
 }
 
 
@@ -90,6 +110,14 @@ struct Depth
     ushort visuals_len;
     byte[4] _pad1;
     VisualType[] visuals;
+
+    version (unittest)
+    bool opEquals(ref const Depth other) const
+    {
+        return this.depth == other.depth
+            && this.visuals_len == other.visuals_len
+            && this.visuals == other.visuals;
+    }
 }
 
 
@@ -154,6 +182,18 @@ struct SetupRequest
 
         return parts;
     }
+
+    version (unittest)
+    bool opEquals(ref const SetupRequest other) const
+    {
+        return this.byte_order == other.byte_order
+            && this.protocol_major_version == other.protocol_major_version
+            && this.protocol_minor_version == other.protocol_minor_version
+            && this.authorization_protocol_name_len == other.authorization_protocol_name_len
+            && this.authorization_protocol_data_len == other.authorization_protocol_data_len
+            && this.authorization_protocol_name == other.authorization_protocol_name
+            && this.authorization_protocol_data == other.authorization_protocol_data;
+    }
 }
 
 
@@ -174,6 +214,14 @@ struct SetupAuthenticate
     byte[5] _pad0;
     ushort length;
     char[] reason;
+
+    version (unittest)
+    bool opEquals(ref const SetupAuthenticate other) const
+    {
+        return this.status == other.status
+            && this.length == other.length
+            && this.reason == other.reason;
+    }
 }
 
 
@@ -241,6 +289,32 @@ struct Setup
             }
         }
     }
+
+    version (unittest)
+    bool opEquals(ref const Setup other) const
+    {
+        return this.status == other.status
+            && this.protocol_major_version == other.protocol_major_version
+            && this.protocol_minor_version == other.protocol_minor_version
+            && this.length == other.length
+            && this.release_number == other.release_number
+            && this.resource_id_base == other.resource_id_base
+            && this.resource_id_mask == other.resource_id_mask
+            && this.motion_buffer_size == other.motion_buffer_size
+            && this.vendor_len == other.vendor_len
+            && this.maximum_request_length == other.maximum_request_length
+            && this.roots_len == other.roots_len
+            && this.pixmap_formats_len == other.pixmap_formats_len
+            && this.image_byte_order == other.image_byte_order
+            && this.bitmap_format_bit_order == other.bitmap_format_bit_order
+            && this.bitmap_format_scanline_unit == other.bitmap_format_scanline_unit
+            && this.bitmap_format_scanline_pad == other.bitmap_format_scanline_pad
+            && this.min_keycode == other.min_keycode
+            && this.max_keycode == other.max_keycode
+            && this.vendor == other.vendor
+            && this.pixmap_formats == other.pixmap_formats
+            && this.roots == other.roots;
+    }
 }
 
 
@@ -294,6 +368,16 @@ struct ColorItem
     ushort blue;
     ubyte flags;
     byte[1] _pad0;
+
+    version (unittest)
+    bool opEquals(ref const ColorItem other) const
+    {
+        return this.pixel == other.pixel
+            && this.red == other.red
+            && this.green == other.green
+            && this.blue == other.blue
+            && this.flags == other.flags;
+    }
 }
 
 
@@ -303,6 +387,14 @@ struct RGB
     ushort green;
     ushort blue;
     byte[2] _pad0;
+
+    version (unittest)
+    bool opEquals(ref const RGB other) const
+    {
+        return this.red == other.red
+            && this.green == other.green
+            && this.blue == other.blue;
+    }
 }
 
 
@@ -312,6 +404,14 @@ struct Host
     byte[1] _pad0;
     ushort address_len;
     ubyte[] address;
+
+    version (unittest)
+    bool opEquals(ref const Host other) const
+    {
+        return this.family == other.family
+            && this.address_len == other.address_len
+            && this.address == other.address;
+    }
 }
 
 
@@ -1053,6 +1153,14 @@ struct ChangeWindowAttributes
 
         return parts;
     }
+
+    version (unittest)
+    bool opEquals(ref const ChangeWindowAttributes other) const
+    {
+        return this.window == other.window
+            && this.value_mask == other.value_mask
+            && this.value_list == other.value_list;
+    }
 }
 
 
@@ -1091,6 +1199,26 @@ struct GetWindowAttributes
             auto this_buf = cast(ubyte*)&this;
             this_buf[0..this.sizeof] = buf[offset_idx..offset_idx+this.sizeof];
         }
+
+        version (unittest)
+        bool opEquals(ref const Reply other) const
+        {
+            return this.backing_store == other.backing_store
+                && this.visual == other.visual
+                && this.klass == other.klass
+                && this.bit_gravity == other.bit_gravity
+                && this.win_gravity == other.win_gravity
+                && this.backing_planes == other.backing_planes
+                && this.backing_pixel == other.backing_pixel
+                && this.save_under == other.save_under
+                && this.map_is_installed == other.map_is_installed
+                && this.map_state == other.map_state
+                && this.override_redirect == other.override_redirect
+                && this.colormap == other.colormap
+                && this.all_event_masks == other.all_event_masks
+                && this.your_event_mask == other.your_event_mask
+                && this.do_not_propagate_mask == other.do_not_propagate_mask;
+        }
     }
 
     iovec[2] toIOVector()
@@ -1105,6 +1233,12 @@ struct GetWindowAttributes
         parts[1].iov_len = pad4(this.sizeof);
 
         return parts;
+    }
+
+    version (unittest)
+    bool opEquals(ref const GetWindowAttributes other) const
+    {
+        return this.window == other.window;
     }
 }
 
@@ -1129,6 +1263,12 @@ struct DestroyWindow
 
         return parts;
     }
+
+    version (unittest)
+    bool opEquals(ref const DestroyWindow other) const
+    {
+        return this.window == other.window;
+    }
 }
 
 
@@ -1151,6 +1291,12 @@ struct DestroySubwindows
         parts[1].iov_len = pad4(this.sizeof);
 
         return parts;
+    }
+
+    version (unittest)
+    bool opEquals(ref const DestroySubwindows other) const
+    {
+        return this.window == other.window;
     }
 }
 
@@ -1201,6 +1347,15 @@ struct ReparentWindow
 
         return parts;
     }
+
+    version (unittest)
+    bool opEquals(ref const ReparentWindow other) const
+    {
+        return this.window == other.window
+            && this.parent == other.parent
+            && this.x == other.x
+            && this.y == other.y;
+    }
 }
 
 
@@ -1223,6 +1378,12 @@ struct MapWindow
         parts[1].iov_len = pad4(this.sizeof);
 
         return parts;
+    }
+
+    version (unittest)
+    bool opEquals(ref const MapWindow other) const
+    {
+        return this.window == other.window;
     }
 }
 
@@ -1247,6 +1408,12 @@ struct MapSubwindows
 
         return parts;
     }
+
+    version (unittest)
+    bool opEquals(ref const MapSubwindows other) const
+    {
+        return this.window == other.window;
+    }
 }
 
 
@@ -1270,6 +1437,12 @@ struct UnmapWindow
 
         return parts;
     }
+
+    version (unittest)
+    bool opEquals(ref const UnmapWindow other) const
+    {
+        return this.window == other.window;
+    }
 }
 
 
@@ -1292,6 +1465,12 @@ struct UnmapSubwindows
         parts[1].iov_len = pad4(this.sizeof);
 
         return parts;
+    }
+
+    version (unittest)
+    bool opEquals(ref const UnmapSubwindows other) const
+    {
+        return this.window == other.window;
     }
 }
 
@@ -1324,6 +1503,15 @@ struct ConfigureWindow
         parts[3].iov_len = pad4(this.value_list.length);
 
         return parts;
+    }
+
+    version (unittest)
+    bool opEquals(ref const ConfigureWindow other) const
+    {
+        return this.window == other.window
+            && this.value_mask == other.value_mask
+            && this.value_mask == other.value_mask
+            && this.value_list == other.value_list;
     }
 }
 
@@ -1378,6 +1566,18 @@ struct GetGeometry
             auto this_buf = cast(ubyte*)&this;
             this_buf[0..this.sizeof] = buf[offset_idx..offset_idx+this.sizeof];
         }
+
+        version (unittest)
+        bool opEquals(ref const Reply other) const
+        {
+            return this.depth == other.depth
+                && this.root == other.root
+                && this.x == other.x
+                && this.y == other.y
+                && this.width == other.width
+                && this.height == other.height
+                && this.border_width == other.border_width;
+        }
     }
 
     iovec[2] toIOVector()
@@ -1392,6 +1592,12 @@ struct GetGeometry
         parts[1].iov_len = pad4(this.sizeof);
 
         return parts;
+    }
+
+    version (unittest)
+    bool opEquals(ref const GetGeometry other) const
+    {
+        return this.drawable == other.drawable;
     }
 }
 
@@ -1427,6 +1633,15 @@ struct QueryTree
             offset_idx += this.children_len * Window.sizeof;
             offset_idx += pad4(this.children_len * Window.sizeof);
         }
+
+        version (unittest)
+        bool opEquals(ref const Reply other) const
+        {
+            return this.root == other.root
+                && this.parent == other.parent
+                && this.children_len == other.children_len
+                && this.children == other.children;
+        }
     }
 
     iovec[2] toIOVector()
@@ -1441,6 +1656,12 @@ struct QueryTree
         parts[1].iov_len = pad4(this.sizeof);
 
         return parts;
+    }
+
+    version (unittest)
+    bool opEquals(ref const QueryTree other) const
+    {
+        return this.window == other.window;
     }
 }
 
@@ -1468,6 +1689,12 @@ struct InternAtom
             auto this_buf = cast(ubyte*)&this;
             this_buf[0..this.sizeof] = buf[offset_idx..offset_idx+this.sizeof];
         }
+
+        version (unittest)
+        bool opEquals(ref const Reply other) const
+        {
+            return this.atom == other.atom;
+        }
     }
 
     iovec[4] toIOVector()
@@ -1489,6 +1716,14 @@ struct InternAtom
         parts[3].iov_len = pad4(this.name.length * char.sizeof);
 
         return parts;
+    }
+
+    version (unittest)
+    bool opEquals(ref const InternAtom other) const
+    {
+        return this.only_if_exists == other.only_if_exists
+            && this.name_len == other.name_len
+            && this.name == other.name;
     }
 }
 
@@ -1522,6 +1757,13 @@ struct GetAtomName
             offset_idx += this.name_len * char.sizeof;
             offset_idx += pad4(this.name_len * char.sizeof);
         }
+
+        version (unittest)
+        bool opEquals(ref const Reply other) const
+        {
+            return this.name_len == other.name_len
+                && this.name == other.name;
+        }
     }
 
     iovec[2] toIOVector()
@@ -1536,6 +1778,12 @@ struct GetAtomName
         parts[1].iov_len = pad4(this.sizeof);
 
         return parts;
+    }
+
+    version (unittest)
+    bool opEquals(ref const GetAtomName other) const
+    {
+        return this.atom == other.atom;
     }
 }
 
@@ -1573,6 +1821,18 @@ struct ChangeProperty
 
         return parts;
     }
+
+    version (unittest)
+    bool opEquals(ref const ChangeProperty other) const
+    {
+        return this.mode == other.mode
+            && this.window == other.window
+            && this.property == other.property
+            && this.type == other.type
+            && this.format == other.format
+            && this.data_len == other.data_len
+            && this.data == other.data;
+    }
 }
 
 
@@ -1596,6 +1856,13 @@ struct DeleteProperty
         parts[1].iov_len = pad4(this.sizeof);
 
         return parts;
+    }
+
+    version (unittest)
+    bool opEquals(ref const DeleteProperty other) const
+    {
+        return this.window == other.window
+            && this.property == other.property;
     }
 }
 
@@ -1634,6 +1901,16 @@ struct GetProperty
             this.value = (cast(void*)&buf[offset_idx])[0..(this.value_len * (this.format / 8))].dup;
             offset_idx += (this.value_len * (this.format / 8)) * void.sizeof;
             offset_idx += pad4((this.value_len * (this.format / 8)) * void.sizeof);
+        }
+
+        version (unittest)
+        bool opEquals(ref const Reply other) const
+        {
+            return this.format == other.format
+                && this.type == other.type
+                && this.bytes_after == other.bytes_after
+                && this.value_len == other.value_len
+                && this.value == other.value;
         }
     }
 
@@ -1682,6 +1959,13 @@ struct ListProperties
             offset_idx += this.atoms_len * Atom.sizeof;
             offset_idx += pad4(this.atoms_len * Atom.sizeof);
         }
+
+        version (unittest)
+        bool opEquals(ref const Reply other) const
+        {
+            return this.atoms_len == other.atoms_len
+                && this.atoms == other.atoms;
+        }
     }
 
     iovec[2] toIOVector()
@@ -1696,6 +1980,12 @@ struct ListProperties
         parts[1].iov_len = pad4(this.sizeof);
 
         return parts;
+    }
+
+    version (unittest)
+    bool opEquals(ref const ListProperties other) const
+    {
+        return this.window == other.window;
     }
 }
 
@@ -1722,6 +2012,14 @@ struct SetSelectionOwner
 
         return parts;
     }
+
+    version (unittest)
+    bool opEquals(ref const SetSelectionOwner other) const
+    {
+        return this.owner == other.owner
+            && this.selection == other.selection
+            && this.time == other.time;
+    }
 }
 
 
@@ -1746,6 +2044,12 @@ struct GetSelectionOwner
             auto this_buf = cast(ubyte*)&this;
             this_buf[0..this.sizeof] = buf[offset_idx..offset_idx+this.sizeof];
         }
+
+        version (unittest)
+        bool opEquals(ref const Reply other) const
+        {
+            return this.owner == other.owner;
+        }
     }
 
     iovec[2] toIOVector()
@@ -1760,6 +2064,12 @@ struct GetSelectionOwner
         parts[1].iov_len = pad4(this.sizeof);
 
         return parts;
+    }
+
+    version (unittest)
+    bool opEquals(ref const GetSelectionOwner other) const
+    {
+        return this.selection == other.selection;
     }
 }
 
@@ -1787,6 +2097,16 @@ struct ConvertSelection
         parts[1].iov_len = pad4(this.sizeof);
 
         return parts;
+    }
+
+    version (unittest)
+    bool opEquals(ref const ConvertSelection other) const
+    {
+        return this.requestor == other.requestor
+            && this.selection == other.selection
+            && this.target == other.target
+            && this.property == other.property
+            && this.time == other.time;
     }
 }
 
@@ -1887,6 +2207,12 @@ struct UngrabPointer
 
         return parts;
     }
+
+    version (unittest)
+    bool opEquals(ref const UngrabPointer other) const
+    {
+        return this.time == other.time;
+    }
 }
 
 
@@ -1918,6 +2244,20 @@ struct GrabButton
 
         return parts;
     }
+
+    version (unittest)
+    bool opEquals(ref const GrabButton other) const
+    {
+        return this.owner_events == other.owner_events
+            && this.grab_window == other.grab_window
+            && this.event_mask == other.event_mask
+            && this.pointer_mode == other.pointer_mode
+            && this.keyboard_mode == other.keyboard_mode
+            && this.confine_to == other.confine_to
+            && this.cursor == other.cursor
+            && this.button == other.button
+            && this.modifiers == other.modifiers;
+    }
 }
 
 
@@ -1942,6 +2282,14 @@ struct UngrabButton
         parts[1].iov_len = pad4(this.sizeof);
 
         return parts;
+    }
+
+    version (unittest)
+    bool opEquals(ref const UngrabButton other) const
+    {
+        return this.button == other.button
+            && this.grab_window == other.grab_window
+            && this.modifiers == other.modifiers;
     }
 }
 
@@ -1968,6 +2316,14 @@ struct ChangeActivePointerGrab
         parts[1].iov_len = pad4(this.sizeof);
 
         return parts;
+    }
+
+    version (unittest)
+    bool opEquals(ref const ChangeActivePointerGrab other) const
+    {
+        return this.cursor == other.cursor
+            && this.time == other.time
+            && this.event_mask == other.event_mask;
     }
 }
 
@@ -2011,6 +2367,16 @@ struct GrabKeyboard
 
         return parts;
     }
+
+    version (unittest)
+    bool opEquals(ref const GrabKeyboard other) const
+    {
+        return this.owner_events == other.owner_events
+            && this.grab_window == other.grab_window
+            && this.time == other.time
+            && this.pointer_mode == other.pointer_mode
+            && this.keyboard_mode == other.keyboard_mode;
+    }
 }
 
 
@@ -2033,6 +2399,12 @@ struct UngrabKeyboard
         parts[1].iov_len = pad4(this.sizeof);
 
         return parts;
+    }
+
+    version (unittest)
+    bool opEquals(ref const UngrabKeyboard other) const
+    {
+        return this.time == other.time;
     }
 }
 
@@ -2062,6 +2434,17 @@ struct GrabKey
 
         return parts;
     }
+
+    version (unittest)
+    bool opEquals(ref const GrabKey other) const
+    {
+        return this.owner_events == other.owner_events
+            && this.grab_window == other.grab_window
+            && this.modifiers == other.modifiers
+            && this.key == other.key
+            && this.pointer_mode == other.pointer_mode
+            && this.keyboard_mode == other.keyboard_mode;
+    }
 }
 
 
@@ -2086,6 +2469,14 @@ struct UngrabKey
         parts[1].iov_len = pad4(this.sizeof);
 
         return parts;
+    }
+
+    version (unittest)
+    bool opEquals(ref const UngrabKey other) const
+    {
+        return this.key == other.key
+            && this.grab_window == other.grab_window
+            && this.modifiers == other.modifiers;
     }
 }
 
@@ -2185,6 +2576,19 @@ struct QueryPointer
             auto this_buf = cast(ubyte*)&this;
             this_buf[0..this.sizeof] = buf[offset_idx..offset_idx+this.sizeof];
         }
+
+        version (unittest)
+        bool opEquals(ref const Reply other) const
+        {
+            return this.same_screen == other.same_screen
+                && this.root == other.root
+                && this.child == other.child
+                && this.root_x == other.root_x
+                && this.root_y == other.root_y
+                && this.win_x == other.win_x
+                && this.win_y == other.win_y
+                && this.mask == other.mask;
+        }
     }
 
     iovec[2] toIOVector()
@@ -2199,6 +2603,12 @@ struct QueryPointer
         parts[1].iov_len = pad4(this.sizeof);
 
         return parts;
+    }
+
+    version (unittest)
+    bool opEquals(ref const QueryPointer other) const
+    {
+        return this.window == other.window;
     }
 }
 
@@ -2234,6 +2644,13 @@ struct GetMotionEvents
             offset_idx += this.events_len * TimeCoord.sizeof;
             offset_idx += pad4(this.events_len * TimeCoord.sizeof);
         }
+
+        version (unittest)
+        bool opEquals(ref const Reply other) const
+        {
+            return this.events_len == other.events_len
+                && this.events == other.events;
+        }
     }
 
     iovec[2] toIOVector()
@@ -2248,6 +2665,14 @@ struct GetMotionEvents
         parts[1].iov_len = pad4(this.sizeof);
 
         return parts;
+    }
+
+    version (unittest)
+    bool opEquals(ref const GetMotionEvents other) const
+    {
+        return this.window == other.window
+            && this.start == other.start
+            && this.stop == other.stop;
     }
 }
 
@@ -2293,6 +2718,15 @@ struct TranslateCoordinates
 
         return parts;
     }
+
+    version (unittest)
+    bool opEquals(ref const TranslateCoordinates other) const
+    {
+        return this.src_window == other.src_window
+            && this.dst_window == other.dst_window
+            && this.src_x == other.src_x
+            && this.src_y == other.src_y;
+    }
 }
 
 
@@ -2322,6 +2756,19 @@ struct WarpPointer
         parts[1].iov_len = pad4(this.sizeof);
 
         return parts;
+    }
+
+    version (unittest)
+    bool opEquals(ref const WarpPointer other) const
+    {
+        return this.src_window == other.src_window
+            && this.dst_window == other.dst_window
+            && this.src_x == other.src_x
+            && this.src_y == other.src_y
+            && this.src_width == other.src_width
+            && this.src_height == other.src_height
+            && this.dst_x == other.dst_x
+            && this.dst_y == other.dst_y;
     }
 }
 
@@ -2414,6 +2861,12 @@ struct QueryKeymap
             offset_idx += 32 * ubyte.sizeof;
             offset_idx += pad4(32 * ubyte.sizeof);
         }
+
+        version (unittest)
+        bool opEquals(ref const Reply other) const
+        {
+            return this.keys == other.keys;
+        }
     }
 
     iovec[2] toIOVector()
@@ -2462,6 +2915,14 @@ struct OpenFont
 
         return parts;
     }
+
+    version (unittest)
+    bool opEquals(ref const OpenFont other) const
+    {
+        return this.fid == other.fid
+            && this.name_len == other.name_len
+            && this.name == other.name;
+    }
 }
 
 
@@ -2484,6 +2945,12 @@ struct CloseFont
         parts[1].iov_len = pad4(this.sizeof);
 
         return parts;
+    }
+
+    version (unittest)
+    bool opEquals(ref const CloseFont other) const
+    {
+        return this.font == other.font;
     }
 }
 
@@ -2535,6 +3002,26 @@ struct QueryFont
             offset_idx += this.char_infos_len * CharInfo.sizeof;
             offset_idx += pad4(this.char_infos_len * CharInfo.sizeof);
         }
+
+        version (unittest)
+        bool opEquals(ref const Reply other) const
+        {
+            return this.min_bounds == other.min_bounds
+                && this.max_bounds == other.max_bounds
+                && this.min_char_or_byte2 == other.min_char_or_byte2
+                && this.max_char_or_byte2 == other.max_char_or_byte2
+                && this.default_char == other.default_char
+                && this.properties_len == other.properties_len
+                && this.draw_direction == other.draw_direction
+                && this.min_byte1 == other.min_byte1
+                && this.max_byte1 == other.max_byte1
+                && this.all_chars_exist == other.all_chars_exist
+                && this.font_ascent == other.font_ascent
+                && this.font_descent == other.font_descent
+                && this.char_infos_len == other.char_infos_len
+                && this.properties == other.properties
+                && this.char_infos == other.char_infos;
+        }
     }
 
     iovec[2] toIOVector()
@@ -2549,6 +3036,12 @@ struct QueryFont
         parts[1].iov_len = pad4(this.sizeof);
 
         return parts;
+    }
+
+    version (unittest)
+    bool opEquals(ref const QueryFont other) const
+    {
+        return this.font == other.font;
     }
 }
 
@@ -2648,6 +3141,13 @@ struct ListFonts
                 offset_idx += pad4(str.name_len * char.sizeof);
             }
         }
+
+        version (unittest)
+        bool opEquals(ref const Reply other) const
+        {
+            return this.names_len == other.names_len
+                && this.names == other.names;
+        }
     }
 
     iovec[4] toIOVector()
@@ -2669,6 +3169,14 @@ struct ListFonts
         parts[3].iov_len = pad4(this.pattern.length * char.sizeof);
 
         return parts;
+    }
+
+    version (unittest)
+    bool opEquals(ref const ListFonts other) const
+    {
+        return this.max_names == other.max_names
+            && this.pattern_len == other.pattern_len
+            && this.pattern == other.pattern;
     }
 }
 
@@ -2722,6 +3230,27 @@ struct ListFontsWithInfo
             offset_idx += this.name_len * char.sizeof;
             offset_idx += pad4(this.name_len * char.sizeof);
         }
+
+        version (unittest)
+        bool opEquals(ref const Reply other) const
+        {
+            return this.name_len == other.name_len
+                && this.min_bounds == other.min_bounds
+                && this.max_bounds == other.max_bounds
+                && this.min_char_or_byte2 == other.min_char_or_byte2
+                && this.max_char_or_byte2 == other.max_char_or_byte2
+                && this.default_char == other.default_char
+                && this.properties_len == other.properties_len
+                && this.draw_direction == other.draw_direction
+                && this.min_byte1 == other.min_byte1
+                && this.max_byte1 == other.max_byte1
+                && this.all_chars_exist == other.all_chars_exist
+                && this.font_ascent == other.font_ascent
+                && this.font_descent == other.font_descent
+                && this.replies_hint == other.replies_hint
+                && this.properties == other.properties
+                && this.name == other.name;
+        }
     }
 
     iovec[4] toIOVector()
@@ -2743,6 +3272,14 @@ struct ListFontsWithInfo
         parts[3].iov_len = pad4(this.pattern.length * char.sizeof);
 
         return parts;
+    }
+
+    version (unittest)
+    bool opEquals(ref const ListFontsWithInfo other) const
+    {
+        return this.max_names == other.max_names
+            && this.pattern_len == other.pattern_len
+            && this.pattern == other.pattern;
     }
 }
 
@@ -2773,6 +3310,13 @@ struct SetFontPath
         parts[3].iov_len = pad4(this.path.length * char.sizeof);
 
         return parts;
+    }
+
+    version (unittest)
+    bool opEquals(ref const SetFontPath other) const
+    {
+        return this.font_qty == other.font_qty
+            && this.path == other.path;
     }
 }
 
@@ -2813,6 +3357,13 @@ struct GetFontPath
                 offset_idx += str.name_len * char.sizeof;
                 offset_idx += pad4(str.name_len * char.sizeof);
             }
+        }
+
+        version (unittest)
+        bool opEquals(ref const Reply other) const
+        {
+            return this.path_len == other.path_len
+                && this.path == other.path;
         }
     }
 
@@ -2878,6 +3429,12 @@ struct FreePixmap
 
         return parts;
     }
+
+    version (unittest)
+    bool opEquals(ref const FreePixmap other) const
+    {
+        return this.pixmap == other.pixmap;
+    }
 }
 
 
@@ -2910,6 +3467,15 @@ struct CreateGC
 
         return parts;
     }
+
+    version (unittest)
+    bool opEquals(ref const CreateGC other) const
+    {
+        return this.cid == other.cid
+            && this.drawable == other.drawable
+            && this.value_mask == other.value_mask
+            && this.value_list == other.value_list;
+    }
 }
 
 
@@ -2941,6 +3507,14 @@ struct ChangeGC
 
         return parts;
     }
+
+    version (unittest)
+    bool opEquals(ref const ChangeGC other) const
+    {
+        return this.gc == other.gc
+            && this.value_mask == other.value_mask
+            && this.value_list == other.value_list;
+    }
 }
 
 
@@ -2965,6 +3539,14 @@ struct CopyGC
         parts[1].iov_len = pad4(this.sizeof);
 
         return parts;
+    }
+
+    version (unittest)
+    bool opEquals(ref const CopyGC other) const
+    {
+        return this.src_gc == other.src_gc
+            && this.dst_gc == other.dst_gc
+            && this.value_mask == other.value_mask;
     }
 }
 
@@ -2998,6 +3580,15 @@ struct SetDashes
         parts[3].iov_len = pad4(this.dashes.length * ubyte.sizeof);
 
         return parts;
+    }
+
+    version (unittest)
+    bool opEquals(ref const SetDashes other) const
+    {
+        return this.gc == other.gc
+            && this.dash_offset == other.dash_offset
+            && this.dashes_len == other.dashes_len
+            && this.dashes == other.dashes;
     }
 }
 
@@ -3053,6 +3644,12 @@ struct FreeGC
         parts[1].iov_len = pad4(this.sizeof);
 
         return parts;
+    }
+
+    version (unittest)
+    bool opEquals(ref const FreeGC other) const
+    {
+        return this.gc == other.gc;
     }
 }
 
@@ -3112,6 +3709,20 @@ struct CopyArea
 
         return parts;
     }
+
+    version (unittest)
+    bool opEquals(ref const CopyArea other) const
+    {
+        return this.src_drawable == other.src_drawable
+            && this.dst_drawable == other.dst_drawable
+            && this.gc == other.gc
+            && this.src_x == other.src_x
+            && this.src_y == other.src_y
+            && this.dst_x == other.dst_x
+            && this.dst_y == other.dst_y
+            && this.width == other.width
+            && this.height == other.height;
+    }
 }
 
 
@@ -3143,6 +3754,21 @@ struct CopyPlane
         parts[1].iov_len = pad4(this.sizeof);
 
         return parts;
+    }
+
+    version (unittest)
+    bool opEquals(ref const CopyPlane other) const
+    {
+        return this.src_drawable == other.src_drawable
+            && this.dst_drawable == other.dst_drawable
+            && this.gc == other.gc
+            && this.src_x == other.src_x
+            && this.src_y == other.src_y
+            && this.dst_x == other.dst_x
+            && this.dst_y == other.dst_y
+            && this.width == other.width
+            && this.height == other.height
+            && this.bit_plane == other.bit_plane;
     }
 }
 
@@ -3237,6 +3863,14 @@ struct PolySegment
 
         return parts;
     }
+
+    version (unittest)
+    bool opEquals(ref const PolySegment other) const
+    {
+        return this.drawable == other.drawable
+            && this.gc == other.gc
+            && this.segments == other.segments;
+    }
 }
 
 
@@ -3268,6 +3902,14 @@ struct PolyRectangle
 
         return parts;
     }
+
+    version (unittest)
+    bool opEquals(ref const PolyRectangle other) const
+    {
+        return this.drawable == other.drawable
+            && this.gc == other.gc
+            && this.rectangles == other.rectangles;
+    }
 }
 
 
@@ -3298,6 +3940,14 @@ struct PolyArc
         parts[3].iov_len = pad4(this.arcs.length * Arc.sizeof);
 
         return parts;
+    }
+
+    version (unittest)
+    bool opEquals(ref const PolyArc other) const
+    {
+        return this.drawable == other.drawable
+            && this.gc == other.gc
+            && this.arcs == other.arcs;
     }
 }
 
@@ -3333,6 +3983,16 @@ struct FillPoly
 
         return parts;
     }
+
+    version (unittest)
+    bool opEquals(ref const FillPoly other) const
+    {
+        return this.drawable == other.drawable
+            && this.gc == other.gc
+            && this.shape == other.shape
+            && this.coordinate_mode == other.coordinate_mode
+            && this.points == other.points;
+    }
 }
 
 
@@ -3364,6 +4024,14 @@ struct PolyFillRectangle
 
         return parts;
     }
+
+    version (unittest)
+    bool opEquals(ref const PolyFillRectangle other) const
+    {
+        return this.drawable == other.drawable
+            && this.gc == other.gc
+            && this.rectangles == other.rectangles;
+    }
 }
 
 
@@ -3394,6 +4062,14 @@ struct PolyFillArc
         parts[3].iov_len = pad4(this.arcs.length * Arc.sizeof);
 
         return parts;
+    }
+
+    version (unittest)
+    bool opEquals(ref const PolyFillArc other) const
+    {
+        return this.drawable == other.drawable
+            && this.gc == other.gc
+            && this.arcs == other.arcs;
     }
 }
 
@@ -3433,6 +4109,21 @@ struct PutImage
 
         return parts;
     }
+
+    version (unittest)
+    bool opEquals(ref const PutImage other) const
+    {
+        return this.format == other.format
+            && this.drawable == other.drawable
+            && this.gc == other.gc
+            && this.width == other.width
+            && this.height == other.height
+            && this.dst_x == other.dst_x
+            && this.dst_y == other.dst_y
+            && this.left_pad == other.left_pad
+            && this.depth == other.depth
+            && this.data == other.data;
+    }
 }
 
 
@@ -3469,6 +4160,14 @@ struct GetImage
             this.data = (cast(ubyte*)&buf[offset_idx])[0..(this.length * 4)].dup;
             offset_idx += (this.length * 4) * ubyte.sizeof;
             offset_idx += pad4((this.length * 4) * ubyte.sizeof);
+        }
+
+        version (unittest)
+        bool opEquals(ref const Reply other) const
+        {
+            return this.depth == other.depth
+                && this.visual == other.visual
+                && this.data == other.data;
         }
     }
 
@@ -3518,6 +4217,16 @@ struct PolyText8
 
         return parts;
     }
+
+    version (unittest)
+    bool opEquals(ref const PolyText8 other) const
+    {
+        return this.drawable == other.drawable
+            && this.gc == other.gc
+            && this.x == other.x
+            && this.y == other.y
+            && this.items == other.items;
+    }
 }
 
 
@@ -3550,6 +4259,16 @@ struct PolyText16
         parts[3].iov_len = pad4(this.items.length * ubyte.sizeof);
 
         return parts;
+    }
+
+    version (unittest)
+    bool opEquals(ref const PolyText16 other) const
+    {
+        return this.drawable == other.drawable
+            && this.gc == other.gc
+            && this.x == other.x
+            && this.y == other.y
+            && this.items == other.items;
     }
 }
 
@@ -3667,6 +4386,12 @@ struct FreeColormap
 
         return parts;
     }
+
+    version (unittest)
+    bool opEquals(ref const FreeColormap other) const
+    {
+        return this.cmap == other.cmap;
+    }
 }
 
 
@@ -3691,6 +4416,13 @@ struct CopyColormapAndFree
 
         return parts;
     }
+
+    version (unittest)
+    bool opEquals(ref const CopyColormapAndFree other) const
+    {
+        return this.mid == other.mid
+            && this.src_cmap == other.src_cmap;
+    }
 }
 
 
@@ -3714,6 +4446,12 @@ struct InstallColormap
 
         return parts;
     }
+
+    version (unittest)
+    bool opEquals(ref const InstallColormap other) const
+    {
+        return this.cmap == other.cmap;
+    }
 }
 
 
@@ -3736,6 +4474,12 @@ struct UninstallColormap
         parts[1].iov_len = pad4(this.sizeof);
 
         return parts;
+    }
+
+    version (unittest)
+    bool opEquals(ref const UninstallColormap other) const
+    {
+        return this.cmap == other.cmap;
     }
 }
 
@@ -3769,6 +4513,13 @@ struct ListInstalledColormaps
             offset_idx += this.cmaps_len * ColorMap.sizeof;
             offset_idx += pad4(this.cmaps_len * ColorMap.sizeof);
         }
+
+        version (unittest)
+        bool opEquals(ref const Reply other) const
+        {
+            return this.cmaps_len == other.cmaps_len
+                && this.cmaps == other.cmaps;
+        }
     }
 
     iovec[2] toIOVector()
@@ -3783,6 +4534,12 @@ struct ListInstalledColormaps
         parts[1].iov_len = pad4(this.sizeof);
 
         return parts;
+    }
+
+    version (unittest)
+    bool opEquals(ref const ListInstalledColormaps other) const
+    {
+        return this.window == other.window;
     }
 }
 
@@ -3816,6 +4573,15 @@ struct AllocColor
             auto this_buf = cast(ubyte*)&this;
             this_buf[0..this.sizeof] = buf[offset_idx..offset_idx+this.sizeof];
         }
+
+        version (unittest)
+        bool opEquals(ref const Reply other) const
+        {
+            return this.red == other.red
+                && this.green == other.green
+                && this.blue == other.blue
+                && this.pixel == other.pixel;
+        }
     }
 
     iovec[2] toIOVector()
@@ -3830,6 +4596,15 @@ struct AllocColor
         parts[1].iov_len = pad4(this.sizeof);
 
         return parts;
+    }
+
+    version (unittest)
+    bool opEquals(ref const AllocColor other) const
+    {
+        return this.cmap == other.cmap
+            && this.red == other.red
+            && this.green == other.green
+            && this.blue == other.blue;
     }
 }
 
@@ -3864,6 +4639,18 @@ struct AllocNamedColor
             auto this_buf = cast(ubyte*)&this;
             this_buf[0..this.sizeof] = buf[offset_idx..offset_idx+this.sizeof];
         }
+
+        version (unittest)
+        bool opEquals(ref const Reply other) const
+        {
+            return this.pixel == other.pixel
+                && this.exact_red == other.exact_red
+                && this.exact_green == other.exact_green
+                && this.exact_blue == other.exact_blue
+                && this.visual_red == other.visual_red
+                && this.visual_green == other.visual_green
+                && this.visual_blue == other.visual_blue;
+        }
     }
 
     iovec[4] toIOVector()
@@ -3885,6 +4672,14 @@ struct AllocNamedColor
         parts[3].iov_len = pad4(this.name.length * char.sizeof);
 
         return parts;
+    }
+
+    version (unittest)
+    bool opEquals(ref const AllocNamedColor other) const
+    {
+        return this.cmap == other.cmap
+            && this.name_len == other.name_len
+            && this.name == other.name;
     }
 }
 
@@ -3925,6 +4720,15 @@ struct AllocColorCells
             this.masks = (cast(uint*)&buf[offset_idx])[0..this.masks_len].dup;
             offset_idx += this.masks_len * uint.sizeof;
             offset_idx += pad4(this.masks_len * uint.sizeof);
+        }
+
+        version (unittest)
+        bool opEquals(ref const Reply other) const
+        {
+            return this.pixels_len == other.pixels_len
+                && this.masks_len == other.masks_len
+                && this.pixels == other.pixels
+                && this.masks == other.masks;
         }
     }
 
@@ -3981,6 +4785,16 @@ struct AllocColorPlanes
             offset_idx += this.pixels_len * uint.sizeof;
             offset_idx += pad4(this.pixels_len * uint.sizeof);
         }
+
+        version (unittest)
+        bool opEquals(ref const Reply other) const
+        {
+            return this.pixels_len == other.pixels_len
+                && this.red_mask == other.red_mask
+                && this.green_mask == other.green_mask
+                && this.blue_mask == other.blue_mask
+                && this.pixels == other.pixels;
+        }
     }
 
     iovec[2] toIOVector()
@@ -4027,6 +4841,14 @@ struct FreeColors
 
         return parts;
     }
+
+    version (unittest)
+    bool opEquals(ref const FreeColors other) const
+    {
+        return this.cmap == other.cmap
+            && this.plane_mask == other.plane_mask
+            && this.pixels == other.pixels;
+    }
 }
 
 
@@ -4056,6 +4878,13 @@ struct StoreColors
         parts[3].iov_len = pad4(this.items.length * ColorItem.sizeof);
 
         return parts;
+    }
+
+    version (unittest)
+    bool opEquals(ref const StoreColors other) const
+    {
+        return this.cmap == other.cmap
+            && this.items == other.items;
     }
 }
 
@@ -4091,6 +4920,16 @@ struct StoreNamedColor
 
         return parts;
     }
+
+    version (unittest)
+    bool opEquals(ref const StoreNamedColor other) const
+    {
+        return this.flags == other.flags
+            && this.cmap == other.cmap
+            && this.pixel == other.pixel
+            && this.name_len == other.name_len
+            && this.name == other.name;
+    }
 }
 
 
@@ -4124,6 +4963,13 @@ struct QueryColors
             offset_idx += this.colors_len * RGB.sizeof;
             offset_idx += pad4(this.colors_len * RGB.sizeof);
         }
+
+        version (unittest)
+        bool opEquals(ref const Reply other) const
+        {
+            return this.colors_len == other.colors_len
+                && this.colors == other.colors;
+        }
     }
 
     iovec[4] toIOVector()
@@ -4144,6 +4990,13 @@ struct QueryColors
         parts[3].iov_len = pad4(this.pixels.length * uint.sizeof);
 
         return parts;
+    }
+
+    version (unittest)
+    bool opEquals(ref const QueryColors other) const
+    {
+        return this.cmap == other.cmap
+            && this.pixels == other.pixels;
     }
 }
 
@@ -4177,6 +5030,17 @@ struct LookupColor
             auto this_buf = cast(ubyte*)&this;
             this_buf[0..this.sizeof] = buf[offset_idx..offset_idx+this.sizeof];
         }
+
+        version (unittest)
+        bool opEquals(ref const Reply other) const
+        {
+            return this.exact_red == other.exact_red
+                && this.exact_green == other.exact_green
+                && this.exact_blue == other.exact_blue
+                && this.visual_red == other.visual_red
+                && this.visual_green == other.visual_green
+                && this.visual_blue == other.visual_blue;
+        }
     }
 
     iovec[4] toIOVector()
@@ -4198,6 +5062,14 @@ struct LookupColor
         parts[3].iov_len = pad4(this.name.length * char.sizeof);
 
         return parts;
+    }
+
+    version (unittest)
+    bool opEquals(ref const LookupColor other) const
+    {
+        return this.cmap == other.cmap
+            && this.name_len == other.name_len
+            && this.name == other.name;
     }
 }
 
@@ -4232,6 +5104,22 @@ struct CreateCursor
 
         return parts;
     }
+
+    version (unittest)
+    bool opEquals(ref const CreateCursor other) const
+    {
+        return this.cid == other.cid
+            && this.source == other.source
+            && this.mask == other.mask
+            && this.fore_red == other.fore_red
+            && this.fore_green == other.fore_green
+            && this.fore_blue == other.fore_blue
+            && this.back_red == other.back_red
+            && this.back_green == other.back_green
+            && this.back_blue == other.back_blue
+            && this.x == other.x
+            && this.y == other.y;
+    }
 }
 
 
@@ -4265,6 +5153,22 @@ struct CreateGlyphCursor
 
         return parts;
     }
+
+    version (unittest)
+    bool opEquals(ref const CreateGlyphCursor other) const
+    {
+        return this.cid == other.cid
+            && this.source_font == other.source_font
+            && this.mask_font == other.mask_font
+            && this.source_char == other.source_char
+            && this.mask_char == other.mask_char
+            && this.fore_red == other.fore_red
+            && this.fore_green == other.fore_green
+            && this.fore_blue == other.fore_blue
+            && this.back_red == other.back_red
+            && this.back_green == other.back_green
+            && this.back_blue == other.back_blue;
+    }
 }
 
 
@@ -4287,6 +5191,12 @@ struct FreeCursor
         parts[1].iov_len = pad4(this.sizeof);
 
         return parts;
+    }
+
+    version (unittest)
+    bool opEquals(ref const FreeCursor other) const
+    {
+        return this.cursor == other.cursor;
     }
 }
 
@@ -4317,6 +5227,18 @@ struct RecolorCursor
 
         return parts;
     }
+
+    version (unittest)
+    bool opEquals(ref const RecolorCursor other) const
+    {
+        return this.cursor == other.cursor
+            && this.fore_red == other.fore_red
+            && this.fore_green == other.fore_green
+            && this.fore_blue == other.fore_blue
+            && this.back_red == other.back_red
+            && this.back_green == other.back_green
+            && this.back_blue == other.back_blue;
+    }
 }
 
 
@@ -4343,6 +5265,13 @@ struct QueryBestSize
             int offset_idx = 0;
             auto this_buf = cast(ubyte*)&this;
             this_buf[0..this.sizeof] = buf[offset_idx..offset_idx+this.sizeof];
+        }
+
+        version (unittest)
+        bool opEquals(ref const Reply other) const
+        {
+            return this.width == other.width
+                && this.height == other.height;
         }
     }
 
@@ -4388,6 +5317,15 @@ struct QueryExtension
             auto this_buf = cast(ubyte*)&this;
             this_buf[0..this.sizeof] = buf[offset_idx..offset_idx+this.sizeof];
         }
+
+        version (unittest)
+        bool opEquals(ref const Reply other) const
+        {
+            return this.present == other.present
+                && this.major_opcode == other.major_opcode
+                && this.first_event == other.first_event
+                && this.first_error == other.first_error;
+        }
     }
 
     iovec[4] toIOVector()
@@ -4409,6 +5347,13 @@ struct QueryExtension
         parts[3].iov_len = pad4(this.name.length * char.sizeof);
 
         return parts;
+    }
+
+    version (unittest)
+    bool opEquals(ref const QueryExtension other) const
+    {
+        return this.name_len == other.name_len
+            && this.name == other.name;
     }
 }
 
@@ -4448,6 +5393,13 @@ struct ListExtensions
                 offset_idx += str.name_len * char.sizeof;
                 offset_idx += pad4(str.name_len * char.sizeof);
             }
+        }
+
+        version (unittest)
+        bool opEquals(ref const Reply other) const
+        {
+            return this.names_len == other.names_len
+                && this.names == other.names;
         }
     }
 
@@ -4528,6 +5480,13 @@ struct GetKeyboardMapping
             offset_idx += this.length * KeySym.sizeof;
             offset_idx += pad4(this.length * KeySym.sizeof);
         }
+
+        version (unittest)
+        bool opEquals(ref const Reply other) const
+        {
+            return this.keysyms_per_keycode == other.keysyms_per_keycode
+                && this.keysyms == other.keysyms;
+        }
     }
 
     iovec[2] toIOVector()
@@ -4542,6 +5501,13 @@ struct GetKeyboardMapping
         parts[1].iov_len = pad4(this.sizeof);
 
         return parts;
+    }
+
+    version (unittest)
+    bool opEquals(ref const GetKeyboardMapping other) const
+    {
+        return this.first_keycode == other.first_keycode
+            && this.count == other.count;
     }
 }
 
@@ -4572,6 +5538,13 @@ struct ChangeKeyboardControl
         parts[3].iov_len = pad4(this.value_list.length);
 
         return parts;
+    }
+
+    version (unittest)
+    bool opEquals(ref const ChangeKeyboardControl other) const
+    {
+        return this.value_mask == other.value_mask
+            && this.value_list == other.value_list;
     }
 }
 
@@ -4607,6 +5580,18 @@ struct GetKeyboardControl
             this.auto_repeats = (cast(ubyte*)&buf[offset_idx])[0..32].dup;
             offset_idx += 32 * ubyte.sizeof;
             offset_idx += pad4(32 * ubyte.sizeof);
+        }
+
+        version (unittest)
+        bool opEquals(ref const Reply other) const
+        {
+            return this.global_auto_repeat == other.global_auto_repeat
+                && this.led_mask == other.led_mask
+                && this.key_click_percent == other.key_click_percent
+                && this.bell_percent == other.bell_percent
+                && this.bell_pitch == other.bell_pitch
+                && this.bell_duration == other.bell_duration
+                && this.auto_repeats == other.auto_repeats;
         }
     }
 
@@ -4672,6 +5657,16 @@ struct ChangePointerControl
 
         return parts;
     }
+
+    version (unittest)
+    bool opEquals(ref const ChangePointerControl other) const
+    {
+        return this.acceleration_numerator == other.acceleration_numerator
+            && this.acceleration_denominator == other.acceleration_denominator
+            && this.threshold == other.threshold
+            && this.do_acceleration == other.do_acceleration
+            && this.do_threshold == other.do_threshold;
+    }
 }
 
 
@@ -4697,6 +5692,14 @@ struct GetPointerControl
             int offset_idx = 0;
             auto this_buf = cast(ubyte*)&this;
             this_buf[0..this.sizeof] = buf[offset_idx..offset_idx+this.sizeof];
+        }
+
+        version (unittest)
+        bool opEquals(ref const Reply other) const
+        {
+            return this.acceleration_numerator == other.acceleration_numerator
+                && this.acceleration_denominator == other.acceleration_denominator
+                && this.threshold == other.threshold;
         }
     }
 
@@ -4739,6 +5742,15 @@ struct SetScreenSaver
 
         return parts;
     }
+
+    version (unittest)
+    bool opEquals(ref const SetScreenSaver other) const
+    {
+        return this.timeout == other.timeout
+            && this.interval == other.interval
+            && this.prefer_blanking == other.prefer_blanking
+            && this.allow_exposures == other.allow_exposures;
+    }
 }
 
 
@@ -4765,6 +5777,15 @@ struct GetScreenSaver
             int offset_idx = 0;
             auto this_buf = cast(ubyte*)&this;
             this_buf[0..this.sizeof] = buf[offset_idx..offset_idx+this.sizeof];
+        }
+
+        version (unittest)
+        bool opEquals(ref const Reply other) const
+        {
+            return this.timeout == other.timeout
+                && this.interval == other.interval
+                && this.prefer_blanking == other.prefer_blanking
+                && this.allow_exposures == other.allow_exposures;
         }
     }
 
@@ -4814,6 +5835,15 @@ struct ChangeHosts
 
         return parts;
     }
+
+    version (unittest)
+    bool opEquals(ref const ChangeHosts other) const
+    {
+        return this.mode == other.mode
+            && this.family == other.family
+            && this.address_len == other.address_len
+            && this.address == other.address;
+    }
 }
 
 
@@ -4853,6 +5883,14 @@ struct ListHosts
                 offset_idx += host.address_len * ubyte.sizeof;
                 offset_idx += pad4(host.address_len * ubyte.sizeof);
             }
+        }
+
+        version (unittest)
+        bool opEquals(ref const Reply other) const
+        {
+            return this.mode == other.mode
+                && this.hosts_len == other.hosts_len
+                && this.hosts == other.hosts;
         }
     }
 
@@ -4936,6 +5974,12 @@ struct KillClient
 
         return parts;
     }
+
+    version (unittest)
+    bool opEquals(ref const KillClient other) const
+    {
+        return this.resource == other.resource;
+    }
 }
 
 
@@ -4968,6 +6012,15 @@ struct RotateProperties
         parts[3].iov_len = pad4(this.atoms.length * Atom.sizeof);
 
         return parts;
+    }
+
+    version (unittest)
+    bool opEquals(ref const RotateProperties other) const
+    {
+        return this.window == other.window
+            && this.atoms_len == other.atoms_len
+            && this.delta == other.delta
+            && this.atoms == other.atoms;
     }
 }
 
@@ -5066,6 +6119,13 @@ struct GetPointerMapping
             offset_idx += this.map_len * ubyte.sizeof;
             offset_idx += pad4(this.map_len * ubyte.sizeof);
         }
+
+        version (unittest)
+        bool opEquals(ref const Reply other) const
+        {
+            return this.map_len == other.map_len
+                && this.map == other.map;
+        }
     }
 
     iovec[2] toIOVector()
@@ -5155,6 +6215,13 @@ struct GetModifierMapping
             this.keycodes = (cast(KeyCode*)&buf[offset_idx])[0..(this.keycodes_per_modifier * 8)].dup;
             offset_idx += (this.keycodes_per_modifier * 8) * KeyCode.sizeof;
             offset_idx += pad4((this.keycodes_per_modifier * 8) * KeyCode.sizeof);
+        }
+
+        version (unittest)
+        bool opEquals(ref const Reply other) const
+        {
+            return this.keycodes_per_modifier == other.keycodes_per_modifier
+                && this.keycodes == other.keycodes;
         }
     }
 

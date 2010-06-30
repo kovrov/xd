@@ -91,7 +91,7 @@ struct Xauth
 {
 	Family family;
 	string address, number, name;
-	immutable(ubyte)[] data;
+	string data;  // immutable(ubyte)[]
 }
 
 Xauth get_auth(Family family, string name)
@@ -124,7 +124,7 @@ Xauth get_auth(Family family, string name)
 		auth_file.read(short_buf);
 		buf.length = short_buf[0] * 256 + short_buf[1];
 		auth_file.read(buf);
-		auth.data = buf.idup;
+		auth.data = (cast(char[])buf).idup;
 
 		if (family != Family.Wild && auth.family != Family.Wild && auth.family != family)
 			continue;
