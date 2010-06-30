@@ -247,17 +247,17 @@ class StructInfo(object):
 			print "    " * idt + "ubyte opcode;"  # major opcode
 			print "    " * idt + first_member[0], first_member[1] + ";"
 			print "    " * idt + "ushort length;  // request length expressed in units of four bytes"
-			for t, n in sum([list(m.declarations(self.members)) for m in rest_members], []):
+			for t, n in [d for m in rest_members for d in m.declarations(self.members)]:
 				print "    " * idt + t, n + ";"
 		elif self.is_reply:
 			print "    " * idt + "ubyte response_type;"
 			print "    " * idt + first_member[0], first_member[1] + ";"
 			print "    " * idt + "ushort sequence;"
 			print "    " * idt + "uint length;  // repy length expressed in units of four bytes"
-			for t, n in sum([list(m.declarations(self.members)) for m in rest_members], []):
+			for t, n in [d for m in rest_members for d in m.declarations(self.members)]:
 				print "    " * idt + t, n + ";"
 		else:
-			for t, n in sum([list(m.declarations(self.members)) for m in self.members], []):
+			for t, n in [d for m in self.members for d in m.declarations(self.members)]:
 				print "    " * idt + t, n + ";"
 					
 		# nested struct declaration
