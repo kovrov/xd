@@ -3,7 +3,7 @@ from xml.etree.ElementTree import ElementTree, tostring
 indent = 1
 
 
-# "typeinfo" objects are initialized with an xml subtree, to produce code by calling `src()` method.
+# "typeinfo" objects are initialized with an xml subtree, to produce code by calling `print_src()` method.
 
 class PrimitiveInfo:
 	def __init__(self, name):
@@ -29,7 +29,7 @@ class EnumInfo:
 	def fixed(self):
 		#print "#"+' '*indent+"EnumInfo(%s).fixed -> True" % self.name
 		return True
-	def src(self):
+	def print_src(self):
 		print "enum", self.name
 		print "{"
 		for member in self.members:
@@ -51,7 +51,7 @@ class TypedefInfo:
 	def fixed(self):
 		#print "#"+' '*indent+"TypedefInfo(%s).fixed -> %s" % (self.name, type_registry[self.type].fixed())
 		return type_registry[self.type].fixed()
-	def src(self):
+	def print_src(self):
 		print "typedef %s %s;" % (self.type, self.name)
 
 
@@ -65,8 +65,8 @@ class FieldMember:
 	def fixed(self):
 		#print "#"+' '*indent+"FieldMember(%s).fixed -> %s" % (self.name, type_registry[self.type].fixed())
 		return type_registry[self.type].fixed()
-	def declare(self, idt, ctx_members=[]):
-		print "    " * idt + self.type, self.name + ";"
+	def declarations(self, ctx_members=[]):
+		return ((self.type, self.name),)
 
 class PadMember:
 	def __init__(self, element, ctx):
@@ -79,8 +79,8 @@ class PadMember:
 	def fixed(self):
 		#print "#"+' '*indent+"PadMember(%s).fixed -> True" % self.name
 		return True
-	def declare(self, idt, ctx_members=[]):
-		print "    " * idt + self.type, self.name + ";"
+	def declarations(self, ctx_members=[]):
+		return ((self.type, self.name),)
 
 
 class ListMember(object):
@@ -92,9 +92,9 @@ class ListMember(object):
 	def fixed(self):
 		#print "#"+' '*indent+"ListMember(%s).fixed -> %s" % (self.name, self.length_expr.isdigit())
 		return self.length_expr().isdigit()
-	def declare(self, idt, ctx_members=[]):
+	def declarations(self, ctx_members=[]):
 		#print "    " * idt + tr('CARD32') + "[%s] values;" % self.type
-		print "    " * idt + self.type, self.name + ";"
+		return ((self.type, self.name),)
 	def to_iovec(self, idt, ctx_name, part_idx):
 		print
 		if self.length_expr(ctx_name):
@@ -136,15 +136,17 @@ class ValueParamMember(object):
 	def fixed(self):
 		#print "#"+' '*indent+"ListMember(%s).fixed -> %s" % (self.name, self.length_expr.isdigit())
 		return False
-	def declare(self, idt, ctx_members=[]):
+	def declarations(self, ctx_members=[]):
+		res = []
 		# HACK: checking against ctx_members as a specal case for ConfigureWindow
 		# request, allowing padding of value_mask (mask_name)
 		for m in ctx_members:
 			if type(m) != ValueParamMember and m.name == self.mask_name:
 				break
 		else:
-			print "    " * idt + self.mask_type, self.mask_name + ";"
-		print "    " * idt + tr('CARD32')+"[]", self.list_name + ";"
+			res.append((self.mask_type, self.mask_name))
+		res.append((tr('CARD32')+"[]", self.list_name))
+		return res
 	def to_iovec(self, idt, ctx_name, part_idx):
 		print
 		print "    " * idt + "parts[%d].iov_base = %s.%s.ptr;" % (part_idx, ctx_name,self.list_name)
@@ -171,8 +173,8 @@ class ExprFieldMember(object):
 		self.name = tr_name(element.attrib['name'])
 		self.type = tr(element.attrib['type'])
 		self.element = element
-	def declare(self, idt, ctx_members=[]):
-		print "    " * idt + self.type, self.name + ";"
+	def declarations(self, ctx_members=[]):
+		return ((self.type, self.name),)
 	def value_expr(self, ctx_members, ctx_name='this'):
 		# see xcbgen.expr.Expression
 		def flatten(em):
@@ -231,43 +233,36 @@ class StructInfo(object):
 		indent -= 1
 		#print "#"+' '*indent+"... True"
 		return True
-	def declare(self, idt, ctx_members=[]):
-		self.src(idt=idt, from_bytes=True)
-
-	def src(self, idt=0, from_bytes=False, to_iovec=False):
+	def print_src(self, idt=0, from_bytes=False, to_iovec=False):
 		print
 		print "    " * idt + "struct", self.name
 		print "    " * idt + "{"
 		idt += 1
+
+		# data member declarations
+		first_member = ("byte[1]", "_pad0") if len(self.members) == 0 else self.members[0].declarations(self.members)[0]
+		rest_members = [] if len(self.members) == 0 else self.members[1:]
 		if self.is_request:  # FIXME: does to_iovec means request? NO!!!
 			# standard request fields
 			print "    " * idt + "ubyte opcode;"  # major opcode
-			if len(self.members) > 0:
-				self.members[0].declare(idt, self.members)
-				print "    " * idt + "ushort length;  // request length expressed in units of four bytes"
-				for member in self.members[1:]:
-					member.declare(idt, self.members)
-			else:
-				print "    " * idt + "byte[1] _pad0;"
-				print "    " * idt + "ushort length;  // request length expressed in units of four bytes"
+			print "    " * idt + first_member[0], first_member[1] + ";"
+			print "    " * idt + "ushort length;  // request length expressed in units of four bytes"
+			for t, n in sum([list(m.declarations(self.members)) for m in rest_members], []):
+				print "    " * idt + t, n + ";"
 		elif self.is_reply:
 			print "    " * idt + "ubyte response_type;"
-			if len(self.members) > 0:
-				self.members[0].declare(idt, self.members)
-				print "    " * idt + "ushort sequence;"
-				print "    " * idt + "uint length;  // repy length expressed in units of four bytes"
-				for member in self.members[1:]:
-					member.declare(idt, self.members)
-			else:
-				print "    " * idt + "byte[1] _pad0;"
-				print "    " * idt + "ushort sequence;"
-				print "    " * idt + "uint length;  // repy length expressed in units of four bytes"
+			print "    " * idt + first_member[0], first_member[1] + ";"
+			print "    " * idt + "ushort sequence;"
+			print "    " * idt + "uint length;  // repy length expressed in units of four bytes"
+			for t, n in sum([list(m.declarations(self.members)) for m in rest_members], []):
+				print "    " * idt + t, n + ";"
 		else:
-			for member in self.members:
-				member.declare(idt, self.members)
-
+			for t, n in sum([list(m.declarations(self.members)) for m in self.members], []):
+				print "    " * idt + t, n + ";"
+					
+		# nested struct declaration
 		if self.reply_struct:
-			self.reply_struct.declare(idt, self.members)
+			self.reply_struct.print_src(idt=idt, from_bytes=True)
 
 		if from_bytes:
 			def nested_from_bytes(ctx_name, members, idt):
@@ -450,7 +445,7 @@ import xd.util: iovec, pad4, bitcount;
 	print " * typedefs"
 	print " */"
 	for typedef_typeinfo in declarations['typedefs']:
-		typedef_typeinfo.src()
+		typedef_typeinfo.print_src()
 
 	print "\n"
 	print "/**"
@@ -462,7 +457,7 @@ import xd.util: iovec, pad4, bitcount;
 		#for line in struct_typeinfo.xml.splitlines():
 		#	print " *", line
 		#print " */"
-		struct_typeinfo.src(**src_options(struct_typeinfo.name))
+		struct_typeinfo.print_src(**src_options(struct_typeinfo.name))
 
 	print "\n"
 	print "/**"
@@ -481,7 +476,7 @@ import xd.util: iovec, pad4, bitcount;
 		#for line in enum_typeinfo.xml.splitlines():
 		#	print " *", line
 		#print " */"
-		enum_typeinfo.src()
+		enum_typeinfo.print_src()
 
 	print "\n"
 	print "/**"
@@ -493,7 +488,7 @@ import xd.util: iovec, pad4, bitcount;
 		#for line in request_typeinfo.xml.splitlines():
 		#	print " *", line
 		#print " */"
-		request_typeinfo.src(to_iovec=True)
+		request_typeinfo.print_src(to_iovec=True)
 
 	print "\n"
 	print "/**"
