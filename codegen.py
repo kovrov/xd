@@ -24,7 +24,9 @@ class EnumInfo:
 			elif i[0].tag == 'value':
 				init = i[0].text
 			elif i[0].tag == 'bit':
-				init = i[0].text
+				init = "1 << " + i[0].text
+			else:
+				assert False
 			self.members.append([tr_name(i.attrib['name']), init])
 	def fixed(self):
 		#print "#"+' '*indent+"EnumInfo(%s).fixed -> True" % self.name
