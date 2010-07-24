@@ -44,7 +44,7 @@ class Connection
 	 * Returns the next event or error from the server, or throw in case of an I/O error.
 	 * Blocks until either an event or error arrive, or an I/O error occurs.
 	 */
-	GenericEvent wait_for_event()
+	Packet wait_for_packet()
 	{
 		while (this._incoming_queue.length == 0)
 		{
@@ -53,9 +53,14 @@ class Connection
 
 		//auto events_ptr = this._incoming_queue.ptr;
 		auto event = this._incoming_queue[0];
-		this._incoming_queue[0..$-1] = this._incoming_queue[1..$];
+		this._incoming_queue = this._incoming_queue[1..$];
 		//assert (events_ptr == this._incoming_queue.ptr);
 		return event;
+	}
+
+	void sendRequest(const xd.util.iovec[] vect)
+	{
+		this._process_io(vect, &this._parse_buffer);
 	}
 
 	Setup setup;
@@ -64,7 +69,7 @@ class Connection
 	std.socket.Socket fd;
 	std.socket.SocketSet rfds, wfds;
 	ubyte[1024*16] _incoming_buffer;
-	GenericEvent[] _incoming_queue;
+	Packet[] _incoming_queue;
 
 	void _setup()
 	{
@@ -76,11 +81,13 @@ class Connection
 		setup_request.protocol_major_version = 11;
 		setup_request.protocol_minor_version = 0;
 
-		auto auth = get_auth(xd.util.Family.Local, "MIT-MAGIC-COOKIE-1");
+		auto auth = xd.util.get_auth(xd.util.Family.Local, "MIT-MAGIC-COOKIE-1");
 		setup_request.authorization_protocol_name = auth.name.dup; // FIXME dupless
-		setup_request.authorization_protocol_name_len = cast(ushort)setup_request.authorization_protocol_name.length;
+		setup_request.authorization_protocol_name_len
+				= cast(ushort)setup_request.authorization_protocol_name.length;
 		setup_request.authorization_protocol_data = auth.data.dup;
-        setup_request.authorization_protocol_data_len = cast(ushort)setup_request.authorization_protocol_data.length;
+		setup_request.authorization_protocol_data_len
+				= cast(ushort)setup_request.authorization_protocol_data.length;
 
 		this._process_io(setup_request.toIOVector(), null);
 		this._process_io(null, (ubyte[] input){this.setup = Setup(input);});
@@ -90,9 +97,12 @@ class Connection
 	{
 		writefln("## _parse_buffer: input.length: %d", input.length);
 		//this._incoming_queue <- this._incoming_buffer;
+
+		auto packet = *(cast(Packet*)input.ptr);
+		this._incoming_queue ~= packet;
 	}
 
-	void _process_io(xd.util.iovec[] vect, void delegate(ubyte[] input) input_parser)
+	void _process_io(const xd.util.iovec[] vect, void delegate(ubyte[] input) input_parser)
 	{
 		writefln("_process_io: vect.length: %d", vect.length);
 		this.rfds.add(this.fd);
@@ -120,9 +130,12 @@ class Connection
 		{
 			this.rfds.reset();
 			writefln("  fd is ready for read...");
-			int read_count = fd.receive(this._incoming_buffer);
+			int read_count = this.fd.receive(this._incoming_buffer);
+
+			// TODO: read from socket error? should we throw an exception here?
 			assert (read_count > 0);
 			writefln("    %d bytes received.", read_count);
+
 			assert (input_parser !is null);
 			input_parser(this._incoming_buffer[0..read_count]);
 		}
@@ -140,16 +153,44 @@ class Connection
 		assert (!this.rfds.isSet(this.fd));
 		assert (!this.wfds.isSet(this.fd));
 	}
+
 }
 
-struct GenericEvent
+union Packet
 {
-}
+	ubyte type;
 
-struct GenericReply
-{
-	ubyte response_type;
-	ubyte[1] _pad0;
-	ushort sequence;
-	uint length;
+	struct EventHeader
+	{
+		ubyte response_type;
+		ubyte _pad0;
+		ushort sequence;
+		ubyte[28] _pad1;
+	}
+	static assert (EventHeader.sizeof == 32);
+	EventHeader event;
+
+	struct ReplyHeader
+	{
+		ubyte[2] _pad0;
+		ushort sequence;
+		uint length;
+		ubyte[24] _pad1;
+	}
+	static assert (ReplyHeader.sizeof == 32);
+	ReplyHeader reply;
+
+	struct ErrorHeader
+	{
+		ubyte[1] _pad0;
+		ubyte error_code;
+		ushort sequence;
+		uint resource_id;
+		ushort minor_code;
+		ubyte major_code;
+		ubyte _pad1[21];
+	}
+	static assert (ErrorHeader.sizeof == 32);
+	ErrorHeader error;
 }
+static assert (Packet.sizeof == 32);
