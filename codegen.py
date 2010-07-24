@@ -153,10 +153,6 @@ class ValueParamMember(object):
 		print
 		print "    " * idt + "parts[%d].iov_base = %s.%s.ptr;" % (part_idx, ctx_name,self.list_name)
 		print "    " * idt + "parts[%d].iov_len = bitcount(%s.%s) * %s.sizeof;" % (part_idx, ctx_name,self.mask_name, tr('CARD32'))
-		part_idx += 1
-		print
-		print "    " * idt + "parts[%d].iov_base = pad.ptr;" % part_idx
-		print "    " * idt + "parts[%d].iov_len = pad4(%s.%s.length);" % (part_idx, ctx_name,self.list_name)
 		return part_idx + 1
 	def offsetof_name(self):
 		return self.list_name
@@ -306,7 +302,7 @@ class StructInfo(object):
 
 		if to_iovec:
 			var_fields = [m for m in self.members if type(m) in [ListMember, ValueParamMember]]
-			iovec_len = (1 + len(var_fields)) * 2
+			iovec_len = 1 + len(var_fields) + len([m for m in self.members if type(m) is ListMember])
 			print
 			print "    " * idt + "iovec[%d] toIOVector()" % iovec_len
 			print "    " * idt + "{"
@@ -318,18 +314,8 @@ class StructInfo(object):
 			print "    " * idt + "parts[%d].iov_base = &this;" % part_idx
 			if len(var_fields) == 0:
 				print "    " * idt + "parts[%d].iov_len = this.sizeof;" % part_idx
-				part_idx += 1
-				print
-				print "    " * idt + "// FIXME: padding needed?"
-				print "    " * idt + "parts[%d].iov_base = pad.ptr;" % part_idx
-				print "    " * idt + "parts[%d].iov_len = pad4(this.sizeof);" % part_idx
 			else:
 				print "    " * idt + "parts[%d].iov_len = this.%s.offsetof;" % (part_idx, var_fields[0].offsetof_name())
-				part_idx += 1
-				print
-				print "    " * idt + "// FIXME: padding needed?"
-				print "    " * idt + "parts[%d].iov_base = pad.ptr;" % part_idx
-				print "    " * idt + "parts[%d].iov_len = pad4(this.%s.offsetof);" % (part_idx, var_fields[0].offsetof_name())
 				part_idx += 1
 				for member in var_fields:
 					part_idx = member.to_iovec(idt, 'this', part_idx)
