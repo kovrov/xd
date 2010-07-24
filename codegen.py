@@ -97,13 +97,15 @@ class ListMember(object):
 	def declarations(self, ctx_members=[]):
 		#print "    " * idt + tr('CARD32') + "[%s] values;" % self.type
 		return ((self.type, self.name),)
-	def to_iovec(self, idt, ctx_name, part_idx):
+	def to_iovec(self, idt, ctx_name, part_idx, is_request):
 		print
 		if self.length_expr(ctx_name):
 			# FIXME: context pointer for length_expr (?)
 			print "    " * idt + "assert (%s == %s.%s.length);" % (self.length_expr(ctx_name), ctx_name,self.name)
 		print "    " * idt + "parts[%d].iov_base = %s.%s.ptr;" % (part_idx, ctx_name,self.name)
 		print "    " * idt + "parts[%d].iov_len = %s.%s.length * %s.sizeof;" % (part_idx, ctx_name,self.name, self.element_type)
+		if is_request:
+			print "    " * idt + "this.length += parts[%d].iov_len;" % part_idx
 		part_idx += 1
 		print
 		print "    " * idt + "parts[%d].iov_base = pad.ptr;" % part_idx
@@ -149,10 +151,12 @@ class ValueParamMember(object):
 			res.append((self.mask_type, self.mask_name))
 		res.append((tr('CARD32')+"[]", self.list_name))
 		return res
-	def to_iovec(self, idt, ctx_name, part_idx):
+	def to_iovec(self, idt, ctx_name, part_idx, is_request):
 		print
 		print "    " * idt + "parts[%d].iov_base = %s.%s.ptr;" % (part_idx, ctx_name,self.list_name)
 		print "    " * idt + "parts[%d].iov_len = bitcount(%s.%s) * %s.sizeof;" % (part_idx, ctx_name,self.mask_name, tr('CARD32'))
+		if is_request:
+			print "    " * idt + "this.length += parts[%d].iov_len;" % part_idx
 		return part_idx + 1
 	def offsetof_name(self):
 		return self.list_name
@@ -314,16 +318,22 @@ class StructInfo(object):
 			print "    " * idt + "parts[%d].iov_base = &this;" % part_idx
 			if len(var_fields) == 0:
 				print "    " * idt + "parts[%d].iov_len = this.sizeof;" % part_idx
+				if self.is_request:
+					print "    " * idt + "this.length = cast(ushort)parts[%d].iov_len;" % part_idx
 			else:
 				print "    " * idt + "parts[%d].iov_len = this.%s.offsetof;" % (part_idx, var_fields[0].offsetof_name())
+				if self.is_request:
+					print "    " * idt + "this.length = cast(ushort)parts[%d].iov_len;" % part_idx
 				part_idx += 1
 				for member in var_fields:
-					part_idx = member.to_iovec(idt, 'this', part_idx)
+					part_idx = member.to_iovec(idt, 'this', part_idx, self.is_request)
 				for member in (m for m in self.members if type(m) is ExprFieldMember):
 					print
 					print "    " * idt + '// TODO: explain this'
 					print "    " * idt + "this." + member.name, '=', member.value_expr(self.members) + ';'
 			print
+			if self.is_request:
+				print "    " * idt + "this.length /= 4;"
 			print "    " * idt + "return parts;"
 			idt -= 1
 			print "    " * idt + "}"
