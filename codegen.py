@@ -205,9 +205,11 @@ class StructInfo(object):
 		self.type = 'struct'
 		self.is_request = element.tag == 'request'
 		self.is_reply = element.tag == 'reply'
+		self.is_event = element.tag == 'event'
 		# FIXME: standard fields - reply
 		self.name = 'Reply' if element.tag == 'reply' else tr(element.attrib['name'])
 		self.opcode = element.attrib['opcode'] if self.is_request else None
+		self.evcode = element.attrib['number'] if self.is_event else None
 		self.members = []
 		self.reply_struct = None
 		self.xml = tostring(element).strip()
@@ -241,6 +243,10 @@ class StructInfo(object):
 		print "    " * idt + "struct", self.name
 		print "    " * idt + "{"
 		idt += 1
+
+		if self.is_event:
+			print "    " * idt + "static immutable TYPE_ID = %s;" % self.evcode  # event code
+			print
 
 		# data member declarations
 		first_member = ("byte[1]", "_pad0") if len(self.members) == 0 else self.members[0].declarations(self.members)[0]
@@ -363,6 +369,7 @@ def tr_name(original):
 		# clashed keywords in D
 		'class': 'klass',
 		'delete': 'del',
+		'new': '_new',
 		}.get(original, original)
 
 
@@ -438,6 +445,10 @@ def main():
 			enum_typeinfo = EnumInfo(i)
 			declarations['enums'].append(enum_typeinfo)
 			type_registry[enum_typeinfo.name] = enum_typeinfo
+		elif i.tag == 'event':
+			request_typeinfo = StructInfo(i)
+			declarations['events'].append(request_typeinfo)
+			type_registry[request_typeinfo.name] = request_typeinfo
 		#else:
 		#	declarations[i.tag].append([i.attrib['name'],])
 
@@ -522,7 +533,12 @@ import xd.util: iovec, pad4, bitcount;
 	print " * events"
 	print " */"
 	for event_typeinfo in declarations['events']:
-		print event_typeinfo
+		print
+		#print "/*"
+		#for line in event_typeinfo.xml.splitlines():
+		#	print " *", line
+		#print " */"
+		event_typeinfo.print_src(from_bytes=True)
 
 	print
 	print "/**"
