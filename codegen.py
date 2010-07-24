@@ -207,6 +207,7 @@ class StructInfo(object):
 		self.is_reply = element.tag == 'reply'
 		# FIXME: standard fields - reply
 		self.name = 'Reply' if element.tag == 'reply' else tr(element.attrib['name'])
+		self.opcode = element.attrib['opcode'] if self.is_request else None
 		self.members = []
 		self.reply_struct = None
 		self.xml = tostring(element).strip()
@@ -246,7 +247,7 @@ class StructInfo(object):
 		rest_members = [] if len(self.members) == 0 else self.members[1:]
 		if self.is_request:  # FIXME: does to_iovec means request? NO!!!
 			# standard request fields
-			print "    " * idt + "ubyte opcode;"  # major opcode
+			print "    " * idt + "ubyte opcode = %s;" % self.opcode  # major opcode
 			print "    " * idt + first_member[0], first_member[1] + ";"
 			print "    " * idt + "ushort length;  // request length expressed in units of four bytes"
 			for t, n in [d for m in rest_members for d in m.declarations(self.members)]:
