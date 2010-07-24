@@ -38,6 +38,9 @@ class Connection
 		this.wfds = new std.socket.SocketSet;
 
 		this._setup();
+
+		this._first_xid = 0;
+		this._last_xid = this.setup.resource_id_mask;
 	}
 
 	/**
@@ -154,6 +157,17 @@ class Connection
 		assert (!this.wfds.isSet(this.fd));
 	}
 
+	uint _first_xid;
+	uint _last_xid;
+
+  public:
+	uint generateId()
+	{
+		immutable xid_increment = this.setup.resource_id_mask & -this.setup.resource_id_mask;
+		uint ret = this._first_xid | this.setup.resource_id_base;
+		this._first_xid += xid_increment;
+		return ret;
+	}
 }
 
 union Packet
